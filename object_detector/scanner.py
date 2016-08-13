@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 
+import cv2
+
 class ImageScanner(object):
     def __init__(self, image):
         self._image = image
@@ -29,23 +31,5 @@ class ImageScanner(object):
     
     
 if __name__ == "__main__":
-
-    import cv2
-    import time
-    
-    image = cv2.imread("test.jpg")
-    scanner = ImageScanner(image)
-    # loop over the layers of the image pyramid and display them
-    #for layer in scanner.get_next_layer():
-    layer = image
-    
-    print "image height = {}, image width = {}".format(image.shape[0], image.shape[1])
-    for x, y, window in scanner.get_next_patch():
-        clone = layer.copy()
-        cv2.rectangle(clone, (x, y), (x + 30, y + 30), (0, 255, 0), 2)
-        cv2.imshow("Window", clone)
-        print x, x + 30, y, y + 30
-    
-        cv2.waitKey(1)
-        time.sleep(0.025)
+    pass
 
