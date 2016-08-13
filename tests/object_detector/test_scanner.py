@@ -2,9 +2,12 @@
 import time
 import cv2
 import object_detector.scanner as scanner
+from skimage import data
 
 if __name__ == "__main__":
-    image = cv2.imread("..//dataset//test.jpg")
+    
+    image = data.camera()        # Get Sample Image
+    image = cv2.resize(image, (100, 100))
     image_scanner = scanner.ImageScanner(image)
     
     for layer in image_scanner.get_next_layer():
