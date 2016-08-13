@@ -6,6 +6,7 @@ from skimage import data
 
 if __name__ == "__main__":
     
+    # Todo: Can unit test framework be applied?  
     image = data.camera()        # Get Sample Image
     image = cv2.resize(image, (100, 100))
     image_scanner = scanner.ImageScanner(image)
