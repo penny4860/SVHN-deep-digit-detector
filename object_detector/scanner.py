@@ -18,14 +18,14 @@ class ImageScanner(object):
     Examples
     --------
     >>> from object_detector.scanner import ImageScanner
+    >>> from skimage import data
+    >>> img = data.camera()        # Get Sample Image
     >>> import cv2
-    >>> image = cv2.imread("..//tests//dataset//test.jpg")
-    >>> image.shape
-    (225L, 300L, 3L)
-    >>> scanner = ImageScanner(image)
-    >>> patches = [window for _ in scanner.get_next_layer() for (x, y, window) in scanner.get_next_patch()]
+    >>> scanner = ImageScanner(img)
+    >>> patches = [window for _ in scanner.get_next_layer(scale=0.5, min_size=(20, 20)) \
+            for (x, y, window) in scanner.get_next_patch(step_size=(10, 10), window_size=(25, 25))]
     >>> len(patches)
-    927
+    3115
     
     Notes
     ----------
@@ -62,4 +62,5 @@ class ImageScanner(object):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    
 
