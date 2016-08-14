@@ -1,0 +1,10 @@
+{
+	#######
+	# DATASET PATHS
+	#######
+	"image_dataset": "c:/datasets/caltech101/101_ObjectCategories/car_side",
+	"image_annotations": "c:/datasets/caltech101/Annotations/car_side",
+	"image_distractions": "c:/datasets/sceneclass13"
+
+}
+
