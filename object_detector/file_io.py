@@ -1,29 +1,59 @@
 #-*- coding: utf-8 -*-
 
+import abc
 import glob
 import os
 import commentjson as json
+from scipy import io
 
-# Todo : doctest have to be added
-def read_json(filename):
-    """load json file as dict object
+class ReadFile(object):
+    __metaclass__ = abc.ABCMeta
+    
+    def __init__(self):
+        pass
+    
+    @abc.abstractmethod
+    def read(self, filename):
+        pass
 
-    Parameters
-    ----------
-    filename : str
-        filename of json file
+class ReadJson(ReadFile):
+    def read(self, filename):
+        """load json file as dict object
 
-    Returns
-    ----------
-    conf : dict
-        dictionary containing contents of json file
+        Parameters
+        ----------
+        filename : str
+            filename of json file
+    
+        Returns
+        ----------
+        conf : dict
+            dictionary containing contents of json file
+    
+        Examples
+        --------
+        """
+        return json.loads(open(filename).read())
 
-    Examples
-    --------
-    """
+class ReadMat(ReadFile):
+    def read(self, filename):
+        """load json file as dict object
 
-    conf = json.loads(open(filename).read())
-    return conf 
+        Parameters
+        ----------
+        filename : str
+            filename of json file
+    
+        Returns
+        ----------
+        conf : dict
+            dictionary containing contents of json file
+    
+        Examples
+        --------
+        """
+        return io.loadmat(filename)
+
 
 # Todo : doctest have to be added
 def list_files(directory, pattern="*.*", recursive_option=True):
