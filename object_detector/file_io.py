@@ -4,6 +4,7 @@ import glob
 import os
 import commentjson as json
 
+# Todo : doctest have to be added
 def read_json(filename):
     """load json file as dict object
 
@@ -24,6 +25,7 @@ def read_json(filename):
     conf = json.loads(open(filename).read())
     return conf 
 
+# Todo : doctest have to be added
 def list_files(directory, pattern="*.*", recursive_option=True):
     """list files in a directory matched in defined pattern.
 
