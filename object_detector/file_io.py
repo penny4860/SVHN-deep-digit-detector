@@ -37,7 +37,7 @@ class ReadJson(ReadFile):
 
 class ReadMat(ReadFile):
     def read(self, filename):
-        """load json file as dict object
+        """load mat file as dict object
 
         Parameters
         ----------
@@ -47,7 +47,7 @@ class ReadMat(ReadFile):
         Returns
         ----------
         conf : dict
-            dictionary containing contents of json file
+            dictionary containing contents of mat file
     
         Examples
         --------
