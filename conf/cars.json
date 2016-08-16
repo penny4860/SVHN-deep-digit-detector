@@ -4,7 +4,33 @@
 	#######
 	"image_dataset": "c:/datasets/caltech101/101_ObjectCategories/car_side",
 	"image_annotations": "c:/datasets/caltech101/Annotations/car_side",
-	"image_distractions": "c:/datasets/sceneclass13"
-
+	"image_distractions": "c:/datasets/sceneclass13",
+	
+	#######
+	# FEATURE EXTRACTION
+	#######
+	"features_path": "output/cars/car_features.hdf5",
+	"percent_gt_images": 0.5,
+	"offset": 5,
+	"use_flip": true,
+	"num_distraction_images": 500,
+	"num_distractions_per_image": 10,
+ 
+	#######
+	# HISTOGRAM OF ORIENTED GRADIENTS DESCRIPTOR
+	#######
+	"orientations": 9,
+	"pixels_per_cell": [4, 4],
+	"cells_per_block": [2, 2],
+	"normalize": true,
+ 
+	#######
+	# OBJECT DETECTOR
+	#######
+	"window_step": 4,
+	"overlap_thresh": 0.3,
+	"pyramid_scale": 1.5,
+	"window_dim": [96, 32],
+	"min_probability": 0.7
 }
 
