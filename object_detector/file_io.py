@@ -5,8 +5,11 @@ import glob
 import os
 import commentjson as json
 from scipy import io
+import numpy as np
+import h5py
 
-class ReadFile(object):
+
+class File(object):
     __metaclass__ = abc.ABCMeta
     
     def __init__(self):
@@ -15,8 +18,13 @@ class ReadFile(object):
     @abc.abstractmethod
     def read(self, filename):
         pass
+    
+    @abc.abstractmethod
+    def write(self, data, filename):
+        pass
+    
 
-class ReadJson(ReadFile):
+class FileJson(File):
     def read(self, filename):
         """load json file as dict object
 
@@ -34,8 +42,13 @@ class ReadJson(ReadFile):
         --------
         """
         return json.loads(open(filename).read())
+    
+    # Todo : implementation needed
+    def write(self, data, filename):
+        pass
 
-class ReadMat(ReadFile):
+
+class FileMat(File):
     def read(self, filename):
         """load mat file as dict object
 
@@ -53,7 +66,42 @@ class ReadMat(ReadFile):
         --------
         """
         return io.loadmat(filename)
+    
+    # Todo : implementation needed
+    def write(self, data, filename):
+        pass
 
+
+# Todo : staticmethod??
+class FileHDF5(File):
+    def read(self, filename, db_name):
+        db = h5py.File(filename, "r")
+        np_data = np.array(db[db_name])
+        db.close()
+        
+        return np_data
+    
+    def write(self, data, filename, db_name):
+        """Write data to hdf5 format.
+        
+        Parameters
+        ----------
+        data : array
+            data to write
+            
+        filename : str
+            filename including path
+            
+        db_name : str
+            database name
+            
+        """
+        
+        # todo : overwrite check
+        db = h5py.File(filename, "w")
+        dataset = db.create_dataset(db_name, data.shape, dtype="float")
+        dataset[:] = data[:]
+        db.close()
 
 # Todo : doctest have to be added
 def list_files(directory, pattern="*.*", recursive_option=True):
@@ -94,7 +142,6 @@ def list_files(directory, pattern="*.*", recursive_option=True):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    
     
     
 
