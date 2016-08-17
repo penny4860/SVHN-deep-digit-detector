@@ -66,7 +66,7 @@ class FileHDF5(File):
         
         return np_data
     
-    def write(self, data, filename, db_name, overwrite=True):
+    def write(self, data, filename, db_name):
         """Write data to hdf5 format.
         
         Parameters
@@ -80,15 +80,10 @@ class FileHDF5(File):
         db_name : str
             database name
             
-        overwrite : boolean
-            overwrite option if 'filename' is already exists
         """
-        if overwrite:
-            write_mode = "w"
-        else:
-            write_mode = "a"
         
-        db = h5py.File(filename, write_mode)
+        # todo : overwrite check
+        db = h5py.File(filename, "w")
         dataset = db.create_dataset(db_name, data.shape, dtype="float")
         dataset[:] = data[:]
         db.close()
