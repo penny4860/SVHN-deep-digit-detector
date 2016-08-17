@@ -5,6 +5,9 @@ import glob
 import os
 import commentjson as json
 from scipy import io
+import numpy as np
+import h5py
+
 
 class ReadFile(object):
     __metaclass__ = abc.ABCMeta
@@ -54,6 +57,14 @@ class ReadMat(ReadFile):
         """
         return io.loadmat(filename)
 
+# Todo : staticmethod??
+class ReadHDF5(ReadFile):
+    def read(self, filename, db_name):
+        db = h5py.File(filename, "r")
+        data = db[db_name]
+        db.close()
+     
+        return data
 
 # Todo : doctest have to be added
 def list_files(directory, pattern="*.*", recursive_option=True):
@@ -92,10 +103,25 @@ def list_files(directory, pattern="*.*", recursive_option=True):
     return files
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+#     import doctest
+#     doctest.testmod()
     
+    # write test code
+    data = np.arange(0, 100).reshape(10, 5, 2)
+    db = h5py.File("test.hdf5", "w")
+    dataset = db.create_dataset("test", (10, 5, 2), dtype="float")
+    dataset[:] = data[:]
+    print dataset
+    db.close()
+
+    # read test code    
+    db = h5py.File("test.hdf5", "r")
+    print db["test"][:,:]
+    data = np.array(db["test"])
+    print data
+    db.close()
     
+ 
     
 
 
