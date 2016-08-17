@@ -61,10 +61,37 @@ class ReadMat(ReadFile):
 class ReadHDF5(ReadFile):
     def read(self, filename, db_name):
         db = h5py.File(filename, "r")
-        data = db[db_name]
+        np_data = np.array(db[db_name])
         db.close()
-     
-        return data
+        
+        return np_data
+    
+    def write(self, data, filename, db_name, overwrite=True):
+        """Write data to hdf5 format.
+        
+        Parameters
+        ----------
+        data : array
+            data to write
+            
+        filename : str
+            filename including path
+            
+        db_name : str
+            database name
+            
+        overwrite : boolean
+            overwrite option if 'filename' is already exists
+        """
+        if overwrite:
+            write_mode = "a"
+        else:
+            write_mode = "w"
+        
+        db = h5py.File(filename, write_mode)
+        dataset = db.create_dataset(db_name, data.shape, dtype="float")
+        dataset[:] = data[:]
+        db.close()
 
 # Todo : doctest have to be added
 def list_files(directory, pattern="*.*", recursive_option=True):
@@ -106,22 +133,12 @@ if __name__ == "__main__":
 #     import doctest
 #     doctest.testmod()
     
-    # write test code
     data = np.arange(0, 100).reshape(10, 5, 2)
-    db = h5py.File("test.hdf5", "w")
-    dataset = db.create_dataset("test", (10, 5, 2), dtype="float")
-    dataset[:] = data[:]
-    print dataset
-    db.close()
-
-    # read test code    
-    db = h5py.File("test.hdf5", "r")
-    print db["test"][:,:]
-    data = np.array(db["test"])
-    print data
-    db.close()
     
- 
+    ReadHDF5().write(data, "test2.hdf5", "test")
+    print "done"
+    data = ReadHDF5().read("test2.hdf5", "test")
+    print data
     
 
 
