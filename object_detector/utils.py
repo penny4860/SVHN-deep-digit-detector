@@ -83,10 +83,33 @@ def crop_random(image, dst_size=(32, 32), max_patches=5):
     return patches
 
 
+def get_file_id(filename):
+    """Get file id from filename which has "($var)_($id).($extension)" format.
+    ($var) and ($extension) can be allowed anything format.
+    
+    Parameters
+    ----------
+    filename : str
+        Input filename to extract id
+        
+    Returns
+    ----------
+    file_id : str
+        ($id) from "($var)_($id).($extension)" format
+
+    Examples
+    --------
+    >>> filename = "C:\Windows\System32\cmd.exe\image_0122.jpg"
+    >>> get_file_id(filename)
+    '0122'
+
+    """
+    file_id = filename[filename.rfind("_") + 1:filename.rfind(".")]
+    return file_id
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-
-
+    
     
 
