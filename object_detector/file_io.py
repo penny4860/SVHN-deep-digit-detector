@@ -20,7 +20,7 @@ class File(object):
         pass
     
     @abc.abstractmethod
-    def write(self, data, filename):
+    def write(self, data, filename, write_mode="w"):
         pass
     
 
@@ -44,7 +44,7 @@ class FileJson(File):
         return json.loads(open(filename).read())
     
     # Todo : implementation needed
-    def write(self, data, filename):
+    def write(self, data, filename, write_mode="w"):
         pass
 
 
@@ -68,7 +68,7 @@ class FileMat(File):
         return io.loadmat(filename)
     
     # Todo : implementation needed
-    def write(self, data, filename):
+    def write(self, data, filename, write_mode="w"):
         pass
 
 
@@ -81,7 +81,7 @@ class FileHDF5(File):
         
         return np_data
     
-    def write(self, data, filename, db_name):
+    def write(self, data, filename, db_name, write_mode="w"):
         """Write data to hdf5 format.
         
         Parameters
@@ -98,7 +98,7 @@ class FileHDF5(File):
         """
         
         # todo : overwrite check
-        db = h5py.File(filename, "w")
+        db = h5py.File(filename, write_mode)
         dataset = db.create_dataset(db_name, data.shape, dtype="float")
         dataset[:] = data[:]
         db.close()
