@@ -13,14 +13,14 @@ ap = argparse.ArgumentParser()
 ap.add_argument("-c", "--conf", required=True, help="path to the configuration file")
 args = vars(ap.parse_args())
 
-conf_ = file_io.ReadJson().read(args['conf'])
+conf_ = file_io.FileJson().read(args['conf'])
 
 widths = []
 heights = []
 
 files = file_io.list_files(conf_["image_annotations"], "*.mat")
 for file_ in files:  
-    (y, h, x, w) = file_io.ReadMat().read(file_)["box_coord"][0]
+    (y, h, x, w) = file_io.FileMat().read(file_)["box_coord"][0]
     widths.append(w - x)
     heights.append(h - y)
   
