@@ -18,6 +18,11 @@ class File(object):
     @abc.abstractmethod
     def read(self, filename):
         pass
+    
+    @abc.abstractmethod
+    def write(self, data, filename):
+        pass
+    
 
 class FileJson(File):
     def read(self, filename):
@@ -37,6 +42,11 @@ class FileJson(File):
         --------
         """
         return json.loads(open(filename).read())
+    
+    # Todo : implementation needed
+    def write(self, data, filename):
+        pass
+
 
 class FileMat(File):
     def read(self, filename):
@@ -56,6 +66,11 @@ class FileMat(File):
         --------
         """
         return io.loadmat(filename)
+    
+    # Todo : implementation needed
+    def write(self, data, filename):
+        pass
+
 
 # Todo : staticmethod??
 class FileHDF5(File):
@@ -125,15 +140,9 @@ def list_files(directory, pattern="*.*", recursive_option=True):
     return files
 
 if __name__ == "__main__":
-#     import doctest
-#     doctest.testmod()
+    import doctest
+    doctest.testmod()
     
-    data = np.arange(0, 100).reshape(10, 5, 2)
-    
-    FileHDF5().write(data, "test2.hdf5", "test")
-    print "done"
-    data = FileHDF5().read("test2.hdf5", "test")
-    print data
     
 
 
