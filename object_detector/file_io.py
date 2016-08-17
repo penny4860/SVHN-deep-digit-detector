@@ -9,7 +9,7 @@ import numpy as np
 import h5py
 
 
-class ReadFile(object):
+class File(object):
     __metaclass__ = abc.ABCMeta
     
     def __init__(self):
@@ -19,7 +19,7 @@ class ReadFile(object):
     def read(self, filename):
         pass
 
-class ReadJson(ReadFile):
+class FileJson(File):
     def read(self, filename):
         """load json file as dict object
 
@@ -38,7 +38,7 @@ class ReadJson(ReadFile):
         """
         return json.loads(open(filename).read())
 
-class ReadMat(ReadFile):
+class FileMat(File):
     def read(self, filename):
         """load mat file as dict object
 
@@ -58,7 +58,7 @@ class ReadMat(ReadFile):
         return io.loadmat(filename)
 
 # Todo : staticmethod??
-class ReadHDF5(ReadFile):
+class FileHDF5(File):
     def read(self, filename, db_name):
         db = h5py.File(filename, "r")
         np_data = np.array(db[db_name])
@@ -84,9 +84,9 @@ class ReadHDF5(ReadFile):
             overwrite option if 'filename' is already exists
         """
         if overwrite:
-            write_mode = "a"
-        else:
             write_mode = "w"
+        else:
+            write_mode = "a"
         
         db = h5py.File(filename, write_mode)
         dataset = db.create_dataset(db_name, data.shape, dtype="float")
@@ -135,9 +135,9 @@ if __name__ == "__main__":
     
     data = np.arange(0, 100).reshape(10, 5, 2)
     
-    ReadHDF5().write(data, "test2.hdf5", "test")
+    FileHDF5().write(data, "test2.hdf5", "test")
     print "done"
-    data = ReadHDF5().read("test2.hdf5", "test")
+    data = FileHDF5().read("test2.hdf5", "test")
     print data
     
 
