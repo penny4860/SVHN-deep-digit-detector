@@ -3,59 +3,70 @@
 import abc
 import numpy as np
 from skimage import feature
+from sklearn.svm import SVC
 
-import cPickle
+import pickle
 
 class Classifier(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod    
-    def __init__(self, params):
-        pass
+    def __init__(self, **params):
+        raise NotImplementedError
 
     @abc.abstractmethod    
     def train(self, X, y):
-        pass
+        raise NotImplementedError
 
     @abc.abstractmethod    
     def predict(self, X):
-        pass
-
-    @abc.abstractmethod    
+        raise NotImplementedError
+    
     def dump(self, filename):
         obj = {"model" : self._model, "params" : self._params}
-        cPickle.dumps(obj)
+        with open(filename, 'wb') as f:
+            pickle.dump(obj, f)
 
-    @abc.abstractmethod    
-    def load(self, filename):
-        self._model = cPickle.loads(open(filename).read())
-    
+    @classmethod
+    def load(cls, filename):
+        with open(filename, 'rb') as f:
+            obj = pickle.load(f)
+        
+        instance = cls(obj['params'])
+        instance._model = obj['model']
+        return instance
 
 class LinearSVM(Classifier):
     
-    def __init__(self, C, random_state=111):
-        self._C = C
-        self._random_state = random_state
+    def __init__(self, params):
+        self._params = params
+        self._model = SVC(kernel="linear", 
+                          C=self._params['C'], 
+                          probability=True, 
+                          random_state=self._params['random_state'])
         
     def train(self, X, y):
-        self._model = SVC(kernel="linear", C=self._C, probability=True, random_state=self._random_state)
         self._model.fit(X, y)
     
     def predict(self, X):
-        self._model.predict(X)
+        return self._model.predict(X)
     
 
 if __name__ == "__main__":
     X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
     y = np.array([1, 1, 2, 2])
-    from sklearn.svm import SVC
     clf = SVC()
     clf.fit(X, y) 
     print(clf.predict([[-0.8, -1]]))
-
-
-
-
-
-
+ 
+    params = {'C' : 1.0, 'random_state' : None}
+ 
+    obj = LinearSVM(params)
+    obj.train(X, y)
+    print obj.predict([[-0.8, -1]])
+     
+    obj.dump("linear_svm.pickle")
+ 
+    obj2 = LinearSVM.load("linear_svm.pickle")
+    print obj2.predict([[-0.8, -1]])
 
