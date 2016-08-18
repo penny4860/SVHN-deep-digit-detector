@@ -1,11 +1,10 @@
 #-*- coding: utf-8 -*-
 
 import abc
+import pickle
 import numpy as np
-from skimage import feature
 from sklearn.svm import SVC
 
-import pickle
 
 class Classifier(object):
     __metaclass__ = abc.ABCMeta
@@ -32,14 +31,17 @@ class Classifier(object):
         with open(filename, 'rb') as f:
             obj = pickle.load(f)
         
-        instance = cls(obj['params'])
-        instance._model = obj['model']
-        return instance
+        loaded = cls(**obj['params'])
+        loaded._model = obj['model']
+        return loaded
 
 class LinearSVM(Classifier):
     
-    def __init__(self, params):
+    def __init__(self, **params):
         self._params = params
+        
+        print params
+        
         self._model = SVC(kernel="linear", 
                           C=self._params['C'], 
                           probability=True, 
@@ -55,13 +57,8 @@ class LinearSVM(Classifier):
 if __name__ == "__main__":
     X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
     y = np.array([1, 1, 2, 2])
-    clf = SVC()
-    clf.fit(X, y) 
-    print(clf.predict([[-0.8, -1]]))
  
-    params = {'C' : 1.0, 'random_state' : None}
- 
-    obj = LinearSVM(params)
+    obj = LinearSVM(C = 1.0, random_state = 111)
     obj.train(X, y)
     print obj.predict([[-0.8, -1]])
      
