@@ -1,23 +1,23 @@
 #-*- coding: utf-8 -*-
 
-import abc
+from abc import ABCMeta, abstractmethod
 import pickle
 import numpy as np
 from sklearn.svm import SVC
 
 
 class Classifier(object):
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
 
-    @abc.abstractmethod    
+    @abstractmethod    
     def __init__(self, **params):
         raise NotImplementedError
 
-    @abc.abstractmethod    
+    @abstractmethod    
     def train(self, X, y):
         raise NotImplementedError
 
-    @abc.abstractmethod    
+    @abstractmethod    
     def predict(self, X):
         raise NotImplementedError
     
