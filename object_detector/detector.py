@@ -9,8 +9,23 @@ class Detector(object):
         self.descriptor = descriptor
         self.classifier = classifier
 
-    def run(self, image):
-        image_scanner = scanner.ImageScanner(image)
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7):
+        scanner_ = scanner.ImageScanner(image)
+        
+        boxes = []
+        probs = []
+        
+        for _ in scanner_.get_next_layer(pyramid_scale, window_size):
+            for _, _, window in scanner_.get_next_patch(step[0], step[1], window_size[0], window_size[1]):
+                
+                features = self.descriptor.describe([window]).reshape(1, -1)
+                prob = self.classifier.predict_proba(features)[0][1]
+                
+                if prob > threshold_prob:
+                    bb = scanner_.bounding_box
+                    boxes.append(bb)
+                    probs.append(prob)
+        return boxes, probs
     
     def hard_negative_mine(self):
         pass
