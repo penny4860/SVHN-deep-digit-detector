@@ -3,6 +3,8 @@ import scanner
 import descriptor
 import classifier
 
+import numpy as np
+
 class Detector(object):
     
     def __init__(self, descriptor, classifier):
