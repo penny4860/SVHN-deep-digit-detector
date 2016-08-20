@@ -9,7 +9,7 @@
 	#######
 	# FEATURE EXTRACTION
 	#######
-	"features_path": "output/cars/car_features.hdf5",
+	"features_path": "c:/datasets/output/detecting_cars/car_features.hdf5",
 	"percent_gt_images": 0.5,
 	"offset": 5,
 	"use_flip": true,
