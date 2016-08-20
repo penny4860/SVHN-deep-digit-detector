@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 import pickle
 import numpy as np
 from sklearn.svm import SVC
-
+from sklearn.metrics import classification_report
 
 class Classifier(object):
     __metaclass__ = ABCMeta
@@ -20,6 +20,9 @@ class Classifier(object):
     @abstractmethod    
     def predict(self, X):
         raise NotImplementedError
+    
+    def evaluate(self, X_test, y_test):
+        return classification_report(y_test, self._model.predict(X_test))
     
     def dump(self, filename):
         obj = {"model" : self._model, "params" : self._params}
@@ -63,4 +66,7 @@ if __name__ == "__main__":
  
     obj2 = LinearSVM.load("linear_svm.pickle")
     print obj2.predict([[-0.8, -1]])
+
+    print obj2.evaluate(X, y)
+
 

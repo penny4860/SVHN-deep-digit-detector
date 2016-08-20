@@ -10,6 +10,7 @@
 	# FEATURE EXTRACTION
 	#######
 	"features_path": "c:/datasets/output/detecting_cars/car_features.hdf5",
+	"db_name": "features",
 	"percent_gt_images": 0.5,
 	"offset": 5,
 	"use_flip": true,
@@ -23,6 +24,12 @@
 	"pixels_per_cell": [4, 4],
 	"cells_per_block": [2, 2],
 	"normalize": true,
+	
+	#######
+	# SVM CLASSIFER
+	#######
+	"C": 0.01,
+	"classifier_path": "c:/datasets/output/detecting_cars/classifier.pkl",
  
 	#######
 	# OBJECT DETECTOR
