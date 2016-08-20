@@ -70,7 +70,7 @@ class ImageScanner(object):
 
     def _get_bb(self, y1, y2, x1, x2):
         """Get bounding box in the original input image"""
-        original_coords = [int(c * self.scale_for_original) for c in (y1, y2, x1, x2)]
+        original_coords = [int(c / self.scale_for_original) for c in (y1, y2, x1, x2)]
         return original_coords
 
     
