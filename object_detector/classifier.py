@@ -39,9 +39,6 @@ class LinearSVM(Classifier):
     
     def __init__(self, **params):
         self._params = params
-        
-        print params
-        
         self._model = SVC(kernel="linear", 
                           C=self._params['C'], 
                           probability=True, 
