@@ -27,6 +27,12 @@ class Detector(object):
                     probs.append(prob)
         return boxes, probs
     
+    def show_boxes(self, image, boxes):
+        for y1, y2, x1, x2 in boxes:
+            cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+        cv2.imshow("Image", image)
+        cv2.waitKey(0)
+    
     def hard_negative_mine(self):
         pass
     
@@ -38,7 +44,6 @@ if __name__ == "__main__":
     test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
     
     print "[INFO] Test Image shape: {0}".format(test_image.shape)
-    
     CONFIGURATION_FILE = "../conf/cars.json"
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
  
@@ -48,12 +53,8 @@ if __name__ == "__main__":
     cls = classifier.LinearSVM.load(conf["classifier_path"])
  
     detector = Detector(hog, cls)
-    
-    print conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"]
-    
     boxes, probs = detector.run(test_image, conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"])
- 
-    print len(probs)
+    detector.show_boxes(test_image, boxes)
  
 #     #4. Hard-Negative-Mine
 #     detector.hard_negative_mine()
