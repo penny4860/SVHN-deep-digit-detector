@@ -28,7 +28,7 @@ class Detector(object):
                     boxes.append(bb)
                     probs.append(prob)
                     
-        boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.7)
+        boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
         return boxes, probs
     
     def show_boxes(self, image, boxes):
@@ -79,8 +79,7 @@ class Detector(object):
     
             # delete all indexes from the index list that have overlap greater than the
             # provided overlap threshold
-            idxs = np.delete(idxs, np.concatenate(([last],
-                np.where(overlap > overlapThresh)[0])))
+            idxs = np.delete(idxs, np.concatenate(([last], np.where(overlap > overlapThresh)[0])))
             
         # return only the bounding boxes that were picked
         return boxes[pick].astype("int"), probs[pick]
@@ -88,7 +87,7 @@ class Detector(object):
 if __name__ == "__main__":
     import file_io
     import cv2
-    test_image_file = "C:/datasets/caltech101/101_ObjectCategories/car_side/image_0025.jpg"
+    test_image_file = "C:/datasets/caltech101/101_ObjectCategories/car_side/image_0002.jpg"
     test_image = cv2.imread(test_image_file)
     test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
     
