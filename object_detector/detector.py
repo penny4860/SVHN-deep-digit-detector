@@ -27,6 +27,8 @@ class Detector(object):
                     bb = scanner_.bounding_box
                     boxes.append(bb)
                     probs.append(prob)
+                    
+        boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.7)
         return boxes, probs
     
     def show_boxes(self, image, boxes):
