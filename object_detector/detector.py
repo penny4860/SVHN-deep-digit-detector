@@ -15,7 +15,7 @@ class Detector(object):
         boxes = []
         probs = []
         
-        for _ in scanner_.get_next_layer(pyramid_scale, window_size):
+        for _ in scanner_.get_next_layer(pyramid_scale, window_size[0], window_size[1]):
             for _, _, window in scanner_.get_next_patch(step[0], step[1], window_size[0], window_size[1]):
                 
                 features = self.descriptor.describe([window]).reshape(1, -1)
