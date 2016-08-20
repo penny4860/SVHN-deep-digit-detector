@@ -30,30 +30,39 @@ class Detector(object):
     def hard_negative_mine(self):
         pass
     
-    
 if __name__ == "__main__":
+    import file_io
+    import cv2
+    test_image_file = "..//test_car.jpg"
+    test_image = cv2.imread(test_image_file)
+    test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
     
-    desc = descriptor.HOG()
-    cls = classifier.LinearSVM(C = 1.0, random_state = 111)
-
-    #1. Get Features from training set
+    print "[INFO] Test Image shape: {0}".format(test_image.shape)
     
-    #2. Training classifier and save them
+    CONFIGURATION_FILE = "../conf/cars.json"
+    conf = file_io.FileJson().read(CONFIGURATION_FILE)
+ 
+    hog = descriptor.HOG(conf['orientations'],
+                     conf['pixels_per_cell'],
+                     conf['cells_per_block'])
+    cls = classifier.LinearSVM.load(conf["classifier_path"])
+ 
+    detector = Detector(hog, cls)
     
-    #3. Create detector and test
-    import numpy as np
-    sample_img = np.zeros((100, 100))
-    detector = Detector(desc, cls)
-    detector.run(sample_img)
-
-    #4. Hard-Negative-Mine
-    detector.hard_negative_mine()
+    print conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"]
     
-    #5. Re-train classifier
-    detector.classifier.train()
+    boxes, probs = detector.run(test_image, conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"])
+ 
+    print len(probs)
+ 
+#     #4. Hard-Negative-Mine
+#     detector.hard_negative_mine()
+#      
+#     #5. Re-train classifier
+#     detector.classifier.train()
 
     #6. Test
-    detector.run(sample_img)
+    #detector.run(test_image)
 
     
     
