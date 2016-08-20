@@ -39,7 +39,7 @@ class Detector(object):
 if __name__ == "__main__":
     import file_io
     import cv2
-    test_image_file = "..//test_car.jpg"
+    test_image_file = "C:/datasets/caltech101/101_ObjectCategories/car_side/image_0025.jpg"
     test_image = cv2.imread(test_image_file)
     test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
     
