@@ -37,12 +37,13 @@ class ImageScanner(object):
     
     def __init__(self, image):
         self._layer = image
-        self._original_dim = image.shape
+        self._bounding_box = None
         self.scale_for_original = 1.0
     
     def get_next_patch(self, step_size=(10, 10), window_size=(30, 30)):
         for y in range(0, self._layer.shape[0] - window_size[0], step_size[0]):
             for x in range(0, self._layer.shape[1] - window_size[1], step_size[1]):
+                self._bounding_box = self._get_bb(x, y, window_size)
                 yield (x, y, self._layer[y:y + window_size[1], x:x + window_size[0]])
     
     def get_next_layer(self, scale=0.7, min_size=(30, 30)):
@@ -60,6 +61,22 @@ class ImageScanner(object):
                 break
             self.scale_for_original = self.scale_for_original * scale
             yield self._layer
+
+    @property
+    def bounding_box(self):
+        if self._bounding_box is None:
+            raise ValueError('bounding box does not defined.')
+        else:
+            return self._bounding_box
+
+    def _get_bb(self, x, y, window_size):
+        """Get bounding box in the original input image"""
+        x1 = int(x * self.scale_for_original)
+        y1 = int(y * self.scale_for_original)
+        x2 = int((x+window_size[1]) * self.scale_for_original)
+        y2 = int((y+window_size[0]) * self.scale_for_original)
+        
+        return x1, x2, y1, y2
 
     
 if __name__ == "__main__":
