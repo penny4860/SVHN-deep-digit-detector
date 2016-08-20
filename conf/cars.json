@@ -38,6 +38,6 @@
 	"overlap_thresh": 0.3,
 	"pyramid_scale": 0.7,	# Shink dimension
 	"window_dim": [32, 96],	# (y, x)
-	"min_probability": 0.7
+	"min_probability": 0.8
 }
 
