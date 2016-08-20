@@ -23,7 +23,7 @@ class ImageScanner(object):
     >>> import cv2
     >>> scanner = ImageScanner(img)
     >>> patches = [window for _ in scanner.get_next_layer(scale=0.5, min_size=(20, 20)) \
-            for (x, y, window) in scanner.get_next_patch(step_size=(10, 10), window_size=(25, 25))]
+            for (y, x, window) in scanner.get_next_patch(step_size=(10, 10), window_size=(25, 25))]
     >>> len(patches)
     3115
     
@@ -40,13 +40,14 @@ class ImageScanner(object):
         self._bounding_box = None
         self.scale_for_original = 1.0
     
-    def get_next_patch(self, step_size=(10, 10), window_size=(30, 30)):
-        for y in range(0, self._layer.shape[0] - window_size[0], step_size[0]):
-            for x in range(0, self._layer.shape[1] - window_size[1], step_size[1]):
-                self._bounding_box = self._get_bb(x, y, window_size)
-                yield (x, y, self._layer[y:y + window_size[1], x:x + window_size[0]])
+    def get_next_patch(self, step_y=10, step_x=10, win_y=30, win_x=30):
+        
+        for y in range(0, self._layer.shape[0] - win_y, step_y):
+            for x in range(0, self._layer.shape[1] - win_x, step_x):
+                self._bounding_box = self._get_bb(y, y+win_y, x, x+win_x)
+                yield (y, x, self._layer[y:y + win_y, x:x + win_x])
     
-    def get_next_layer(self, scale=0.7, min_size=(30, 30)):
+    def get_next_layer(self, scale=0.7, min_y=30, min_x=30):
         yield self._layer
 
         while True:
@@ -55,9 +56,7 @@ class ImageScanner(object):
             
             self._layer = cv2.resize(self._layer, (w, h))
             
-            min_h = min_size[0]
-            min_w = min_size[1]
-            if h < min_h or w < min_w:
+            if h < min_y or w < min_x:
                 break
             self.scale_for_original = self.scale_for_original * scale
             yield self._layer
@@ -69,14 +68,10 @@ class ImageScanner(object):
         else:
             return self._bounding_box
 
-    def _get_bb(self, x, y, window_size):
+    def _get_bb(self, y1, y2, x1, x2):
         """Get bounding box in the original input image"""
-        x1 = int(x * self.scale_for_original)
-        y1 = int(y * self.scale_for_original)
-        x2 = int((x+window_size[1]) * self.scale_for_original)
-        y2 = int((y+window_size[0]) * self.scale_for_original)
-        
-        return x1, x2, y1, y2
+        original_coords = [int(c * self.scale_for_original) for c in (y1, y2, x1, x2)]
+        return original_coords
 
     
 if __name__ == "__main__":
