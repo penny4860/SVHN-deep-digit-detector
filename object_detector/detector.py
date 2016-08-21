@@ -11,7 +11,7 @@ class Detector(object):
         self.descriptor = descriptor
         self.classifier = classifier
 
-    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7):
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True):
         scanner_ = scanner.ImageScanner(image)
         
         boxes = []
@@ -27,8 +27,12 @@ class Detector(object):
                     bb = scanner_.bounding_box
                     boxes.append(bb)
                     probs.append(prob)
-                    
-        boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
+        
+        if do_nms:
+            boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
+            
+        boxes = np.array(boxes, "int")
+        probs = np.array(probs)
         return boxes, probs
     
     def show_boxes(self, image, boxes):
@@ -37,9 +41,36 @@ class Detector(object):
         cv2.imshow("Image", image)
         cv2.waitKey(0)
     
-    def hard_negative_mine(self):
-        pass
-    
+    def hard_negative_mine(self, negative_image_files, window_size, step, pyramid_scale=0.7, threshold_prob=0.5):
+
+        features = []
+        probs = []
+        
+        for patch, probability in self._generate_negative_patches(negative_image_files, window_size, step, pyramid_scale, threshold_prob):
+            
+            feature = self.descriptor.describe([patch])[0]
+            
+            print patch.shape, feature.shape, probability.shape
+            print
+            
+            features.append(feature)
+            probs.append(probability)
+        
+        return np.array(features), np.array(probs)
+
+    def _generate_negative_patches(self, negative_image_files, window_size, step, pyramid_scale, threshold_prob):
+        for image_file in negative_image_files:
+            image = cv2.imread(image_file)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+          
+            # detect objects in the image
+            (boxes, probs) = self.run(image, window_size, step, pyramid_scale, threshold_prob, do_nms=False)
+
+            for (y1, y2, x1, x2), prob in zip(boxes, probs):
+                negative_patch = cv2.resize(image[y1:y2, x1:x2], (window_size[1], window_size[0]), interpolation=cv2.INTER_AREA)
+                yield negative_patch, prob
+
+    # todo: code review
     def _do_nms(self, boxes, probs, overlapThresh=0.5):
         if len(boxes) == 0:
             return []
@@ -87,26 +118,41 @@ class Detector(object):
 if __name__ == "__main__":
     import file_io
     import cv2
+    import random
     test_image_file = "C:/datasets/caltech101/101_ObjectCategories/car_side/image_0002.jpg"
     test_image = cv2.imread(test_image_file)
     test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
-    
+     
     print "[INFO] Test Image shape: {0}".format(test_image.shape)
     CONFIGURATION_FILE = "../conf/cars.json"
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
- 
+  
     hog = descriptor.HOG(conf['orientations'],
                      conf['pixels_per_cell'],
                      conf['cells_per_block'])
     cls = classifier.LinearSVM.load(conf["classifier_path"])
- 
+  
     detector = Detector(hog, cls)
-    boxes, probs = detector.run(test_image, conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"])
-    detector.show_boxes(test_image, boxes)
+#     boxes, probs = detector.run(test_image, conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"])
+#     detector.show_boxes(test_image, boxes)
  
-#     #4. Hard-Negative-Mine
-#     detector.hard_negative_mine()
-#      
+    negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg")
+    #negative_image_files = random.sample(negative_image_files, conf["hn_num_distraction_images"])
+    negative_image_files = random.sample(negative_image_files, 1)
+    
+    print "==== Hard Negative Mining Start ===="
+    
+    #4. Hard-Negative-Mine
+    boxes, probs = detector.hard_negative_mine(negative_image_files, 
+                                               conf["window_dim"], 
+                                               conf["window_step"], 
+                                               conf["pyramid_scale"], 
+                                               threshold_prob=0.01)
+     
+    print "[INFO1]", boxes.shape
+    print "[INFO2]", probs.shape
+    print probs
+    
 #     #5. Re-train classifier
 #     detector.classifier.train()
 
