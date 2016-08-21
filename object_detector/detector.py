@@ -49,14 +49,16 @@ class Detector(object):
         for patch, probability in self._generate_negative_patches(negative_image_files, window_size, step, pyramid_scale, threshold_prob):
             
             feature = self.descriptor.describe([patch])[0]
-            
-            print patch.shape, feature.shape, probability.shape
-            print
-            
             features.append(feature)
             probs.append(probability)
         
-        return np.array(features), np.array(probs)
+        # sort by probability        
+        data = np.concatenate([np.array(probs).reshape(-1,1), np.array(features)], axis=1)
+        data = data[data[:, 0].argsort()[::-1]]
+        features = data[:, 1:]
+        probs = data[:, 0]
+        
+        return features, probs
 
     def _generate_negative_patches(self, negative_image_files, window_size, step, pyramid_scale, threshold_prob):
         for image_file in negative_image_files:
@@ -137,24 +139,18 @@ if __name__ == "__main__":
 #     detector.show_boxes(test_image, boxes)
  
     negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg")
-    #negative_image_files = random.sample(negative_image_files, conf["hn_num_distraction_images"])
-    negative_image_files = random.sample(negative_image_files, 1)
-    
-    print "==== Hard Negative Mining Start ===="
+    negative_image_files = random.sample(negative_image_files, conf["hn_num_distraction_images"])
+    #negative_image_files = random.sample(negative_image_files, 1)
     
     #4. Hard-Negative-Mine
-    boxes, probs = detector.hard_negative_mine(negative_image_files, 
+    features, probs = detector.hard_negative_mine(negative_image_files, 
                                                conf["window_dim"], 
                                                conf["window_step"], 
                                                conf["pyramid_scale"], 
                                                threshold_prob=0.01)
      
-    print "[INFO1]", boxes.shape
-    print "[INFO2]", probs.shape
-    print probs
-    
 #     #5. Re-train classifier
-#     detector.classifier.train()
+#     detector.classifier.train(X=features, y=)
 
     #6. Test
     #detector.run(test_image)
