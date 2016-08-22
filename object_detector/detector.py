@@ -120,7 +120,7 @@ class Detector(object):
 if __name__ == "__main__":
     import file_io
     import cv2
-    import random
+    #import progressbar
     test_image_file = "C:/datasets/caltech101/101_ObjectCategories/car_side/image_0002.jpg"
     test_image = cv2.imread(test_image_file)
     test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
@@ -139,7 +139,6 @@ if __name__ == "__main__":
 #     detector.show_boxes(test_image, boxes)
  
     negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg", conf["hn_num_distraction_images"])
-    #negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg", 1)
     
     #4. Hard-Negative-Mine
     features, probs = detector.hard_negative_mine(negative_image_files, 
@@ -147,7 +146,14 @@ if __name__ == "__main__":
                                                conf["window_step"], 
                                                conf["pyramid_scale"], 
                                                threshold_prob=0.01)
-     
+    
+    negative_labels = np.zeros((len(features), 1))
+    negative_set = np.concatenate([negative_labels, features], axis=1)
+    file_io.FileHDF5().write(negative_set, conf["features_path"], "hard_negatives", writeMethod="a")
+    
+    print "done"
+    
+    
 #     #5. Re-train classifier
 #     detector.classifier.train(X=features, y=)
 
