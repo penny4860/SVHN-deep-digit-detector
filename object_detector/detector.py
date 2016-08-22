@@ -138,10 +138,8 @@ if __name__ == "__main__":
 #     boxes, probs = detector.run(test_image, conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"])
 #     detector.show_boxes(test_image, boxes)
  
-    # todo : list_files() gets n_images parameter
-    negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg")
-    negative_image_files = random.sample(negative_image_files, conf["hn_num_distraction_images"])
-    #negative_image_files = random.sample(negative_image_files, 1)
+    negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg", conf["hn_num_distraction_images"])
+    #negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg", 1)
     
     #4. Hard-Negative-Mine
     features, probs = detector.hard_negative_mine(negative_image_files, 
