@@ -149,7 +149,7 @@ if __name__ == "__main__":
     
     negative_labels = np.zeros((len(features), 1))
     negative_set = np.concatenate([negative_labels, features], axis=1)
-    file_io.FileHDF5().write(negative_set, conf["features_path"], "hard_negatives", writeMethod="a")
+    file_io.FileHDF5().write(negative_set, conf["features_path"], "hard_negatives", write_mode="a")
     
     print "done"
     
