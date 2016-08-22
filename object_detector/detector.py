@@ -145,12 +145,13 @@ if __name__ == "__main__":
                                                conf["window_dim"], 
                                                conf["window_step"], 
                                                conf["pyramid_scale"], 
-                                               threshold_prob=0.01)
+                                               threshold_prob=0.5)
     
     negative_labels = np.zeros((len(features), 1))
     negative_set = np.concatenate([negative_labels, features], axis=1)
     file_io.FileHDF5().write(negative_set, conf["features_path"], "hard_negatives", write_mode="a")
     
+    print len(negative_set)
     print "done"
     
     
