@@ -7,6 +7,7 @@ import commentjson as json
 from scipy import io
 import numpy as np
 import h5py
+import random
 
 
 class File(object):
@@ -104,7 +105,7 @@ class FileHDF5(File):
         db.close()
 
 # Todo : doctest have to be added
-def list_files(directory, pattern="*.*", recursive_option=True):
+def list_files(directory, pattern="*.*", n_files_to_sample=None, recursive_option=True):
     """list files in a directory matched in defined pattern.
 
     Parameters
@@ -114,7 +115,11 @@ def list_files(directory, pattern="*.*", recursive_option=True):
 
     pattern : str
         regular expression for file matching
-        
+    
+    n_files_to_sample : int or None
+        number of files to sample randomly and return.
+        If this parameter is None, function returns every files.
+    
     recursive_option : boolean
         option for searching subdirectories. If this option is True, 
         function searches all subdirectories recursively.
@@ -137,6 +142,10 @@ def list_files(directory, pattern="*.*", recursive_option=True):
     for dir_ in dirs:
         for p in glob.glob(os.path.join(dir_, pattern)):
             files.append(p)
+    
+    if n_files_to_sample is not None:
+        files = random.sample(files, n_files_to_sample)
+
     return files
 
 if __name__ == "__main__":

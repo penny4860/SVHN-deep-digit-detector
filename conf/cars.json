@@ -34,10 +34,18 @@
 	#######
 	# OBJECT DETECTOR
 	#######
-	"window_step": 4,
+	"window_step": [4, 4],
 	"overlap_thresh": 0.3,
-	"pyramid_scale": 1.5,
-	"window_dim": [96, 32],
-	"min_probability": 0.7
+	"pyramid_scale": 0.7,	# Shink dimension
+	"window_dim": [32, 96],	# (y, x)
+	"min_probability": 0.8,
+	
+	#######
+	# HARD NEGATIVE MINING
+	#######
+	"hn_num_distraction_images": 50,
+	"hn_window_step": 4,
+	"hn_pyramid_scale": 0.7,
+	"hn_min_probability": 0.5
 }
 

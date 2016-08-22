@@ -20,6 +20,10 @@ class Classifier(object):
     @abstractmethod    
     def predict(self, X):
         raise NotImplementedError
+
+    @abstractmethod    
+    def predict_proba(self, X):
+        raise NotImplementedError
     
     def evaluate(self, X_test, y_test):
         return classification_report(y_test, self._model.predict(X_test))
@@ -52,6 +56,9 @@ class LinearSVM(Classifier):
     
     def predict(self, X):
         return self._model.predict(X)
+    
+    def predict_proba(self, X):
+        return self._model.predict_proba(X)
     
 
 if __name__ == "__main__":
