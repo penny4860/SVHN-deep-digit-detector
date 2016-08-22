@@ -52,11 +52,15 @@ class Detector(object):
             features.append(feature)
             probs.append(probability)
         
-        # sort by probability        
-        data = np.concatenate([np.array(probs).reshape(-1,1), np.array(features)], axis=1)
-        data = data[data[:, 0].argsort()[::-1]]
-        features = data[:, 1:]
-        probs = data[:, 0]
+        if len(probs) == 0:
+            pass
+        
+        else:
+            # sort by probability        
+            data = np.concatenate([np.array(probs).reshape(-1,1), np.array(features)], axis=1)
+            data = data[data[:, 0].argsort()[::-1]]
+            features = data[:, 1:]
+            probs = data[:, 0]
         
         return features, probs
 
