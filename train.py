@@ -12,6 +12,7 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
     
     #1. Load Features and Labels
+    # Todo : feature 와 label 을 나누어서 hdf file 에 쓰자.
     data = file_io.FileHDF5().read(conf["features_path"], conf["db_name"])
     if HARD_NEGATIVE_OPTION:
         hard_negative_data = file_io.FileHDF5().read(conf["features_path"], "hard_negatives")
