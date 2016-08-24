@@ -28,7 +28,7 @@
 	#######
 	# SVM CLASSIFER
 	#######
-	"C": 0.01,
+	"C": 0.05,
 	"classifier_path": "c:/datasets/output/detecting_cars/classifier.pkl",
  
 	#######
@@ -43,7 +43,7 @@
 	#######
 	# HARD NEGATIVE MINING
 	#######
-	"hn_num_distraction_images": 50,
+	"hn_num_distraction_images": 30,
 	"hn_window_step": 4,
 	"hn_pyramid_scale": 0.7,
 	"hn_min_probability": 0.5
