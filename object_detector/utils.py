@@ -36,7 +36,7 @@ def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
     """
     
     h = image.shape[0]
-    w = image.shape[0]
+    w = image.shape[1]
 
     (y1, y2, x1, x2) = bb
     
@@ -44,7 +44,11 @@ def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
     (x2, y2) = (min(x2 + padding, w), min(y2 + padding, h))
     
     patch = image[y1:y2, x1:x2]
-    patch = cv2.resize(patch, dst_size, interpolation=cv2.INTER_AREA)
+    
+    # Caution : dst_size is ordered in (y, x) but desired parameter in cv2.resize() is (x, y) order.
+    desired_ysize = dst_size[0]
+    desired_xsize = dst_size[1]
+    patch = cv2.resize(patch, (desired_xsize, desired_ysize), interpolation=cv2.INTER_AREA)
  
     return patch
 
