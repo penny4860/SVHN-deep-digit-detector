@@ -4,6 +4,7 @@ import descriptor
 import classifier
 
 import numpy as np
+import cv2
 
 class Detector(object):
     
@@ -28,7 +29,7 @@ class Detector(object):
                     boxes.append(bb)
                     probs.append(prob)
         
-        if do_nms:
+        if do_nms and boxes != []:
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
             
         boxes = np.array(boxes, "int")
