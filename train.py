@@ -5,7 +5,7 @@ import object_detector.classifier as classifier
 import numpy as np
 
 CONFIGURATION_FILE = "conf/cars.json"
-HARD_NEGATIVE_OPTION = False
+HARD_NEGATIVE_OPTION = True
 
 if __name__ == "__main__":
     
@@ -26,12 +26,14 @@ if __name__ == "__main__":
     cls.train(X, y)
     print "[INFO] Training result is as follows"
     print cls.evaluate(X, y)
+    #         [INFO] Training result is as follows
     #              precision    recall  f1-score   support
     # 
-    #         0.0       0.99      1.00      1.00      5000
-    #         1.0       1.00      0.74      0.85       122
+    #         0.0       1.00      1.00      1.00      5001
+    #         1.0       1.00      0.97      0.98       122
     # 
-    # avg / total       0.99      0.99      0.99      5122
+    # avg / total       1.00      1.00      1.00      5123
+
  
     #3. Save classifier
     cls.dump(conf["classifier_path"])
