@@ -123,50 +123,7 @@ class Detector(object):
         return boxes[pick].astype("int"), probs[pick]
     
 if __name__ == "__main__":
-    import file_io
-    import cv2
-    #import progressbar
-    test_image_file = "C:/datasets/caltech101/101_ObjectCategories/car_side/image_0002.jpg"
-    test_image = cv2.imread(test_image_file)
-    test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
-     
-    print "[INFO] Test Image shape: {0}".format(test_image.shape)
-    CONFIGURATION_FILE = "../conf/cars.json"
-    conf = file_io.FileJson().read(CONFIGURATION_FILE)
-  
-    hog = descriptor.HOG(conf['orientations'],
-                     conf['pixels_per_cell'],
-                     conf['cells_per_block'])
-    cls = classifier.LinearSVM.load(conf["classifier_path"])
-  
-    detector = Detector(hog, cls)
-#     boxes, probs = detector.run(test_image, conf["window_dim"], conf["window_step"], conf["pyramid_scale"], conf["min_probability"])
-#     detector.show_boxes(test_image, boxes)
- 
-    negative_image_files = file_io.list_files(conf["image_distractions"], "*.jpg", conf["hn_num_distraction_images"])
-    
-    #4. Hard-Negative-Mine
-    features, probs = detector.hard_negative_mine(negative_image_files, 
-                                               conf["window_dim"], 
-                                               conf["window_step"], 
-                                               conf["pyramid_scale"], 
-                                               threshold_prob=0.5)
-    
-    negative_labels = np.zeros((len(features), 1))
-    negative_set = np.concatenate([negative_labels, features], axis=1)
-    file_io.FileHDF5().write(negative_set, conf["features_path"], "hard_negatives", write_mode="a")
-    
-    print len(negative_set)
-    print "done"
-    
-    
-#     #5. Re-train classifier
-#     detector.classifier.train(X=features, y=)
-
-    #6. Test
-    #detector.run(test_image)
-
-    
+    pass
     
 
 
