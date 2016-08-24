@@ -5,6 +5,7 @@ import object_detector.classifier as classifier
 import numpy as np
 
 CONFIGURATION_FILE = "conf/cars.json"
+HARD_NEGATIVE_OPTION = False
 
 if __name__ == "__main__":
     
@@ -12,9 +13,10 @@ if __name__ == "__main__":
     
     #1. Load Features and Labels
     data = file_io.FileHDF5().read(conf["features_path"], conf["db_name"])
-    hard_negative_data = file_io.FileHDF5().read(conf["features_path"], "hard_negatives")
+    if HARD_NEGATIVE_OPTION:
+        hard_negative_data = file_io.FileHDF5().read(conf["features_path"], "hard_negatives")
+        data = np.concatenate([data, hard_negative_data], axis=0)
 
-    data = np.concatenate([data, hard_negative_data], axis=0)
     y = data[:, 0]
     X = data[:, 1:]
 
