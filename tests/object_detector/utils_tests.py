@@ -28,7 +28,7 @@ def test_crop_bb():
     desired_size = parameters["desired_size"]
     crop_manual = image[max(bb[0],bb[0]-pad) : min(image.shape[0],bb[1]+pad), max(bb[2],bb[2]-pad) : min(image.shape[1],bb[3]+pad)]
     crop_manual = cv2.resize(crop_manual, desired_size, interpolation=cv2.INTER_AREA)
-    assert patch.all() == crop_manual.all(), "utils.crop_bb() arises error!"
+    assert patch.all() == crop_manual.all(), "utils.crop_bb() unit test failed!!"
 
 def test_crop_random():
     # Given one sample image and the following parameters
@@ -46,7 +46,18 @@ def test_crop_random():
         M = cv2.matchTemplate(image, patch, cv2.TM_SQDIFF)
         min_cost, _, _, _ = cv2.minMaxLoc(M)
         match_cost.append(min_cost)
-    assert np.array(match_cost).all() == 0
+    assert np.array(match_cost).all() == 0, "utils.crop_random() unit test failed!!"
+
+def test_get_file_id():
+    # Given filename as a string
+    id_desired = "0122"
+    filename = "C:\Dataset\images\image_{0}.jpg".format(id_desired)
+
+    # When perform get_file_id()
+    id_gotten = utils.get_file_id(filename)
+
+    # Then     
+    assert id_desired == id_gotten, "utils.get_file_id() unit test failed!!"
 
 if __name__ == "__main__":
     import nose
