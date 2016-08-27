@@ -30,6 +30,21 @@ def test_list_files():
     shutil.rmtree(TEST_DIR)
 
 
+def test_FileJson_interface():
+    # Given the files
+    file_io.FileJson().write()
+    file_io.FileJson().read()
+    
+def test_FileMat_interface():
+    # Given the files
+    file_io.FileJson().write()
+    file_io.FileJson().read()
+    
+def test_FileHDF5_interface():
+    # Given the files
+    file_io.FileJson().write()
+    file_io.FileJson().read()
+
 if __name__ == "__main__":
     import nose
     nose.run()    
