@@ -1,19 +1,13 @@
 
 import object_detector.utils as utils
+import helpers
 import cv2
 import numpy as np
-np.random.seed(1111)
 
-    
-def get_one_sample_image():
-    from skimage import data
-    image = data.camera()
-    image = cv2.resize(image, (100, 100))
-    return image
 
 def test_crop_bb():
     # Given one sample image and the following parameters
-    image = get_one_sample_image()
+    image = helpers.get_one_sample_image()
     parameters = {"bb" : (0, 10, 10, 20),
         "pad" : 2,
         "desired_size" : (6,6),
@@ -32,7 +26,7 @@ def test_crop_bb():
 
 def test_crop_random():
     # Given one sample image and the following parameters
-    image = get_one_sample_image()
+    image = helpers.get_one_sample_image()
     parameters = {"dst_size" : (20, 20),
         "n_patches" : 5,
     }
