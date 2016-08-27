@@ -1,6 +1,9 @@
 
 import object_detector.utils as utils
 import cv2
+import numpy as np
+np.random.seed(1111)
+
     
 def get_one_sample_image():
     from skimage import data
@@ -27,14 +30,35 @@ def test_crop_bb():
     crop_manual = cv2.resize(crop_manual, desired_size, interpolation=cv2.INTER_AREA)
     assert patch.all() == crop_manual.all(), "utils.crop_bb() arises error!"
 
+def test_crop_random():
+    # Given one sample image and the following parameters
+    image = get_one_sample_image()
+    parameters = {"dst_size" : (20, 20),
+        "n_patches" : 5,
+    }
     
+    # When perform crop_random()
+    patches = utils.crop_random(image, parameters["dst_size"], parameters["n_patches"])
+
+    # Then every patch should be included in an image.
+    match_cost = []
+    for patch in patches:
+        M = cv2.matchTemplate(image, patch, cv2.TM_SQDIFF)
+        min_cost, _, _, _ = cv2.minMaxLoc(M)
+        match_cost.append(min_cost)
+    assert np.array(match_cost).all() == 0
+
 if __name__ == "__main__":
     import nose
     nose.run()    
     
+
     
     
     
+
+
+
     
     
     
