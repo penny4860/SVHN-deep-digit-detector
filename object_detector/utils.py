@@ -52,7 +52,7 @@ def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
  
     return patch
 
-def crop_random(image, dst_size=(32, 32), max_patches=5):
+def crop_random(image, dst_size=(32, 32), n_patches=5):
     """Randomly crop patches from an image as desired size.
 
     Parameters
@@ -83,7 +83,7 @@ def crop_random(image, dst_size=(32, 32), max_patches=5):
     
     patches = skimg.extract_patches_2d(image, 
                                        dst_size,
-                                       max_patches=max_patches)
+                                       max_patches=n_patches)
     return patches
 
 
