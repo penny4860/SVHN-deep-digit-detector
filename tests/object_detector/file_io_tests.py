@@ -53,10 +53,20 @@ def test_FileJson_interface():
     shutil.rmtree(os.path.dirname(test_file))
 
     
-def test_FileHDF5_interface():
-    # Given the files
-    file_io.FileJson().write()
-    file_io.FileJson().read()
+def test_FileMat_interface():
+    # Given the following directory and dictionary data
+    test_file, test_data = generate_test_file_and_data()
+    
+    # When perform write it to file and read
+    file_io.FileMat().write(test_data, test_file)
+    read_data = file_io.FileMat().read(test_file)
+    shutil.rmtree(os.path.dirname(test_file))
+
+    read_data = {key_: value_ for key_, value_ in zip(read_data.keys(), read_data.values()) if key_[:2] != "__" and key_[-2:] != "__"}
+    
+    # Then it should be equal to the original test_data
+    assert test_data.keys() == read_data.keys()
+    assert test_data.values() == [val[0][0] for val in read_data.values()]
 
 if __name__ == "__main__":
     import nose
