@@ -44,9 +44,10 @@ class FileJson(File):
         """
         return json.loads(open(filename).read())
     
-    # Todo : implementation needed
+    # Todo : Exception 처리
     def write(self, data, filename, write_mode="w"):
-        pass
+        with open(filename, write_mode) as f:
+            json.dump(data, f, indent=4)
 
 
 class FileMat(File):
