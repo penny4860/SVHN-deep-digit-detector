@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 
 import os
 import object_detector.file_io as file_io
