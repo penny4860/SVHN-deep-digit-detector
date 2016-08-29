@@ -30,14 +30,21 @@ def test_list_files():
 
 
 def test_FileJson_interface():
-    # Given the files
-    file_io.FileJson().write()
-    file_io.FileJson().read()
+    # Given the following directory and dictionary data
+    test_root_dir = tempfile.mkdtemp()
+    test_file = "test.json"
+    test_data = {"a":1, "b":2, "c":3}
+
+    # When perform write it to file and read
+    file_io.FileJson().write(test_data, os.path.join(test_root_dir, test_file))
+    read_data = file_io.FileJson().read(os.path.join(test_root_dir, test_file))
     
-def test_FileMat_interface():
-    # Given the files
-    file_io.FileJson().write()
-    file_io.FileJson().read()
+    # Then it should be equal to the original test_data
+    assert test_data == read_data
+
+    # Remove test files and directory
+    shutil.rmtree(test_root_dir)
+
     
 def test_FileHDF5_interface():
     # Given the files
