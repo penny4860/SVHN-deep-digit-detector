@@ -69,9 +69,8 @@ class FileMat(File):
         """
         return io.loadmat(filename)
     
-    # Todo : implementation needed
     def write(self, data, filename, write_mode="w"):
-        pass
+        io.savemat(filename, data)
 
 
 # Todo : staticmethod??
