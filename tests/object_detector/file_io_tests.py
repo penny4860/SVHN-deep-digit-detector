@@ -5,6 +5,14 @@ import object_detector.file_io as file_io
 import shutil
 import tempfile
 
+
+def generate_test_file_and_data():
+    test_root_dir = tempfile.mkdtemp()
+    test_file = "test.json"
+    test_data = {"a":1, "b":2, "c":3}
+    return os.path.join(test_root_dir, test_file), test_data
+
+
 def test_list_files():
     # Given the following directories and files
     test_root_dir = tempfile.mkdtemp()
@@ -32,19 +40,17 @@ def test_list_files():
 
 def test_FileJson_interface():
     # Given the following directory and dictionary data
-    test_root_dir = tempfile.mkdtemp()
-    test_file = "test.json"
-    test_data = {"a":1, "b":2, "c":3}
-
+    test_file, test_data = generate_test_file_and_data()
+    
     # When perform write it to file and read
-    file_io.FileJson().write(test_data, os.path.join(test_root_dir, test_file))
-    read_data = file_io.FileJson().read(os.path.join(test_root_dir, test_file))
+    file_io.FileJson().write(test_data, test_file)
+    read_data = file_io.FileJson().read(test_file)
     
     # Then it should be equal to the original test_data
     assert test_data == read_data
 
     # Remove test files and directory
-    shutil.rmtree(test_root_dir)
+    shutil.rmtree(os.path.dirname(test_file))
 
     
 def test_FileHDF5_interface():
