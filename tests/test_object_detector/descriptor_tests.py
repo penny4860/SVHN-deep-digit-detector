@@ -1,6 +1,4 @@
 #-*- coding: utf-8 -*-
-import os
-import numpy as np
 import object_detector.descriptor as descriptor
 from skimage import data
 import cv2
