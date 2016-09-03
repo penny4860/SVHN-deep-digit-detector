@@ -2,7 +2,6 @@
 
 from abc import ABCMeta, abstractmethod
 import pickle
-import numpy as np
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 
@@ -62,18 +61,8 @@ class LinearSVM(Classifier):
     
 
 if __name__ == "__main__":
-    X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
-    y = np.array([1, 1, 2, 2])
- 
-    obj = LinearSVM(C = 1.0, random_state = 111)
-    obj.train(X, y)
-    print obj.predict([[-0.8, -1]])
-     
-    obj.dump("linear_svm.pickle")
- 
-    obj2 = LinearSVM.load("linear_svm.pickle")
-    print obj2.predict([[-0.8, -1]])
-
-    print obj2.evaluate(X, y)
-
+    pass
+    
+    
+    
 

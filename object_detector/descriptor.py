@@ -57,17 +57,7 @@ class HuMoments(Descriptor):
         pass
     
 if __name__ == "__main__":
-    from skimage import data
-    import cv2
-    
-    image = data.camera()        # Get Sample Image
-    image = cv2.resize(image, (100, 100))
-
-    hog = HOG(orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2))
-    HH = hog.describe([image])
-    # (4356L,), 0.0437659109109 0.0322149201473
-    for H in HH:
-        print H.shape, H[0], H[-1]
+    pass
 
 
 
