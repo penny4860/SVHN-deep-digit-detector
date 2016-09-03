@@ -157,12 +157,6 @@ class FeatureGetter():
         labels = np.zeros((len(features_set), 1))
         dataset = np.concatenate([labels, np.array(features_set)], axis=1)
         self._dataset += dataset.tolist()
-            
-
-    def _get_image_files(self, directory, pattern, sample_ratio):
-        image_files = list_files(directory, pattern)
-        image_files = random.sample(image_files, int(len(image_files) * sample_ratio))
-        return image_files
     
     def save(self, config_file, data_file):
         FileHDF5().write(np.array(self._dataset), data_file, "label_and_features")
@@ -170,6 +164,17 @@ class FeatureGetter():
         config = {"descriptor" : self._desc, "patch_size" : self._patch_size}
         with open(config_file, 'wb') as f:
             pickle.dump(config, f)
+
+    def summary(self):
+        
+        labels = np.array(self._dataset)[:, 0]
+        feature_shape = np.array(self._dataset)[:, 1:].shape
+        
+        n_positive_samples = len(labels[labels > 0])
+        n_negative_samples = len(labels[labels == 0])
+                                 
+        print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}".format(n_positive_samples, n_negative_samples)
+        print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
 
     @classmethod
     def load(cls, config_file, data_file=None):
@@ -183,7 +188,7 @@ class FeatureGetter():
 
         loaded = cls(descriptor=config["descriptor"], patch_size=config["patch_size"], dataset=dataset.tolist())
         return loaded
-        
+
     @property
     def dataset(self):
         if self._dataset is None:
@@ -191,20 +196,12 @@ class FeatureGetter():
         else:
             return self._dataset
     
-    def summary(self):
-        
-        labels = np.array(self._dataset)[:, 0]
-        feature_shape = np.array(self._dataset)[:, 1:].shape
-        
-        n_positive_samples = len(labels[labels > 0])
-        n_negative_samples = len(labels[labels == 0])
-                                 
-        print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}".format(n_positive_samples, n_negative_samples)
-        print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
-        
-        
+    def _get_image_files(self, directory, pattern, sample_ratio):
+        image_files = list_files(directory, pattern)
+        image_files = random.sample(image_files, int(len(image_files) * sample_ratio))
+        return image_files
 
-# Todo : doctest have to be added
+
 def list_files(directory, pattern="*.*", n_files_to_sample=None, recursive_option=True):
     """list files in a directory matched in defined pattern.
 
