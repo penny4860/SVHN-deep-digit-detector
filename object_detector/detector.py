@@ -1,8 +1,5 @@
 
 import scanner
-import descriptor
-import classifier
-
 import numpy as np
 import cv2
 
