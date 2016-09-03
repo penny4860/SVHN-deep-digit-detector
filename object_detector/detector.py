@@ -2,12 +2,27 @@
 import scanner
 import numpy as np
 import cv2
+import pickle
+
 
 class Detector(object):
     
     def __init__(self, descriptor, classifier):
         self.descriptor = descriptor
         self.classifier = classifier
+        
+    def dump(self, filename):
+        obj = {"descriptor" : self.descriptor, "classifier" : self.classifier}
+        with open(filename, 'wb') as f:
+            pickle.dump(obj, f)
+
+    @classmethod
+    def load(cls, filename):
+        with open(filename, 'rb') as f:
+            obj = pickle.load(f)
+        
+        loaded = cls(descriptor = obj["descriptor"], classifier = obj["classifier"])
+        return loaded
 
     def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True):
         scanner_ = scanner.ImageScanner(image)
