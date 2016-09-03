@@ -8,6 +8,8 @@ from scipy import io
 import numpy as np
 import h5py
 import random
+import cv2
+import utils
 
 
 class File(object):
@@ -103,6 +105,64 @@ class FileHDF5(File):
         dataset = db.create_dataset(db_name, data.shape, dtype="float")
         dataset[:] = data[:]
         db.close()
+
+
+class FeatureGetter():
+    
+    def __init__(self, descriptor, patch_size):
+        self._desc = descriptor
+        self._patch_size = patch_size
+        
+    def get_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
+        
+        features_set = []
+        image_files = self._get_image_files(image_dir, pattern, sample_ratio)
+    
+        for image_file in image_files:
+            image = cv2.imread(image_file)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            image_id = utils.get_file_id(image_file)
+            
+            annotation_file = "{}/annotation_{}.mat".format(annotation_path, image_id)
+            bb = FileMat().read(annotation_file)["box_coord"][0]
+            roi = utils.crop_bb(image, bb, padding=padding, dst_size=self._patch_size)
+            
+            patches = (roi, cv2.flip(roi, 1)) if augment else (roi,)
+            
+            # Todo : augment modulization
+            features = self._desc.describe(patches)
+            features_set += features.tolist()
+            
+        labels = np.zeros((len(features_set), 1)) + label
+        dataset = np.concatenate([labels, np.array(features_set)], axis=1)
+            
+        return dataset
+
+
+    def get_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
+        
+        features_set = []
+        image_files = self._get_image_files(image_dir, pattern, sample_ratio)
+
+        for image_file in image_files:
+            image = cv2.imread(image_file)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+             
+            patches = utils.crop_random(image, self._patch_size, n_samples_per_img)
+             
+            features = self._desc.describe(patches)
+            features_set += features.tolist()
+
+        labels = np.zeros((len(features_set), 1))
+        dataset = np.concatenate([labels, np.array(features_set)], axis=1)
+            
+        return dataset
+
+    def _get_image_files(self, directory, pattern, sample_ratio):
+        image_files = list_files(directory, pattern)
+        image_files = random.sample(image_files, int(len(image_files) * sample_ratio))
+        return image_files
+
 
 # Todo : doctest have to be added
 def list_files(directory, pattern="*.*", n_files_to_sample=None, recursive_option=True):
