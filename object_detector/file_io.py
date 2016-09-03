@@ -10,6 +10,7 @@ import h5py
 import random
 import cv2
 import utils
+import pickle
 
 
 class File(object):
@@ -109,11 +110,12 @@ class FileHDF5(File):
 
 class FeatureGetter():
     
-    def __init__(self, descriptor, patch_size):
+    def __init__(self, descriptor, patch_size, dataset=[]):
         self._desc = descriptor
         self._patch_size = patch_size
+        self._dataset = dataset
         
-    def get_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
+    def add_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
         
         features_set = []
         image_files = self._get_image_files(image_dir, pattern, sample_ratio)
@@ -135,11 +137,10 @@ class FeatureGetter():
             
         labels = np.zeros((len(features_set), 1)) + label
         dataset = np.concatenate([labels, np.array(features_set)], axis=1)
-            
-        return dataset
+        self._dataset += dataset.tolist()
 
 
-    def get_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
+    def add_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
         
         features_set = []
         image_files = self._get_image_files(image_dir, pattern, sample_ratio)
@@ -155,14 +156,53 @@ class FeatureGetter():
 
         labels = np.zeros((len(features_set), 1))
         dataset = np.concatenate([labels, np.array(features_set)], axis=1)
+        self._dataset += dataset.tolist()
             
-        return dataset
 
     def _get_image_files(self, directory, pattern, sample_ratio):
         image_files = list_files(directory, pattern)
         image_files = random.sample(image_files, int(len(image_files) * sample_ratio))
         return image_files
+    
+    def save(self, config_file, data_file):
+        FileHDF5().write(np.array(self._dataset), data_file, "label_and_features")
+        
+        config = {"descriptor" : self._desc, "patch_size" : self._patch_size}
+        with open(config_file, 'wb') as f:
+            pickle.dump(config, f)
 
+    @classmethod
+    def load(cls, config_file, data_file=None):
+        with open(config_file, 'rb') as f:
+            config = pickle.load(f)
+        
+        if data_file is None:
+            dataset = []
+        else:
+            dataset = FileHDF5().read(data_file, "label_and_features")
+
+        loaded = cls(descriptor=config["descriptor"], patch_size=config["patch_size"], dataset=dataset.tolist())
+        return loaded
+        
+    @property
+    def dataset(self):
+        if self._dataset is None:
+            raise ValueError('There is no dataset in this instance')
+        else:
+            return self._dataset
+    
+    def summary(self):
+        
+        labels = np.array(self._dataset)[:, 0]
+        feature_shape = np.array(self._dataset)[:, 1:].shape
+        
+        n_positive_samples = len(labels[labels > 0])
+        n_negative_samples = len(labels[labels == 0])
+                                 
+        print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}".format(n_positive_samples, n_negative_samples)
+        print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
+        
+        
 
 # Todo : doctest have to be added
 def list_files(directory, pattern="*.*", n_files_to_sample=None, recursive_option=True):
