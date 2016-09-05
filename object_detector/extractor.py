@@ -57,6 +57,11 @@ class FeatureExtractor():
         labels = np.zeros((len(features_set), 1))
         dataset = np.concatenate([labels, np.array(features_set)], axis=1)
         self._dataset += dataset.tolist()
+        
+    def add_data(self, features, label):
+        labels = np.zeros((len(features), 1)) + label
+        dataset = np.concatenate([labels, features], axis=1)
+        self._dataset += dataset.tolist()
     
     def save(self, data_file):
         file_io.FileHDF5().write(np.array(self._dataset), data_file, "label_and_features")
@@ -68,8 +73,9 @@ class FeatureExtractor():
         
         n_positive_samples = len(labels[labels > 0])
         n_negative_samples = len(labels[labels == 0])
+        n_hard_negative_samples = len(labels[labels == -1])
                                  
-        print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}".format(n_positive_samples, n_negative_samples)
+        print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}, Hard Negative Mined samples: {}".format(n_positive_samples, n_negative_samples, n_hard_negative_samples)
         print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
 
     # Todo: configuration file 로 load 하는 방식으로 바꾸자.
