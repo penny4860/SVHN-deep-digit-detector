@@ -72,7 +72,7 @@ class FeatureExtractor():
         print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}".format(n_positive_samples, n_negative_samples)
         print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
 
-    # Todo: configuration file ·Î »ı¼ºÇÏ´Â ±¸Á¶·Î ¹Ù²ÙÀÚ.
+    # Todo: configuration file ë¡œ load í•˜ëŠ” ë°©ì‹ìœ¼ë¡œ ë°”ê¾¸ì.
     @classmethod
     def load(cls, descriptor, patch_size, data_file=None):
         if data_file is None:
