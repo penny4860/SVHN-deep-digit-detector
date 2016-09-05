@@ -35,7 +35,25 @@
 			"C": 0.01
 		},
 		"output_file": "output/car_cls.pkl"
+	},
+	
+	"detector":
+	{
+		"window_step": [4, 4],
+		"overlap_thresh": 0.3,
+		"pyramid_scale": 0.7,
+		"window_dim": [32, 96],
+		"min_probability": 0.8
+	},
+
+	"hard_negative_mine":
+	{
+		"window_step": [4, 4],
+		"n_images" : 20,
+		"pyramid_scale" : 0.5,
+		"min_probability" : 0.5
 	}
+	
 	
 }
 
