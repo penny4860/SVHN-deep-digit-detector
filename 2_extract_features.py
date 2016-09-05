@@ -1,11 +1,13 @@
 #-*- coding: utf-8 -*-
 
-import numpy as np
+import object_detector.extractor as extractor
 import object_detector.file_io as file_io
 import object_detector.descriptor as descriptor
 
+CONFIGURATION_FILE = "conf/new_format.json"
+PATCH_SIZE = (32, 96)
+
 if __name__ == "__main__":
-    CONFIGURATION_FILE = "conf/cars.json"
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
      
     # 1. Initialize Descriptor instance
@@ -14,7 +16,7 @@ if __name__ == "__main__":
                          conf['cells_per_block'])
      
     # 2. Initialize FeatureGetter instance
-    getter = file_io.FeatureGetter(descriptor=hog, patch_size=conf['window_dim'])
+    getter = extractor.FeatureExtractor(descriptor=hog, patch_size=PATCH_SIZE)
      
     # 3. Get Feature sets
     getter.add_positive_sets(image_dir=conf["image_dataset"],
@@ -32,7 +34,7 @@ if __name__ == "__main__":
     getter.save(config_file="feature_config.pkl", data_file="feature_data.hdf5")
     del getter
     
-    getter = file_io.FeatureGetter.load(config_file="feature_config.pkl", data_file="feature_data.hdf5")
+    getter = extractor.FeatureExtractor.load(config_file="feature_config.pkl", data_file="feature_data.hdf5")
     getter.summary()
 
 
