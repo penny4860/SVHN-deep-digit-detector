@@ -1,0 +1,60 @@
+{
+	"dataset":
+	{
+		"pos_data_dir": "c:/datasets/caltech101/101_ObjectCategories/car_side",
+		"pos_format": "*.jpg",
+		"annotations_dir": "c:/datasets/caltech101/Annotations/car_side",
+		"neg_data_dir": "c:/datasets/sceneclass13",
+		"neg_format": "*.jpg"
+	},
+
+	"extractor":
+	{
+		"output_file": "output/car_features.hdf5",
+		"padding": 5,
+		"sampling_ratio_for_negative_images": 0.1,
+		"num_patches_per_negative_image": 5
+	},
+	
+	"descriptor":
+	{
+		"algorithm": "hog",
+		"parameters":
+		{
+			"orientations": 9,
+			"pixels_per_cell": [4, 4],
+			"cells_per_block": [2, 2]
+		}
+	},
+	
+	"classifier":
+	{
+		"algorithm": "LinearSVM",
+		"parameters":
+		{
+			"C": 0.01
+		},
+		"output_file": "output/car_cls.pkl"
+	},
+	
+	"detector":
+	{
+		"window_step": [4, 4],
+		"overlap_thresh": 0.3,
+		"pyramid_scale": 0.7,
+		"window_dim": [32, 96],
+		"min_probability": 0.8,
+		"output_file": "output/car_detector.pkl"
+	},
+
+	"hard_negative_mine":
+	{
+		"window_step": [4, 4],
+		"n_images" : 20,
+		"pyramid_scale" : 0.5,
+		"min_probability" : 0.5
+	}
+	
+	
+}
+

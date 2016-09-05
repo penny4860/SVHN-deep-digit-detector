@@ -8,6 +8,9 @@ from scipy import io
 import numpy as np
 import h5py
 import random
+import cv2
+import utils
+import pickle
 
 
 class File(object):
@@ -104,7 +107,7 @@ class FileHDF5(File):
         dataset[:] = data[:]
         db.close()
 
-# Todo : doctest have to be added
+
 def list_files(directory, pattern="*.*", n_files_to_sample=None, recursive_option=True):
     """list files in a directory matched in defined pattern.
 

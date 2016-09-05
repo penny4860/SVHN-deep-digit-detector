@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 
 import scanner
 import numpy as np
@@ -30,6 +31,7 @@ class Detector(object):
         boxes = []
         probs = []
         
+        # Todo : 모든 patch 를 generate 한 다음 한번에 연산하는 것과 속도를 비교해보자.
         for _ in scanner_.get_next_layer(pyramid_scale, window_size[0], window_size[1]):
             for _, _, window in scanner_.get_next_patch(step[0], step[1], window_size[0], window_size[1]):
                 
