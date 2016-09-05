@@ -2,18 +2,29 @@
 	"dataset":
 	{
 		"pos_data_dir": "c:/datasets/caltech101/101_ObjectCategories/car_side",
+		"pos_format": "*.jpg",
 		"annotations_dir": "c:/datasets/caltech101/Annotations/car_side",
-		"neg_data_dir": "c:/datasets/sceneclass13"
+		"neg_data_dir": "c:/datasets/sceneclass13",
+		"neg_format": "*.jpg"
 	},
 
 	"extractor":
 	{
-	
+		"output_file": "output/car_features.hdf5",
+		"padding": 5,
+		"sampling_ratio_for_negative_images": 0.1,
+		"num_patches_per_negative_image": 5
 	},
 	
-	"descriptror":
+	"descriptor":
 	{
-	
+		"algorithm": "hog",
+		"parameters":
+		{
+			"orientations": 9,
+			"pixels_per_cell": [4, 4],
+			"cells_per_block": [2, 2]
+		}
 	},
 	
 	"classifier":
