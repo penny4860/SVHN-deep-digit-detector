@@ -11,31 +11,37 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
      
     # 1. Initialize Descriptor instance
-    hog = descriptor.HOG(conf['orientations'],
-                         conf['pixels_per_cell'],
-                         conf['cells_per_block'])
-     
+    # Todo : Factory Method to create hog-descriptor
+    
+    hog = descriptor.HOG(conf["descriptor"]["parameters"]["orientations"],
+                         conf["descriptor"]["parameters"]["pixels_per_cell"],
+                         conf["descriptor"]["parameters"]["cells_per_block"])
+      
     # 2. Initialize FeatureGetter instance
     getter = extractor.FeatureExtractor(descriptor=hog, patch_size=PATCH_SIZE)
-     
+      
     # 3. Get Feature sets
-    getter.add_positive_sets(image_dir=conf["image_dataset"],
-                                                        pattern="*.jpg", 
-                                                        annotation_path=conf['image_annotations'],
-                                                        padding=conf['offset'])
-    getter.add_negative_sets(image_dir=conf["image_distractions"],
-                                                        pattern="*.jpg",
-                                                        n_samples_per_img=5,
-                                                        sample_ratio=0.5)
+    getter.add_positive_sets(image_dir=conf["dataset"]["pos_data_dir"],
+                             pattern=conf["dataset"]["pos_format"], 
+                             annotation_path=conf["dataset"]['annotations_dir'],
+                             padding=conf["extractor"]['padding'],
+                             )
      
+    # Todo : positive sample 숫자에 따라 negative sample 숫자를 자동으로 정할 수 있도록 설정
+    getter.add_negative_sets(image_dir=conf["dataset"]["neg_data_dir"],
+                             pattern=conf["dataset"]["neg_format"],
+                             n_samples_per_img=conf["extractor"]["num_patches_per_negative_image"],
+                             sample_ratio=conf["extractor"]["sampling_ratio_for_negative_images"])
+      
     getter.summary()
-     
+      
     # 4. Save dataset
-    getter.save(config_file="feature_config.pkl", data_file="feature_data.hdf5")
+    getter.save(data_file=conf["extractor"]["output_file"])
     del getter
-    
-    getter = extractor.FeatureExtractor.load(config_file="feature_config.pkl", data_file="feature_data.hdf5")
+     
+    # 5. Test Loading dataset
+    getter = extractor.FeatureExtractor.load(descriptor=hog, patch_size=PATCH_SIZE, data_file="feature_data.hdf5")
     getter.summary()
-
-
-    
+ 
+ 
+     

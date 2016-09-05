@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 
 import cv2
 import utils
@@ -57,12 +58,8 @@ class FeatureExtractor():
         dataset = np.concatenate([labels, np.array(features_set)], axis=1)
         self._dataset += dataset.tolist()
     
-    def save(self, config_file, data_file):
+    def save(self, data_file):
         file_io.FileHDF5().write(np.array(self._dataset), data_file, "label_and_features")
-        
-        config = {"descriptor" : self._desc, "patch_size" : self._patch_size}
-        with open(config_file, 'wb') as f:
-            pickle.dump(config, f)
 
     def summary(self):
         
@@ -75,17 +72,15 @@ class FeatureExtractor():
         print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}".format(n_positive_samples, n_negative_samples)
         print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
 
+    # Todo: configuration file 로 생성하는 구조로 바꾸자.
     @classmethod
-    def load(cls, config_file, data_file=None):
-        with open(config_file, 'rb') as f:
-            config = pickle.load(f)
-        
+    def load(cls, descriptor, patch_size, data_file=None):
         if data_file is None:
             dataset = []
         else:
             dataset = file_io.FileHDF5().read(data_file, "label_and_features")
 
-        loaded = cls(descriptor=config["descriptor"], patch_size=config["patch_size"], dataset=dataset.tolist())
+        loaded = cls(descriptor, patch_size, dataset=dataset.tolist())
         return loaded
 
     @property
