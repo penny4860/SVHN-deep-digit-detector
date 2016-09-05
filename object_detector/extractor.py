@@ -89,12 +89,16 @@ class FeatureExtractor():
         loaded = cls(descriptor, patch_size, dataset=dataset.tolist())
         return loaded
 
-    @property
-    def dataset(self):
+    def get_dataset(self, include_hard_negative=True):
         if self._dataset is None:
             raise ValueError('There is no dataset in this instance')
         else:
-            return self._dataset
+            dataset = np.array(self._dataset)
+            if include_hard_negative:
+                dataset[dataset[:,0] < 0, 0] = 0
+            else:
+                dataset = dataset[dataset[:,0] >= 0]
+            return dataset
     
     def _get_image_files(self, directory, pattern, sample_ratio):
         image_files = file_io.list_files(directory, pattern)
