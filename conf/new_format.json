@@ -1,0 +1,6 @@
+{
+	"pos_data_dir": "c:/datasets/caltech101/101_ObjectCategories/car_side",
+	"annotations_dir": "c:/datasets/caltech101/Annotations/car_side",
+	"neg_data_fir": "c:/datasets/sceneclass13"
+}
+
