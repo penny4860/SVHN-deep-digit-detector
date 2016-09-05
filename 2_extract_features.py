@@ -40,7 +40,7 @@ if __name__ == "__main__":
     del getter
      
     # 5. Test Loading dataset
-    getter = extractor.FeatureExtractor.load(descriptor=hog, patch_size=PATCH_SIZE, data_file="feature_data.hdf5")
+    getter = extractor.FeatureExtractor.load(descriptor=hog, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
     getter.summary()
  
  
