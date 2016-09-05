@@ -43,7 +43,8 @@
 		"overlap_thresh": 0.3,
 		"pyramid_scale": 0.7,
 		"window_dim": [32, 96],
-		"min_probability": 0.8
+		"min_probability": 0.8,
+		"output_file": "output/car_detector.pkl"
 	},
 
 	"hard_negative_mine":
