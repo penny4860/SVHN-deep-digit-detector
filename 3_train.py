@@ -37,13 +37,16 @@ if __name__ == "__main__":
     cls.train(X, y)
     print "[INFO] Training result is as follows"
     print cls.evaluate(X, y)
-    #         [INFO] Training result is as follows
-    #              precision    recall  f1-score   support
-    # 
-    #         0.0       1.00      1.00      1.00      5001
-    #         1.0       1.00      0.97      0.98       122
-    # 
-    # avg / total       1.00      1.00      1.00      5123
+#     [FeatureGetter INFO] Positive samples: 246, Negative samples: 1925
+#     [FeatureGetter INFO] Feature Dimension: 5796
+#     [INFO] Training result is as follows
+#                  precision    recall  f1-score   support
+#     
+#             0.0       1.00      1.00      1.00      1925
+#             1.0       1.00      0.98      0.99       246
+#     
+#     avg / total       1.00      1.00      1.00      2171
+
 
     #3. Save classifier
     cls.dump(conf["classifier"]["output_file"])
