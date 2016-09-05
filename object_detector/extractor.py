@@ -12,7 +12,8 @@ class FeatureExtractor():
         self._desc = descriptor
         self._patch_size = patch_size
         self._dataset = dataset
-        
+    
+    # Todo : Template Method Pattern??
     def add_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
         
         features_set = []
@@ -98,6 +99,21 @@ class FeatureExtractor():
         image_files = file_io.list_files(directory, pattern)
         image_files = random.sample(image_files, int(len(image_files) * sample_ratio))
         return image_files
+
+# Todo : FeatureExtractor class member function
+def calc_average_patch_size(annotation_directory, pattern):
+    widths = []
+    heights = []
+    
+    files = file_io.list_files(annotation_directory, pattern)
+    for file_ in files:  
+        (y, h, x, w) = file_io.FileMat().read(file_)["box_coord"][0]
+        widths.append(w - x)
+        heights.append(h - y)
+
+    height = np.mean(heights)
+    width = np.mean(widths)
+    return height, width
 
 
 
