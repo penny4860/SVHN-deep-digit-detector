@@ -21,17 +21,11 @@ if __name__ == "__main__":
     
     getter = extractor.FeatureExtractor.load(hog, PATCH_SIZE, data_file=conf["extractor"]["output_file"])
     getter.summary()
-    data = np.array(getter.dataset)
+    data = getter.get_dataset(include_hard_negative=HARD_NEGATIVE_OPTION)
     
-#     # Todo : feature 와 label 을 나누어서 hdf file 에 쓰자.
-#     data = file_io.FileHDF5().read(conf["features_path"], conf["db_name"])
-#     if HARD_NEGATIVE_OPTION:
-#         hard_negative_data = file_io.FileHDF5().read(conf["features_path"], "hard_negatives")
-#         data = np.concatenate([data, hard_negative_data], axis=0)
-
     y = data[:, 0]
     X = data[:, 1:]
-
+ 
     #2. Train
     cls = classifier.LinearSVM(C=conf["classifier"]["parameters"]["C"], random_state=111)
     cls.train(X, y)
@@ -46,8 +40,8 @@ if __name__ == "__main__":
 #             1.0       1.00      0.98      0.99       246
 #     
 #     avg / total       1.00      1.00      1.00      2171
-
-
+ 
+ 
     #3. Save classifier
     cls.dump(conf["classifier"]["output_file"])
 
