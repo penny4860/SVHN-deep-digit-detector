@@ -2,25 +2,19 @@
 
 """ Get information on training dataset."""
 
-import numpy as np
 import object_detector.file_io as file_io
+import object_detector.extractor as extractor
 
 CONFIGURATION_FILE = "conf/new_format.json"
 
 if __name__ == "__main__":
     conf_ = file_io.FileJson().read(CONFIGURATION_FILE)
-    
-    widths = []
-    heights = []
-    
-    files = file_io.list_files(conf_["annotations_dir"], "*.mat")
-    for file_ in files:  
-        (y, h, x, w) = file_io.FileMat().read(file_)["box_coord"][0]
-        widths.append(w - x)
-        heights.append(h - y)
-      
-    (avgWidth, avgHeight) = (np.mean(widths), np.mean(heights))
-    print "[INFO] avg. width: {:.2f}".format(avgWidth)
-    print "[INFO] avg. height: {:.2f}".format(avgHeight)
+    h, w = extractor.calc_average_patch_size(conf_["dataset"]["annotations_dir"], "*.mat")
+    print "[INFO] average (height, width) = {:.2f}, {:.2f}".format(h, w)
+
+
+
+
+
     
 
