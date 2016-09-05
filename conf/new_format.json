@@ -29,7 +29,12 @@
 	
 	"classifier":
 	{
-	
+		"algorithm": "LinearSVM",
+		"parameters":
+		{
+			"C": 0.01
+		},
+		"output_file": "output/car_cls.pkl"
 	}
 	
 }
