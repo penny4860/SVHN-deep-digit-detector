@@ -7,18 +7,30 @@ import object_detector.descriptor as descriptor
 CONFIGURATION_FILE = "conf/new_format.json"
 PATCH_SIZE = (32, 96)
 
+class DescriptorFactory:
+    
+    def __init__(self):
+        pass
+    
+    @staticmethod
+    def create(algorithm, params):
+        desc = None
+        if algorithm == "hog":
+            desc = descriptor.HOG(**params)
+            
+        if desc is None:
+            raise ValueError('Such algorithm is not supported.')
+
+        return desc
+
 if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
      
     # 1. Initialize Descriptor instance
-    # Todo : Factory Method to create hog-descriptor
+    desc = DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
     
-    hog = descriptor.HOG(conf["descriptor"]["parameters"]["orientations"],
-                         conf["descriptor"]["parameters"]["pixels_per_cell"],
-                         conf["descriptor"]["parameters"]["cells_per_block"])
-      
     # 2. Initialize FeatureGetter instance
-    getter = extractor.FeatureExtractor(descriptor=hog, patch_size=PATCH_SIZE)
+    getter = extractor.FeatureExtractor(descriptor=desc, patch_size=PATCH_SIZE)
       
     # 3. Get Feature sets
     getter.add_positive_sets(image_dir=conf["dataset"]["pos_data_dir"],
@@ -40,7 +52,7 @@ if __name__ == "__main__":
     del getter
      
     # 5. Test Loading dataset
-    getter = extractor.FeatureExtractor.load(descriptor=hog, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
+    getter = extractor.FeatureExtractor.load(descriptor=desc, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
     getter.summary()
  
  
