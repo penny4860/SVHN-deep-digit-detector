@@ -15,11 +15,9 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
     
     #1. Load Features and Labels
-    hog = descriptor.HOG(conf["descriptor"]["parameters"]["orientations"],
-                     conf["descriptor"]["parameters"]["pixels_per_cell"],
-                     conf["descriptor"]["parameters"]["cells_per_block"])
+    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
     
-    getter = extractor.FeatureExtractor.load(hog, PATCH_SIZE, data_file=conf["extractor"]["output_file"])
+    getter = extractor.FeatureExtractor.load(desc, PATCH_SIZE, data_file=conf["extractor"]["output_file"])
     getter.summary()
     data = getter.get_dataset(include_hard_negative=HARD_NEGATIVE_OPTION)
     
@@ -43,6 +41,6 @@ if __name__ == "__main__":
  
  
     #3. Save classifier
-    cls.dump(conf["classifier"]["output_file"])
+#    cls.dump(conf["classifier"]["output_file"])
 
 

@@ -14,11 +14,9 @@ if __name__ == "__main__":
     test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=10)
 
     # 2. Build detector and save it   
-    hog = descriptor.HOG(conf["descriptor"]["parameters"]["orientations"],
-                         conf["descriptor"]["parameters"]["pixels_per_cell"],
-                         conf["descriptor"]["parameters"]["cells_per_block"])
+    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
     cls = classifier.LinearSVM.load(conf["classifier"]["output_file"])
-    detector = detector.Detector(hog, cls)
+    detector = detector.Detector(desc, cls)
     #detector.dump(conf["descriptor"]["output_file"])
 
     # 3. Run detector on Test images 
