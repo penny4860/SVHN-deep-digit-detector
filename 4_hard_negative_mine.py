@@ -14,12 +14,11 @@ PATCH_SIZE = (32, 96)
 
 if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
-    hog = descriptor.HOG(conf["descriptor"]["parameters"]["orientations"],
-                         conf["descriptor"]["parameters"]["pixels_per_cell"],
-                         conf["descriptor"]["parameters"]["cells_per_block"])
+    
+    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
     cls = classifier.LinearSVM.load(conf["classifier"]["output_file"])
     
-    detector = detector.Detector(hog, cls)
+    detector = detector.Detector(desc, cls)
     negative_image_files = file_io.list_files(conf["dataset"]["neg_data_dir"], 
                                               conf["dataset"]["neg_format"], 
                                               n_files_to_sample=conf["hard_negative_mine"]["n_images"])
@@ -33,7 +32,7 @@ if __name__ == "__main__":
     print "[HNM INFO] : number of mined negative patches {}".format(len(features))
     print "[HNM INFO] : probabilities of mined negative patches {}".format(probs)
     
-    getter = extractor.FeatureExtractor.load(descriptor=hog, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
+    getter = extractor.FeatureExtractor.load(descriptor=desc, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
     getter.summary()
     getter.add_data(features, -1)
     getter.summary()
