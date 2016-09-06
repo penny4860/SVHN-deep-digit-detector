@@ -7,27 +7,11 @@ import object_detector.descriptor as descriptor
 CONFIGURATION_FILE = "conf/new_format.json"
 PATCH_SIZE = (32, 96)
 
-class DescriptorFactory:
-    
-    def __init__(self):
-        pass
-    
-    @staticmethod
-    def create(algorithm, params):
-        desc = None
-        if algorithm == "hog":
-            desc = descriptor.HOG(**params)
-            
-        if desc is None:
-            raise ValueError('Such algorithm is not supported.')
-
-        return desc
-
 if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
      
     # 1. Initialize Descriptor instance
-    desc = DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
+    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
     
     # 2. Initialize FeatureGetter instance
     getter = extractor.FeatureExtractor(descriptor=desc, patch_size=PATCH_SIZE)

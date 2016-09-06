@@ -4,6 +4,7 @@ import abc
 import numpy as np
 from skimage import feature
 
+
 class Descriptor(object):
     __metaclass__ = abc.ABCMeta
 
@@ -14,6 +15,7 @@ class Descriptor(object):
     @abc.abstractmethod    
     def describe(self, images):
         pass
+
 
 class HOG(Descriptor):
     
@@ -55,6 +57,23 @@ class HuMoments(Descriptor):
 
     def describe(self):
         pass
+
+
+class DescriptorFactory:
+    
+    def __init__(self):
+        pass
+    
+    @staticmethod
+    def create(algorithm, params):
+        desc = None
+        if algorithm == "hog":
+            desc = HOG(**params)
+            
+        if desc is None:
+            raise ValueError('Such algorithm is not supported.')
+
+        return desc
     
 if __name__ == "__main__":
     pass
