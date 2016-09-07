@@ -9,11 +9,10 @@ PATCH_SIZE = (32, 96)
 if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
     
-    #1. Load Descriptor and Classifier
-    desc = factory.Factory.create_descriptor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
-    cls = factory.Factory.create_classifier(conf["classifier"]["algorithm"], conf["classifier"]["parameters"], conf["classifier"]["output_file"])
+    #1. Build detector
+    detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"],
+                                               conf["classifier"]["algorithm"], conf["classifier"]["parameters"], conf["classifier"]["output_file"])
     
-    detector = detector.Detector(desc, cls)
     negative_image_files = file_io.list_files(conf["dataset"]["neg_data_dir"], 
                                               conf["dataset"]["neg_format"], 
                                               n_files_to_sample=conf["hard_negative_mine"]["n_images"])
