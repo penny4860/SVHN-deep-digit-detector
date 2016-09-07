@@ -4,15 +4,18 @@ import cv2
 import utils
 import object_detector.file_io as file_io
 import numpy as np
-import pickle
 import random
 
 class FeatureExtractor():
     
-    def __init__(self, descriptor, patch_size, dataset=[]):
+    def __init__(self, descriptor, patch_size, data_file):
         self._desc = descriptor
         self._patch_size = patch_size
-        self._dataset = dataset
+        
+        if data_file is None:
+            self._dataset = []
+        else:
+            self._dataset = file_io.FileHDF5().read(data_file, "label_and_features")
     
     # Todo : Template Method Pattern??
     def add_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
@@ -77,17 +80,6 @@ class FeatureExtractor():
                                  
         print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}, Hard Negative Mined samples: {}".format(n_positive_samples, n_negative_samples, n_hard_negative_samples)
         print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
-
-    # Todo: configuration file 로 load 하는 방식으로 바꾸자.
-    @classmethod
-    def load(cls, descriptor, patch_size, data_file=None):
-        if data_file is None:
-            dataset = []
-        else:
-            dataset = file_io.FileHDF5().read(data_file, "label_and_features")
-
-        loaded = cls(descriptor, patch_size, dataset=dataset.tolist())
-        return loaded
 
     def get_dataset(self, include_hard_negative=True):
         if self._dataset is None:
