@@ -10,7 +10,7 @@ import pickle
 class Factory(object):
      
     def __init__(self):
-        pass
+        raise NotImplementedError
      
     @staticmethod
     def create_descriptor(desc_type, params):
