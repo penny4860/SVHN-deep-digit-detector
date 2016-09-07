@@ -2,6 +2,8 @@
 import descriptor
 import classifier
 
+import pickle
+
 
 class Factory(object):
      
@@ -18,20 +20,58 @@ class Factory(object):
          
         if desc_type == "HOG":
             return descriptor.HOG(**params)
-#         if desc_type == "LBP":
-#             return descriptor.LBP(**params)
-  
+        assert 0, "Bad creation: " + desc_type
  
-#     @staticmethod
-#     def create_classifier(self, type_, params):
-#         
-#         if type_ == "LinearSVM":
-#             desc = classifier.LinearSVM(**params)
-#             
-#         #Todo :type check detector �� subclass name
-#         return desc
     @staticmethod
-    def create_detector(self, desc_type, desc_param, cls_type, cls_param, cls_file):
+    def create_classifier(cls_type, params, model_file=None):
+
+        valid_types = classifier.Classifier.__subclasses__()
+        valid_types_name = [type_.__name__ for type_ in valid_types]
+        assert cls_type in valid_types_name, "Bad creation. Check cls_type parameter"
+        
+        cls = None
+         
+        if cls_type == "LinearSVM":
+            cls = classifier.LinearSVM(**params)
+        
+        if model_file is not None:
+            with open(model_file, 'rb') as f:
+                model = pickle.load(f)
+                cls._model = model
+        
+        assert cls is not None, "Bad creation: " + cls_type
+        return cls
+    
+    @staticmethod
+    def create_detector(desc_type, desc_param, cls_type, cls_param, cls_file):
         pass
 
-Factory.create_descriptor("HOG", params=None)
+if __name__ == "__main__":
+    
+    parameters = {
+            "orientations": 9,
+            "pixels_per_cell": [4, 4],
+            "cells_per_block": [2, 2]
+        }
+    
+    desc = Factory.create_descriptor("HOG", params=parameters)
+    print desc._cells_per_block
+
+    parameters = {
+            "C": 0.01
+        }
+
+    cls = Factory.create_classifier("LinearSVM", parameters)
+
+    print cls._model
+
+
+
+
+
+
+
+
+
+
+
