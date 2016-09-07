@@ -3,6 +3,7 @@
 import object_detector.extractor as extractor
 import object_detector.file_io as file_io
 import object_detector.descriptor as descriptor
+import object_detector.factory as factory
 
 CONFIGURATION_FILE = "conf/new_format.json"
 PATCH_SIZE = (32, 96)
@@ -11,7 +12,7 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
      
     # 1. Initialize Descriptor instance
-    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
+    desc = factory.Factory.create_descriptor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
     
     # 2. Initialize FeatureGetter instance
     getter = extractor.FeatureExtractor(descriptor=desc, patch_size=PATCH_SIZE)
@@ -31,13 +32,13 @@ if __name__ == "__main__":
       
     getter.summary()
       
-    # 4. Save dataset
-    getter.save(data_file=conf["extractor"]["output_file"])
-    del getter
-     
-    # 5. Test Loading dataset
-    getter = extractor.FeatureExtractor.load(descriptor=desc, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
-    getter.summary()
+#     # 4. Save dataset
+#     getter.save(data_file=conf["extractor"]["output_file"])
+#     del getter
+#      
+#     # 5. Test Loading dataset
+#     getter = extractor.FeatureExtractor.load(descriptor=desc, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
+#     getter.summary()
  
  
      
