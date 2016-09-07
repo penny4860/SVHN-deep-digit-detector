@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 
 import object_detector.file_io as file_io
-import object_detector.extractor as extractor
 import object_detector.factory as factory
 
 HARD_NEGATIVE_OPTION = True
@@ -12,9 +11,7 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
     
     #1. Load Features and Labels
-    desc = factory.Factory.create_descriptor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
-    
-    getter = extractor.FeatureExtractor.load(desc, PATCH_SIZE, data_file=conf["extractor"]["output_file"])
+    getter = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], PATCH_SIZE, conf["extractor"]["output_file"])
     getter.summary()
     data = getter.get_dataset(include_hard_negative=HARD_NEGATIVE_OPTION)
     
