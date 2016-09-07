@@ -15,7 +15,7 @@ class FeatureExtractor():
         if data_file is None:
             self._dataset = []
         else:
-            self._dataset = file_io.FileHDF5().read(data_file, "label_and_features")
+            self._dataset = file_io.FileHDF5().read(data_file, "label_and_features").tolist()
     
     # Todo : Template Method Pattern??
     def add_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
@@ -64,6 +64,7 @@ class FeatureExtractor():
     def add_data(self, features, label):
         labels = np.zeros((len(features), 1)) + label
         dataset = np.concatenate([labels, features], axis=1)
+
         self._dataset += dataset.tolist()
     
     def save(self, data_file):
