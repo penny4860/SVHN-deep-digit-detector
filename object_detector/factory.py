@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import descriptor
 import classifier
+import extractor
 
 import pickle
 
@@ -41,10 +42,17 @@ class Factory(object):
         
         assert cls is not None, "Bad creation: " + cls_type
         return cls
+
+    @staticmethod
+    def create_extractor(desc_type, desc_param, patch_size, data_file=None):
+        desc = Factory.create_descriptor(desc_type, desc_param)
+        ext = extractor.FeatureExtractor(desc, patch_size, data_file)
+        return ext
     
     @staticmethod
     def create_detector(desc_type, desc_param, cls_type, cls_param, cls_file):
         pass
+
 
 if __name__ == "__main__":
     
