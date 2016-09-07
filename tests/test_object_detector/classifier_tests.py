@@ -3,12 +3,12 @@
 import os
 import numpy as np
 import object_detector.classifier as classifier
-
+import object_detector.factory as factory
 
 def get_andgate_svm_classifier():
     X = np.array([[0,0], [0,1], [1,0], [1,1]])
     y = np.array([[0], [0], [0], [1]]).reshape(-1, )
-    cls = classifier.LinearSVM(C = 1.0, random_state = 111)
+    cls = classifier.LinearSVM(C = 1.0)
     cls.train(X, y)
     
     return cls
@@ -48,7 +48,10 @@ def test_dump_and_load_of_linear_svm():
     # When performing dump() and load() from another instance
     filename = "linear_svm.pkl"
     cls.dump(filename)
-    cls_loaded = classifier.LinearSVM.load(filename)
+    #cls_loaded = classifier.LinearSVM.load(filename)
+
+    params = {"C":1.0}
+    cls_loaded = factory.Factory.create_classifier("LinearSVM", params, filename)
 
     # the behavior between 2 instances should be same
     assert cls_loaded.predict(test_Xs).all() == cls.predict(test_Xs).all()
