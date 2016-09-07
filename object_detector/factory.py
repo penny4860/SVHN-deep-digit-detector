@@ -2,6 +2,7 @@
 import descriptor
 import classifier
 import extractor
+import detector
 
 import pickle
 
@@ -50,9 +51,11 @@ class Factory(object):
         return ext
     
     @staticmethod
-    def create_detector(desc_type, desc_param, cls_type, cls_param, cls_file):
-        pass
-
+    def create_detector(desc_type, desc_param, cls_type, cls_param, model_file):
+        desc = Factory.create_descriptor(desc_type, desc_param)
+        cls = Factory.create_classifier(cls_type, cls_param, model_file)
+        d = detector.Detector(desc, cls)
+        return d
 
 if __name__ == "__main__":
     
