@@ -1,13 +1,7 @@
 
-import cv2
-import numpy as np
-
 import object_detector.file_io as file_io
-import object_detector.descriptor as descriptor
-import object_detector.classifier as classifier
 import object_detector.detector as detector
-import object_detector.extractor as extractor
-
+import object_detector.factory as factory
 
 CONFIGURATION_FILE = "conf/new_format.json"
 PATCH_SIZE = (32, 96)
@@ -15,8 +9,9 @@ PATCH_SIZE = (32, 96)
 if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
     
-    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
-    cls = classifier.LinearSVM.load(conf["classifier"]["output_file"])
+    #1. Load Descriptor and Classifier
+    desc = factory.Factory.create_descriptor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
+    cls = factory.Factory.create_classifier(conf["classifier"]["algorithm"], conf["classifier"]["parameters"], conf["classifier"]["output_file"])
     
     detector = detector.Detector(desc, cls)
     negative_image_files = file_io.list_files(conf["dataset"]["neg_data_dir"], 
@@ -32,7 +27,7 @@ if __name__ == "__main__":
     print "[HNM INFO] : number of mined negative patches {}".format(len(features))
     print "[HNM INFO] : probabilities of mined negative patches {}".format(probs)
     
-    getter = extractor.FeatureExtractor.load(descriptor=desc, patch_size=PATCH_SIZE, data_file=conf["extractor"]["output_file"])
+    getter = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], PATCH_SIZE, conf["extractor"]["output_file"])
     getter.summary()
     getter.add_data(features, -1)
     getter.summary()
