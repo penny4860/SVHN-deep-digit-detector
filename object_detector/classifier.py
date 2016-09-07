@@ -28,27 +28,23 @@ class Classifier(object):
         return classification_report(y_test, self._model.predict(X_test))
     
     def dump(self, filename):
-        obj = {"model" : self._model, "params" : self._params}
         with open(filename, 'wb') as f:
-            pickle.dump(obj, f)
+            pickle.dump(self._model, f)
 
-    @classmethod
-    def load(cls, filename):
-        with open(filename, 'rb') as f:
-            obj = pickle.load(f)
-        
-        loaded = cls(**obj['params'])
-        loaded._model = obj['model']
-        return loaded
+#     @classmethod
+#     def load(cls, filename):
+#         with open(filename, 'rb') as f:
+#             obj = pickle.load(f)
+#         
+#         loaded = cls(**obj['params'])
+#         loaded._model = obj['model']
+#         return loaded
 
 class LinearSVM(Classifier):
     
-    def __init__(self, **params):
-        self._params = params
-        self._model = SVC(kernel="linear", 
-                          C=self._params['C'], 
-                          probability=True, 
-                          random_state=self._params['random_state'])
+    def __init__(self, C):
+        self._C = C
+        self._model = SVC(kernel="linear", C=C, probability=True)
         
     def train(self, X, y):
         self._model.fit(X, y)

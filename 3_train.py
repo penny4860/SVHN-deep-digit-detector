@@ -1,11 +1,7 @@
 #-*- coding: utf-8 -*-
 
 import object_detector.file_io as file_io
-
-import object_detector.descriptor as descriptor
-import object_detector.extractor as extractor
-import object_detector.classifier as classifier
-import numpy as np
+import object_detector.factory as factory
 
 HARD_NEGATIVE_OPTION = True
 CONFIGURATION_FILE = "conf/new_format.json"
@@ -15,17 +11,16 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
     
     #1. Load Features and Labels
-    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
-    
-    getter = extractor.FeatureExtractor.load(desc, PATCH_SIZE, data_file=conf["extractor"]["output_file"])
+    getter = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], PATCH_SIZE, conf["extractor"]["output_file"])
     getter.summary()
     data = getter.get_dataset(include_hard_negative=HARD_NEGATIVE_OPTION)
     
     y = data[:, 0]
     X = data[:, 1:]
  
-    #2. Train
-    cls = classifier.LinearSVM(C=conf["classifier"]["parameters"]["C"], random_state=111)
+    #2. Load classifier and Train
+    cls = factory.Factory.create_classifier(conf["classifier"]["algorithm"], conf["classifier"]["parameters"])
+    
     cls.train(X, y)
     print "[INFO] Training result is as follows"
     print cls.evaluate(X, y)
@@ -41,6 +36,6 @@ if __name__ == "__main__":
  
  
     #3. Save classifier
-#    cls.dump(conf["classifier"]["output_file"])
+    cls.dump(conf["classifier"]["output_file"])
 
 

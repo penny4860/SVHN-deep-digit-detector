@@ -1,8 +1,6 @@
 
 import object_detector.file_io as file_io
-import object_detector.descriptor as descriptor
-import object_detector.classifier as classifier
-import object_detector.detector as detector
+import object_detector.factory as factory
 import cv2
 
 CONFIGURATION_FILE = "conf/new_format.json"
@@ -14,10 +12,8 @@ if __name__ == "__main__":
     test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=10)
 
     # 2. Build detector and save it   
-    desc = descriptor.DescriptorFactory.create(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"])
-    cls = classifier.LinearSVM.load(conf["classifier"]["output_file"])
-    detector = detector.Detector(desc, cls)
-    #detector.dump(conf["descriptor"]["output_file"])
+    detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"],
+                                               conf["classifier"]["algorithm"], conf["classifier"]["parameters"], conf["classifier"]["output_file"])
 
     # 3. Run detector on Test images 
     for image_file in test_image_files:
