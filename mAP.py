@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 import pickle
 
+np.set_printoptions(linewidth = 1000, suppress = True)
+
 CONFIGURATION_FILE = "conf/new_format.json"
 
 def sort_by_probs(patches, probs):
@@ -111,8 +113,12 @@ if __name__ == "__main__":
     probs = np.array(probs)
     gt = np.array(gt)
     
-    print patches.shape, probs.shape, gt.shape
+    dataset = np.concatenate([probs.reshape(-1,1), gt.reshape(-1,1), patches], axis=1)
+    dataset = dataset[dataset[:, 0].argsort()[::-1]]
     
+    print dataset
+
+
 
     """
     3. Plot the precision-recall graph
