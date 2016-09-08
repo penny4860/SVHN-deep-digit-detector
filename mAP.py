@@ -56,12 +56,14 @@ if __name__ == "__main__":
     
     # 1. Load configuration file and test images
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
-    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=1)
+    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=2)
 
     # 2. Build detector and save it   
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"],
                                                conf["classifier"]["algorithm"], conf["classifier"]["parameters"], conf["classifier"]["output_file"])
     patches = []
+    probs = []
+    gts = []
      
     # 3. Run detector on Test images 
     for image_file in test_image_files:
@@ -70,7 +72,7 @@ if __name__ == "__main__":
             
         print "[INFO] Test Image shape: {0}".format(test_image.shape)
       
-        boxes, probs = detector.run(test_image, 
+        boxes, probs_ = detector.run(test_image, 
                                     conf["detector"]["window_dim"], 
                                     conf["detector"]["window_step"], 
                                     conf["detector"]["pyramid_scale"], 
@@ -78,18 +80,24 @@ if __name__ == "__main__":
          
         # Test Image �� ���� Ground-Truth �� Read
         truth_bb = get_truth_bb(image_file, conf["dataset"]['annotations_dir'])
-        calc_iou(boxes, truth_bb)
-         
+        ious = calc_iou(boxes, truth_bb)
+        is_positive = ious > 0.5
         detector.show_boxes(test_image, boxes)
+        
         patches += boxes.tolist()
+        probs += probs_.tolist()
+        gts += is_positive.tolist()
           
     # temporaty save boxes
     with open("patches.pkl", 'wb') as f:
         pickle.dump(patches, f)
     with open("probs.pkl", 'wb') as f:
-        pickle.dump(probs.tolist(), f)
+        pickle.dump(probs, f)
     with open("gt.pkl", 'wb') as f:
-        pickle.dump(truth_bb.tolist(), f)
+        pickle.dump(gts, f)
+        
+    print probs
+    print gts
     
 #     # load boxes
 #     with open("patches.pkl", 'rb') as f:
