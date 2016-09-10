@@ -9,15 +9,6 @@ np.set_printoptions(linewidth = 1000, suppress = True)
 
 CONFIGURATION_FILE = "conf/new_format.json"
 
-def sort_by_probs(patches, probs):
-    patches = np.array(patches)
-    probs = np.array(probs)
-    data = np.concatenate([probs.reshape(-1,1), patches], axis=1)
-    data = data[data[:, 0].argsort()[::-1]]
-    patches = data[:, 1:]
-    probs = data[:, 0]
-    return patches, probs
-
 import object_detector.utils as utils
 
 # Todo : extractor module 에 내용과 중복된다. 리팩토링하자.
