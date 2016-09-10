@@ -12,6 +12,7 @@ import cv2
 import utils
 import pickle
 
+random.seed(111)
 
 class File(object):
     __metaclass__ = abc.ABCMeta
