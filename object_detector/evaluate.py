@@ -5,6 +5,7 @@ import numpy as np
 import object_detector.utils as utils
 import matplotlib.pyplot as plt
 import progressbar
+import pandas as pd
 
 class Evaluator(object):
     
@@ -105,7 +106,10 @@ class Evaluator(object):
     def dataset(self):
         if self._dataset is None:
             raise ValueError('Property _dataset is not calculated. To calculate this, run eval_average_precision() first.')
-        return self._dataset
+    
+        d = {"probability": self._dataset[:,0], 'ground truth': self._dataset[:,1].astype(np.bool_)}
+        df = pd.DataFrame(data=d, columns = ["probability", 'ground truth'])
+        return df
     
     def _calc_average_precision(self):
         
