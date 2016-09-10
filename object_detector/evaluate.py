@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 class Evaluator(object):
     
     def __init__(self):
-        pass
+        self._recall_precision = None
+        self._dataset = None
     
     def eval_average_precision(self, test_image_files, 
                                annotation_path, 
                                detector, 
-                               window_dim, window_step, pyramid_scale, 
-                               plot_recall_precision_graph = False):
+                               window_dim, window_step, pyramid_scale):
         
         patches = []
         probs = []
@@ -39,26 +39,28 @@ class Evaluator(object):
         probs = np.array(probs)
         gts = np.array(gts)
     
-        recall_precision = self._calc_precision_recall(probs, gts)
-        average_precision = self._calc_average_precision(recall_precision)
-        
-        if plot_recall_precision_graph:
-            range_offset = 0.1
-            plt.plot(recall_precision[:, 0], recall_precision[:, 1], "r-")
-            plt.plot(recall_precision[:, 0], recall_precision[:, 1], "ro")
-            plt.axis([0 - range_offset, 1 + range_offset, 0 - range_offset, 1 + range_offset])
-            plt.xlabel("recall")
-            plt.ylabel("precision")
-            plt.show()
+        self._calc_precision_recall(probs, gts)
+        average_precision = self._calc_average_precision()
         
         return average_precision
+    
+    def plot_recall_precision(self):
+        range_offset = 0.1
+        recall_precision = self._recall_precision
         
-    def _calc_average_precision(self, recall_precision):
+        plt.plot(recall_precision[:, 0], recall_precision[:, 1], "r-")
+        plt.plot(recall_precision[:, 0], recall_precision[:, 1], "ro")
+        plt.axis([0 - range_offset, 1 + range_offset, 0 - range_offset, 1 + range_offset])
+        plt.xlabel("recall")
+        plt.ylabel("precision")
+        plt.show()
+    
+    def _calc_average_precision(self):
         
         inter_precisions = []
         for i in range(11):
             recall = float(i) / 10
-            inter_precisions.append(self._calc_interpolated_precision(recall_precision, recall))
+            inter_precisions.append(self._calc_interpolated_precision(recall))
             
         return np.array(inter_precisions).mean()
 
@@ -69,8 +71,6 @@ class Evaluator(object):
         
         dataset = np.concatenate([probs.reshape(-1,1), ground_truths.reshape(-1,1)], axis=1)
         dataset = dataset[dataset[:, 0].argsort()[::-1]]
-        
-        # print dataset
         
         n_gts = len(dataset[dataset[:, 1] == 1])
         n_relevant = 0.0
@@ -89,9 +89,12 @@ class Evaluator(object):
             if recall == 1.0:
                 break
         
-        return np.array(recall_precision)
+        self._dataset = dataset
+        self._recall_precision = np.array(recall_precision)
     
-    def _calc_interpolated_precision(self, recall_precision, desired_recall):
+    def _calc_interpolated_precision(self, desired_recall):
+        recall_precision = self._recall_precision
+        
         inter_precision = recall_precision[recall_precision[:,0] >= desired_recall]
         inter_precision = inter_precision[:, 1]
         inter_precision = max(inter_precision)
@@ -131,4 +134,4 @@ class Evaluator(object):
         bb = file_io.FileMat().read(annotation_file)["box_coord"][0]
         return bb
 
-
+        
