@@ -16,6 +16,37 @@ class Evaluator(object):
                                detector, 
                                window_dim, window_step, pyramid_scale):
         
+        """Public function to calculate average precision of the detector.
+
+        Parameters
+        ----------
+        test_image_files : list of str
+            list of test image filenames to evaluate detector's performance
+    
+        annotation_path : str
+            annotation directory path for test_image_files
+        
+        detector : Detector
+            instance of Detector class
+        
+        window_dim : list
+            (height, width) order of sliding window size
+            
+        window_step : list
+            (height_step, width_step) order of sliding window step
+            
+        pyramid_scale : float
+            scaling ratio of building image pyramid
+            
+        Returns
+        ----------
+        average_precision : float
+            evaluated score for the detector and test images on average precision. 
+    
+        Examples
+        --------
+        """
+        
         patches = []
         probs = []
         gts = []
@@ -45,7 +76,15 @@ class Evaluator(object):
         return average_precision
     
     def plot_recall_precision(self):
+        """Function to plot recall-precision graph.
+        
+        It should be performed eval_average_precision() before this function is called.
+        """
         range_offset = 0.1
+        
+        if self._recall_precision is None:
+            raise ValueError('Property _recall_precision is not calculated. To calculate this, run eval_average_precision() first.')
+        
         recall_precision = self._recall_precision
         
         plt.plot(recall_precision[:, 0], recall_precision[:, 1], "r-")
