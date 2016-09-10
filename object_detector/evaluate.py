@@ -94,6 +94,12 @@ class Evaluator(object):
         plt.ylabel("precision")
         plt.show()
     
+    @property
+    def dataset(self):
+        if self._dataset is None:
+            raise ValueError('Property _dataset is not calculated. To calculate this, run eval_average_precision() first.')
+        return self._dataset
+    
     def _calc_average_precision(self):
         
         inter_precisions = []
