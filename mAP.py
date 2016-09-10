@@ -53,6 +53,8 @@ def calc_precision_recall(probs, ground_truths):
     dataset = np.concatenate([probs.reshape(-1,1), gt.reshape(-1,1)], axis=1)
     dataset = dataset[dataset[:, 0].argsort()[::-1]]
     
+    # print dataset
+    
     n_gts = len(dataset[dataset[:, 1] == 1])
     n_relevant = 0.0
     n_searched = 0.0
@@ -72,6 +74,22 @@ def calc_precision_recall(probs, ground_truths):
     
     return np.array(recall_precision)
 
+def calc_interpolated_precision(recall_precision, desired_recall):
+    inter_precision = recall_precision[recall_precision[:,0] >= desired_recall]
+    inter_precision = inter_precision[:, 1]
+    inter_precision = max(inter_precision)
+    return inter_precision
+
+def calc_average_precision(recall_precision):
+    # calc interpolated precision
+    
+    inter_precisions = []
+    for i in range(11):
+        recall = float(i) / 10
+        inter_precisions.append(calc_interpolated_precision(recall_precision, recall))
+        
+    return np.array(inter_precisions).mean()
+    
 
 if __name__ == "__main__":
     
@@ -128,25 +146,17 @@ if __name__ == "__main__":
     with open("gt.pkl", 'rb') as f:
         gt = pickle.load(f)
 
-    patches = np.array(patches)
+    probs.append(0.8)
+    gt.append(0)
+    
     probs = np.array(probs)
     gt = np.array(gt)
-    
+
     recall_precision = calc_precision_recall(probs, gt)
     
-    print recall_precision
+    print calc_average_precision(recall_precision)
     
 
-    """
-    4. Calculate interpolated precision on n-recall values
-        * In the case of VOG challenge, n-values are evenly spaced 11 points
-
-    5. Average interpolated precision values
-        * It is Average Precision
-
-    6. Repeat 1 ~ 6 for m-object and calculate mean of the average precision.
-        * It is mAP
-    """
     
     
     
