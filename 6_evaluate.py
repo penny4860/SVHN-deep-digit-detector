@@ -27,7 +27,7 @@ if __name__ == "__main__":
     print ap
 
     evaluator.plot_recall_precision()
-    print evaluator._dataset
+    print evaluator.dataset
     
     
     
