@@ -58,6 +58,7 @@ class Detector(object):
     
     def hard_negative_mine(self, negative_image_files, window_size, step, pyramid_scale=0.7, threshold_prob=0.5):
 
+        # Todo : progress bar
         features = []
         probs = []
         
