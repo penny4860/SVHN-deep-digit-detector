@@ -126,12 +126,20 @@ if __name__ == "__main__":
         patches += boxes.tolist()
         probs += probs_.tolist()
         gts += is_positive.tolist()
-           
+
+    # Test Code           
+    probs.append(0.8)
+    gts.append(0)
     probs = np.array(probs)
     gts = np.array(gts)
 
     recall_precision = calc_precision_recall(probs, gts)
     print calc_average_precision(recall_precision)
+    
+#     [INFO] Test Image shape: (197L, 300L)
+#     [INFO] Test Image shape: (197L, 300L)
+#     0.848484848485
+
     
 
     
