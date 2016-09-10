@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import object_detector.utils as utils
 import matplotlib.pyplot as plt
+import progressbar
 
 class Evaluator(object):
     
@@ -51,8 +52,12 @@ class Evaluator(object):
         probs = []
         gts = []
         
-        # 3. Run detector on Test images 
-        for image_file in test_image_files:
+        # setup the progress bar
+        widgets = ["Running for each Test image as gathering patches and its probabilities: ", 
+                   progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+        pbar = progressbar.ProgressBar(maxval=len(test_image_files), widgets=widgets).start()
+        
+        for i, image_file in enumerate(test_image_files):
             test_image = cv2.imread(image_file)
             test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
 
@@ -61,15 +66,17 @@ class Evaluator(object):
             truth_bb = self._get_truth_bb(image_file, annotation_path)
             ious = self._calc_iou(boxes, truth_bb)
             is_positive = ious > 0.5
-            # detector.show_boxes(test_image, boxes)
              
             patches += boxes.tolist()
             probs += probs_.tolist()
             gts += is_positive.tolist()
+            
+            pbar.update(i)
+        pbar.finish()
     
         probs = np.array(probs)
         gts = np.array(gts)
-    
+
         self._calc_precision_recall(probs, gts)
         average_precision = self._calc_average_precision()
         
