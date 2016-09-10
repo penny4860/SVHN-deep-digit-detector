@@ -8,9 +8,6 @@ from scipy import io
 import numpy as np
 import h5py
 import random
-import cv2
-import utils
-import pickle
 
 random.seed(111)
 
