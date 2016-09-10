@@ -54,6 +54,34 @@ def calc_iou(boxes, truth_box):
     ious = intersections.astype(float) / (As + B -intersections)
     return ious
 
+
+def calc_precision_recall(probs, ground_truths):
+    probs = np.array(probs)
+    ground_truths = np.array(ground_truths)
+    
+    dataset = np.concatenate([probs.reshape(-1,1), gt.reshape(-1,1)], axis=1)
+    dataset = dataset[dataset[:, 0].argsort()[::-1]]
+    
+    n_gts = len(dataset[dataset[:, 1] == 1])
+    n_relevant = 0.0
+    n_searched = 0.0
+    
+    recall_precision = []
+    
+    for data in dataset:
+        n_searched += 1
+        if data[1] == 1:
+            n_relevant += 1
+        recall = n_relevant / n_gts
+        precision = n_relevant / n_searched
+        recall_precision.append((recall, precision))
+        
+        if recall == 1.0:
+            break
+    
+    return np.array(recall_precision)
+
+
 if __name__ == "__main__":
     
     # 1. Load configuration file and test images
@@ -113,16 +141,12 @@ if __name__ == "__main__":
     probs = np.array(probs)
     gt = np.array(gt)
     
-    dataset = np.concatenate([probs.reshape(-1,1), gt.reshape(-1,1), patches], axis=1)
-    dataset = dataset[dataset[:, 0].argsort()[::-1]]
+    recall_precision = calc_precision_recall(probs, gt)
     
-    print dataset
-
-
+    print recall_precision
+    
 
     """
-    3. Plot the precision-recall graph
-    
     4. Calculate interpolated precision on n-recall values
         * In the case of VOG challenge, n-values are evenly spaced 11 points
 
