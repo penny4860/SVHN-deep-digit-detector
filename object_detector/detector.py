@@ -53,8 +53,8 @@ class Detector(object):
     def show_boxes(self, image, boxes):
         for y1, y2, x1, x2 in boxes:
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 2)
-        cv2.imshow("Image", image)
-        cv2.waitKey(0)
+#         cv2.imshow("Image", image)
+#         cv2.waitKey(0)
     
     def hard_negative_mine(self, negative_image_files, window_size, step, pyramid_scale=0.7, threshold_prob=0.5):
 
