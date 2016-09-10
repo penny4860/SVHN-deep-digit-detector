@@ -9,7 +9,8 @@ if __name__ == "__main__":
     
     # 1. Load configuration file and test images
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
-    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=2)
+    #test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=2)
+    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
 
     # 2. Build detector and save it   
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"],
