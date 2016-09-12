@@ -90,6 +90,10 @@ class Detector(object):
             
         boxes = np.array(boxes, "int")
         probs = np.array(probs)
+        
+        if show_operation:
+            self.show_boxes(boxes, probs)
+        
         return boxes, probs
     
     
