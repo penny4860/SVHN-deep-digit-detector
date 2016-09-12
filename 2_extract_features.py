@@ -1,8 +1,6 @@
 #-*- coding: utf-8 -*-
 
-import object_detector.extractor as extractor
 import object_detector.file_io as file_io
-import object_detector.descriptor as descriptor
 import object_detector.factory as factory
 
 CONFIGURATION_FILE = "conf/new_format.json"
