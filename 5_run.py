@@ -2,7 +2,6 @@
 import object_detector.file_io as file_io
 import object_detector.factory as factory
 import cv2
-import numpy as np
 
 CONFIGURATION_FILE = "conf/car_side.json"
 
@@ -26,21 +25,13 @@ if __name__ == "__main__":
       
         print "[INFO] Test Image shape: {0}".format(gray.shape)
 
-        boxes, probs = detector.run(gray, 
+        boxes, probs = detector.run(test_image, 
                                     conf["detector"]["window_dim"], 
                                     conf["detector"]["window_step"], 
                                     conf["detector"]["pyramid_scale"], 
-                                    0.5)
-        detector.show_boxes(test_image, boxes)
+                                    0.5, True, True)
+        # detector.show_boxes(test_image, boxes, msg="Car")
         
-        print type(boxes)
-        print np.array(boxes).shape
-        
-        cv2.putText(test_image, 'car_side={:.2f}'.format(probs[0]), (boxes[0][2], boxes[0][0]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), thickness=2)
-        cv2.imshow("Image", test_image)
-        cv2.waitKey(0)
-
-        #cv2.putText(test_image, 'Car : {}'.format(probs[0]), (0, 0), font, 6, (200,255,155), 13, cv2.LINE_AA)
     
     
         
