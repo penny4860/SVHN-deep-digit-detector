@@ -26,8 +26,32 @@ class Detector(object):
         loaded = cls(descriptor = obj["descriptor"], classifier = obj["classifier"])
         return loaded
 
-    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True):
-        scanner_ = scanner.ImageScanner(image)
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_operation=False):
+        """
+        
+        Parameters
+        ----------
+        image : array, shape (n_rows, n_cols, n_channels) or (n_rows, n_cols)
+            Input image to run the detector
+            
+        Returns
+        ----------
+        boxes : array, shape (n_detected, height, 4)
+            detected bounding boxes 
+        
+        probs : array, shape (n_detected, 1)
+            probability at the boxes
+        """
+        
+        self._image = image
+        if len(image.shape) == 3:
+            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        elif len(image.shape) == 2:
+            gray_image = image
+        else:
+            raise ValueError('Input image is invalid.')
+            
+        scanner_ = scanner.ImageScanner(gray_image)
         
         boxes = []
         probs = []
@@ -43,6 +67,9 @@ class Detector(object):
                     bb = scanner_.bounding_box
                     boxes.append(bb)
                     probs.append(prob)
+                
+                if show_operation:
+                    self.show_boxes(self._image.copy(), [scanner_.bounding_box], msg="{:.2f}".format(prob), delay=0.02)
         
         if do_nms and boxes != []:
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
@@ -51,9 +78,13 @@ class Detector(object):
         probs = np.array(probs)
         return boxes, probs
     
-    def show_boxes(self, image, boxes, delay=None):
+    def show_boxes(self, image, boxes, msg=None, delay=None):
+        
         for y1, y2, x1, x2 in boxes:
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            if msg is not None:
+                cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), thickness=2)
+
         cv2.imshow("Image", image)
         if delay is None:
             cv2.waitKey(0)
