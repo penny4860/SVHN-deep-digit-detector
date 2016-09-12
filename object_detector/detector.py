@@ -69,8 +69,17 @@ class Detector(object):
                     probs.append(prob)
                 
                 if show_operation:
-                    self.show_boxes(self._image.copy(), [scanner_.bounding_box], msg="{:.2f}".format(prob), delay=0.02)
-        
+                    if prob > threshold_prob:
+                        self.show_boxes([scanner_.bounding_box], 
+                                        msg="{:.2f}".format(prob), 
+                                        delay=None, 
+                                        color=(0,0,255))
+                    else:
+                        self.show_boxes([scanner_.bounding_box], 
+                                        msg="{:.2f}".format(prob), 
+                                        delay=0.02, 
+                                        color=(0,255,0))
+                        
         if do_nms and boxes != []:
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
             
@@ -78,12 +87,14 @@ class Detector(object):
         probs = np.array(probs)
         return boxes, probs
     
-    def show_boxes(self, image, boxes, msg=None, delay=None):
+    def show_boxes(self, boxes, msg=None, delay=None, color=(0,0,255)):
+        
+        image = self._image.copy()
         
         for y1, y2, x1, x2 in boxes:
-            cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
             if msg is not None:
-                cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), thickness=2)
+                cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, color, thickness=2)
 
         cv2.imshow("Image", image)
         if delay is None:
