@@ -39,12 +39,13 @@ class Detector(object):
         if prob > threshold_prob:
             delay=0.05
             color=(255,0,0)
+            self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
         else:
             delay = 0.005
             color = (0,255,0)
-        self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
+            self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
 
-    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_operation=False):
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_result=True, show_operation=False):
         """
         
         Parameters
@@ -83,7 +84,7 @@ class Detector(object):
                 
                 if show_operation:
                     self._show(scanner_.bounding_box, prob, threshold_prob)
-                        
+
         if do_nms and boxes != []:
             # Todo : overlapThresh를 0.5 로 바꾸고 테스트해보자.
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
@@ -91,8 +92,8 @@ class Detector(object):
         boxes = np.array(boxes, "int")
         probs = np.array(probs)
         
-        if show_operation:
-            self.show_boxes(boxes, probs)
+        if show_result:
+            self.show_boxes(boxes)
         
         return boxes, probs
     
@@ -106,7 +107,7 @@ class Detector(object):
             if msg is not None:
                 cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, color, thickness=2)
 
-        cv2.imshow("Image", image)
+        cv2.imshow("Sliding Window Operation", image)
         if delay is None:
             cv2.waitKey(0)
         else:

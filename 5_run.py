@@ -29,10 +29,10 @@ if __name__ == "__main__":
                                     conf["detector"]["window_dim"], 
                                     conf["detector"]["window_step"], 
                                     conf["detector"]["pyramid_scale"], 
-                                    0.5, True, False)
-        detector.show_boxes(boxes, msg="Car")
-        
-    
+                                    0.5, 
+                                    do_nms=True, 
+                                    show_result=True,
+                                    show_operation=True)
     
         
 
