@@ -68,17 +68,19 @@ class Detector(object):
                     bb = scanner_.bounding_box
                     boxes.append(bb)
                     probs.append(prob)
-                
+                    
                 if show_operation:
                     if prob > threshold_prob:
-                        pass
+                        delay=0.05
+                        color=(255,0,0)
                     else:
-                        pass
+                        delay = 0.005
+                        color = (0,255,0)
+                    
                     self.show_boxes([scanner_.bounding_box], 
-                                    msg="{:.2f}".format(prob), 
-                                    delay=0.02, 
-                                    color=(0,255,0))
-
+                                    "{:.2f}".format(prob), 
+                                    delay, color)
+                        
                         
         if do_nms and boxes != []:
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
@@ -101,7 +103,7 @@ class Detector(object):
             cv2.waitKey(0)
         else:
             cv2.waitKey(1)
-            time.sleep(0.025)
+            time.sleep(delay)
     
     def hard_negative_mine(self, negative_image_files, window_size, step, pyramid_scale=0.7, threshold_prob=0.5):
 
