@@ -43,7 +43,8 @@ class Detector(object):
             probability at the boxes
         """
         
-        self._image = image
+        self._display_image = image
+        
         if len(image.shape) == 3:
             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         elif len(image.shape) == 2:
@@ -70,15 +71,14 @@ class Detector(object):
                 
                 if show_operation:
                     if prob > threshold_prob:
-                        self.show_boxes([scanner_.bounding_box], 
-                                        msg="{:.2f}".format(prob), 
-                                        delay=None, 
-                                        color=(0,0,255))
+                        pass
                     else:
-                        self.show_boxes([scanner_.bounding_box], 
-                                        msg="{:.2f}".format(prob), 
-                                        delay=0.02, 
-                                        color=(0,255,0))
+                        pass
+                    self.show_boxes([scanner_.bounding_box], 
+                                    msg="{:.2f}".format(prob), 
+                                    delay=0.02, 
+                                    color=(0,255,0))
+
                         
         if do_nms and boxes != []:
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
@@ -89,7 +89,7 @@ class Detector(object):
     
     def show_boxes(self, boxes, msg=None, delay=None, color=(0,0,255)):
         
-        image = self._image.copy()
+        image = self._display_image.copy()
         
         for y1, y2, x1, x2 in boxes:
             cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
