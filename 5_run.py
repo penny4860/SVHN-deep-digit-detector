@@ -2,6 +2,7 @@
 import object_detector.file_io as file_io
 import object_detector.factory as factory
 import cv2
+import numpy as np
 
 CONFIGURATION_FILE = "conf/car_side.json"
 
@@ -9,8 +10,9 @@ if __name__ == "__main__":
     
     # 1. Load configuration file and test images
     conf = file_io.FileJson().read(CONFIGURATION_FILE)
-    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=1)
-
+    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
+    test_image_files = test_image_files[:1]
+    
     # 2. Build detector and save it   
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"],
                                                conf["classifier"]["algorithm"], conf["classifier"]["parameters"], conf["classifier"]["output_file"])
@@ -31,7 +33,10 @@ if __name__ == "__main__":
                                     0.5)
         detector.show_boxes(test_image, boxes)
         
-        cv2.putText(test_image, 'Car : {:.2f}'.format(probs[0]), (boxes[0][2], boxes[0][0]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), thickness=2)
+        print type(boxes)
+        print np.array(boxes).shape
+        
+        cv2.putText(test_image, 'car_side={:.2f}'.format(probs[0]), (boxes[0][2], boxes[0][0]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), thickness=2)
         cv2.imshow("Image", test_image)
         cv2.waitKey(0)
 
