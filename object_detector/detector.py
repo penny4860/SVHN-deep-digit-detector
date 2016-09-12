@@ -4,6 +4,7 @@ import scanner
 import numpy as np
 import cv2
 import pickle
+import time
 
 
 class Detector(object):
@@ -25,8 +26,46 @@ class Detector(object):
         loaded = cls(descriptor = obj["descriptor"], classifier = obj["classifier"])
         return loaded
 
-    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True):
-        scanner_ = scanner.ImageScanner(image)
+    def _get_grayscale(self, image):
+        if len(image.shape) == 3:
+            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        elif len(image.shape) == 2:
+            gray_image = image
+        else:
+            raise ValueError('Input image is invalid.')
+        return gray_image
+    
+    def _show(self, bb, prob, threshold_prob):
+        if prob > threshold_prob:
+            delay=0.05
+            color=(255,0,0)
+            self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
+        else:
+            delay = 0.005
+            color = (0,255,0)
+            self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
+
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_result=True, show_operation=False):
+        """
+        
+        Parameters
+        ----------
+        image : array, shape (n_rows, n_cols, n_channels) or (n_rows, n_cols)
+            Input image to run the detector
+            
+        Returns
+        ----------
+        boxes : array, shape (n_detected, height, 4)
+            detected bounding boxes 
+        
+        probs : array, shape (n_detected, 1)
+            probability at the boxes
+        """
+        
+        self._display_image = image
+        
+        gray_image = self._get_grayscale(image)
+        scanner_ = scanner.ImageScanner(gray_image)
         
         boxes = []
         probs = []
@@ -35,29 +74,49 @@ class Detector(object):
         for _ in scanner_.get_next_layer(pyramid_scale, window_size[0], window_size[1]):
             for _, _, window in scanner_.get_next_patch(step[0], step[1], window_size[0], window_size[1]):
                 
+                # Todo: Refactoring, direct access should be denied
                 features = self.descriptor.describe([window]).reshape(1, -1)
                 prob = self.classifier.predict_proba(features)[0][1]
                 
                 if prob > threshold_prob:
-                    bb = scanner_.bounding_box
-                    boxes.append(bb)
+                    boxes.append(scanner_.bounding_box)
                     probs.append(prob)
-        
+                
+                if show_operation:
+                    self._show(scanner_.bounding_box, prob, threshold_prob)
+
         if do_nms and boxes != []:
+            # Todo : overlapThresh를 0.5 로 바꾸고 테스트해보자.
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
             
         boxes = np.array(boxes, "int")
         probs = np.array(probs)
+        
+        if show_result:
+            self.show_boxes(boxes)
+        
         return boxes, probs
     
-    def show_boxes(self, image, boxes):
+    
+    def show_boxes(self, boxes, msg=None, delay=None, color=(0,0,255)):
+        
+        image = self._display_image.copy()
+        
         for y1, y2, x1, x2 in boxes:
-            cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 2)
-        cv2.imshow("Image", image)
-        cv2.waitKey(0)
+            cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
+            if msg is not None:
+                cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, color, thickness=2)
+
+        cv2.imshow("Sliding Window Operation", image)
+        if delay is None:
+            cv2.waitKey(0)
+        else:
+            cv2.waitKey(1)
+            time.sleep(delay)
     
     def hard_negative_mine(self, negative_image_files, window_size, step, pyramid_scale=0.7, threshold_prob=0.5):
 
+        # Todo : progress bar
         features = []
         probs = []
         

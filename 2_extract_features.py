@@ -1,11 +1,9 @@
 #-*- coding: utf-8 -*-
 
-import object_detector.extractor as extractor
 import object_detector.file_io as file_io
-import object_detector.descriptor as descriptor
 import object_detector.factory as factory
 
-CONFIGURATION_FILE = "conf/new_format.json"
+CONFIGURATION_FILE = "conf/car_side.json"
 PATCH_SIZE = (32, 96)
 
 if __name__ == "__main__":
@@ -18,6 +16,7 @@ if __name__ == "__main__":
     getter.add_positive_sets(image_dir=conf["dataset"]["pos_data_dir"],
                              pattern=conf["dataset"]["pos_format"], 
                              annotation_path=conf["dataset"]['annotations_dir'],
+                             sample_ratio=conf["extractor"]["sampling_ratio_for_positive_images"],
                              padding=conf["extractor"]['padding'],
                              )
      
