@@ -4,7 +4,7 @@ import object_detector.file_io as file_io
 import object_detector.factory as factory
 
 HARD_NEGATIVE_OPTION = True
-CONFIGURATION_FILE = "conf/new_format.json"
+CONFIGURATION_FILE = "conf/car_side.json"
 PATCH_SIZE = (32, 96)
 
 if __name__ == "__main__":
