@@ -26,6 +26,15 @@ class Detector(object):
         loaded = cls(descriptor = obj["descriptor"], classifier = obj["classifier"])
         return loaded
 
+    def _get_grayscale(self, image):
+        if len(image.shape) == 3:
+            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        elif len(image.shape) == 2:
+            gray_image = image
+        else:
+            raise ValueError('Input image is invalid.')
+        return gray_image
+
     def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_operation=False):
         """
         
@@ -45,13 +54,7 @@ class Detector(object):
         
         self._display_image = image
         
-        if len(image.shape) == 3:
-            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        elif len(image.shape) == 2:
-            gray_image = image
-        else:
-            raise ValueError('Input image is invalid.')
-            
+        gray_image = self._get_grayscale(image)
         scanner_ = scanner.ImageScanner(gray_image)
         
         boxes = []
@@ -88,6 +91,7 @@ class Detector(object):
         boxes = np.array(boxes, "int")
         probs = np.array(probs)
         return boxes, probs
+    
     
     def show_boxes(self, boxes, msg=None, delay=None, color=(0,0,255)):
         
