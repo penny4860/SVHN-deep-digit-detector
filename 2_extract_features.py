@@ -16,6 +16,7 @@ if __name__ == "__main__":
     getter.add_positive_sets(image_dir=conf["dataset"]["pos_data_dir"],
                              pattern=conf["dataset"]["pos_format"], 
                              annotation_path=conf["dataset"]['annotations_dir'],
+                             sample_ratio=conf["extractor"]["sampling_ratio_for_positive_images"],
                              padding=conf["extractor"]['padding'],
                              )
      

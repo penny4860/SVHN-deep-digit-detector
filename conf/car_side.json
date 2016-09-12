@@ -12,6 +12,7 @@
 	{
 		"output_file": "output/car_features.hdf5",
 		"padding": 5,
+		"sampling_ratio_for_positive_images": 0.2,
 		"sampling_ratio_for_negative_images": 0.1,
 		"num_patches_per_negative_image": 5
 	},
