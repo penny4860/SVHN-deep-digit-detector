@@ -42,10 +42,7 @@ class Detector(object):
         else:
             delay = 0.005
             color = (0,255,0)
-        
-        self.show_boxes([bb], 
-                        "{:.2f}".format(prob), 
-                        delay, color)
+        self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
 
     def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_operation=False):
         """
@@ -76,6 +73,7 @@ class Detector(object):
         for _ in scanner_.get_next_layer(pyramid_scale, window_size[0], window_size[1]):
             for _, _, window in scanner_.get_next_patch(step[0], step[1], window_size[0], window_size[1]):
                 
+                # Todo: Refactoring, direct access should be denied
                 features = self.descriptor.describe([window]).reshape(1, -1)
                 prob = self.classifier.predict_proba(features)[0][1]
                 
@@ -87,6 +85,7 @@ class Detector(object):
                     self._show(scanner_.bounding_box, prob, threshold_prob)
                         
         if do_nms and boxes != []:
+            # Todo : overlapThresh를 0.5 로 바꾸고 테스트해보자.
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
             
         boxes = np.array(boxes, "int")
