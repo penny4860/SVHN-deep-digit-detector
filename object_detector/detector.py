@@ -34,6 +34,18 @@ class Detector(object):
         else:
             raise ValueError('Input image is invalid.')
         return gray_image
+    
+    def _show(self, bb, prob, threshold_prob):
+        if prob > threshold_prob:
+            delay=0.05
+            color=(255,0,0)
+        else:
+            delay = 0.005
+            color = (0,255,0)
+        
+        self.show_boxes([bb], 
+                        "{:.2f}".format(prob), 
+                        delay, color)
 
     def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_operation=False):
         """
@@ -68,22 +80,11 @@ class Detector(object):
                 prob = self.classifier.predict_proba(features)[0][1]
                 
                 if prob > threshold_prob:
-                    bb = scanner_.bounding_box
-                    boxes.append(bb)
+                    boxes.append(scanner_.bounding_box)
                     probs.append(prob)
-                    
+                
                 if show_operation:
-                    if prob > threshold_prob:
-                        delay=0.05
-                        color=(255,0,0)
-                    else:
-                        delay = 0.005
-                        color = (0,255,0)
-                    
-                    self.show_boxes([scanner_.bounding_box], 
-                                    "{:.2f}".format(prob), 
-                                    delay, color)
-                        
+                    self._show(scanner_.bounding_box, prob, threshold_prob)
                         
         if do_nms and boxes != []:
             boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
