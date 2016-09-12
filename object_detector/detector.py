@@ -4,6 +4,7 @@ import scanner
 import numpy as np
 import cv2
 import pickle
+import time
 
 
 class Detector(object):
@@ -50,11 +51,15 @@ class Detector(object):
         probs = np.array(probs)
         return boxes, probs
     
-    def show_boxes(self, image, boxes):
+    def show_boxes(self, image, boxes, delay=None):
         for y1, y2, x1, x2 in boxes:
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 2)
-#         cv2.imshow("Image", image)
-#         cv2.waitKey(0)
+        cv2.imshow("Image", image)
+        if delay is None:
+            cv2.waitKey(0)
+        else:
+            cv2.waitKey(1)
+            time.sleep(0.025)
     
     def hard_negative_mine(self, negative_image_files, window_size, step, pyramid_scale=0.7, threshold_prob=0.5):
 
