@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import subprocess
+import object_detector.file_io as file_io
 
 CONFIG_FILE = "conf/car_side.json"
 N_RUNNING_TEST_IMAGE = 5                 
