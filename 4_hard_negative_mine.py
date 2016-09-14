@@ -10,10 +10,12 @@ DEFAULT_PATCH_SIZE = (32, 96)
 if __name__ == "__main__":
     parser = ap.ArgumentParser()
     parser.add_argument('-c', "--config", help="Configuration File", default=DEFAULT_CONFIG_FILE)
-    parser.add_argument('-p', "--patch_size", help="Patch Size", default=DEFAULT_PATCH_SIZE)
+    parser.add_argument('-ph', "--patch_h_size", help="Patch Size of Height", default=DEFAULT_PATCH_SIZE[0], type=int)
+    parser.add_argument('-pw', "--patch_w_size", help="Patch Size of Width", default=DEFAULT_PATCH_SIZE[1], type=int)
     args = vars(parser.parse_args())
     
     conf = file_io.FileJson().read(args["config"])
+    patch_size = (args["patch_h_size"], args["patch_w_size"])
     
     #1. Create detector
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], 
@@ -39,7 +41,7 @@ if __name__ == "__main__":
     #4. Add hard negative mined features to the extractor
     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], 
                                               conf["descriptor"]["parameters"], 
-                                              args["patch_size"], 
+                                              patch_size, 
                                               conf["extractor"]["output_file"])
     print "Before adding hard-negative-mined samples"
     extractor.summary()

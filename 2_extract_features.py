@@ -11,8 +11,8 @@ if __name__ == "__main__":
     
     parser = ap.ArgumentParser()
     parser.add_argument('-c', "--config", help="Configuration File", default=DEFAULT_CONFIG_FILE)
-    parser.add_argument('-ph', "--patch_h_size", help="Patch Size of Height", default=DEFAULT_PATCH_SIZE[0])
-    parser.add_argument('-pw', "--patch_w_size", help="Patch Size of Width", default=DEFAULT_PATCH_SIZE[1])
+    parser.add_argument('-ph', "--patch_h_size", help="Patch Size of Height", default=DEFAULT_PATCH_SIZE[0], type=int)
+    parser.add_argument('-pw', "--patch_w_size", help="Patch Size of Width", default=DEFAULT_PATCH_SIZE[1], type=int)
     args = vars(parser.parse_args())
     
     conf = file_io.FileJson().read(args["config"])
