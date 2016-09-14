@@ -7,12 +7,16 @@ N_EVALUATION_TEST_IMAGE = "all"
 
 if __name__ == "__main__":
     
+    conf = file_io.FileJson().read(CONFIG_FILE)
+    
     print "\n[Step 0] Checking dataset path"
     subprocess.call("python 0_check_dataset_path.py -c {}".format(CONFIG_FILE))
     
-    print "\n[Step 1] Getting average target object size.\n\
-            You can set your detector's window size referring this result.\n\
-            config_file.json[\"detector\"][\"window_dim\"]"
+    print "\n[Step 1] Getting average size of the target object.\n\
+            You can set or edit your detector's window size referring this result.\n\
+            config_file.json[\"detector\"][\"window_dim\"]\n\
+            [INFO] current setting is {}".format(conf["detector"]["window_dim"])
+            
     subprocess.call("python 1_get_object_size.py -c {}".format(CONFIG_FILE))
     
     print "\n[Step 2] Extracting features"
