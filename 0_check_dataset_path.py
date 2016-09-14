@@ -16,14 +16,16 @@ if __name__ == "__main__":
     if os.path.exists(conf["dataset"]["pos_data_dir"]):
         print "Positive dataset location is correct"
     else:
-        print "Positive dataset specified \"{0}\" is not exists. \n\
-            Please check data path [\"dataset\"][\"pos_data_dir\"] in \"{0}\"".format(args["config"]) 
+        raise ValueError ("Positive dataset specified \"{0}\" is not exists. \n\
+            Please check data path [\"dataset\"][\"pos_data_dir\"] in \"{0}\"".format(args["config"]))
+        os.sys.exit()
+     
     if os.path.exists(conf["dataset"]["neg_data_dir"]):
         print "Negative dataset location is correct"
     else:
-        print "Negative dataset specified \"{0}\" is not exists. \n\
-            Please check data path [\"dataset\"][\"neg_data_dir\"] in \"{0}\"".format(args["config"]) 
-        
+        raise ValueError ("Negative dataset specified \"{0}\" is not exists. \n\
+            Please check data path [\"dataset\"][\"neg_data_dir\"] in \"{0}\"".format(args["config"])) 
+        os.sys.exit()
 
 
 
