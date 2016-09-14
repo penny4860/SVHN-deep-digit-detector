@@ -21,6 +21,8 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(args["config"])
 
     test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
+    
+    # Todo: Check this code
     if args["n_test_image"] is not None:
         test_image_files = test_image_files[:2]
     
