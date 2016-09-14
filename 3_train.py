@@ -5,7 +5,7 @@ import object_detector.factory as factory
 import argparse as ap
 
 DEFAULT_HNM_OPTION = True
-DEFAULT_CONFIG_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/faces.json"
 
 if __name__ == "__main__":
     

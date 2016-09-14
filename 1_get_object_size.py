@@ -6,7 +6,7 @@ import object_detector.file_io as file_io
 import object_detector.extractor as extractor
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/faces.json"
 
 if __name__ == "__main__":
     

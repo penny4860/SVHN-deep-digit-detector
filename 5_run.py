@@ -4,10 +4,10 @@ import object_detector.factory as factory
 import cv2
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/faces.json"
 DEFAULT_N_TEST_IMAGE = None                 # if this is None, it tests every images as possible
 DEFAULT_NMS = True
-DEFAULT_SHOW_OP = False
+DEFAULT_SHOW_OP = True
 
 if __name__ == "__main__":
     
