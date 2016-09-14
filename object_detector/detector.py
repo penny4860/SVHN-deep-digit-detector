@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 import pickle
 import time
+import progressbar
 
 
 class Detector(object):
@@ -120,7 +121,9 @@ class Detector(object):
         features = []
         probs = []
         
-        for patch, probability in self._generate_negative_patches(negative_image_files, window_size, step, pyramid_scale, threshold_prob):
+        for patch, probability in self._generate_negative_patches(negative_image_files, 
+                                                                  window_size, step, pyramid_scale, 
+                                                                  threshold_prob):
             
             feature = self.descriptor.describe([patch])[0]
             features.append(feature)
@@ -139,7 +142,12 @@ class Detector(object):
         return features, probs
 
     def _generate_negative_patches(self, negative_image_files, window_size, step, pyramid_scale, threshold_prob):
-        for image_file in negative_image_files:
+
+        widgets = ["Generating negative samples which represent high probability: ", 
+        progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+        pbar = progressbar.ProgressBar(maxval=len(negative_image_files), widgets=widgets).start()
+
+        for i, image_file in enumerate(negative_image_files):
             image = cv2.imread(image_file)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
           
@@ -150,10 +158,14 @@ class Detector(object):
                                       do_nms=False, 
                                       show_result=False, 
                                       show_operation=False)
+            
+            pbar.update(i)
 
             for (y1, y2, x1, x2), prob in zip(boxes, probs):
                 negative_patch = cv2.resize(image[y1:y2, x1:x2], (window_size[1], window_size[0]), interpolation=cv2.INTER_AREA)
                 yield negative_patch, prob
+
+        pbar.finish()
 
     # todo: code review
     def _do_nms(self, boxes, probs, overlapThresh=0.5):
