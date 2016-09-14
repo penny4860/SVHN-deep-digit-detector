@@ -5,21 +5,19 @@ import object_detector.factory as factory
 import argparse as ap
 
 DEFAULT_CONFIG_FILE = "conf/car_side.json"
-DEFAULT_PATCH_SIZE = (32, 96)
 
 if __name__ == "__main__":
     
     parser = ap.ArgumentParser()
     parser.add_argument('-c', "--config", help="Configuration File", default=DEFAULT_CONFIG_FILE)
-    parser.add_argument('-ph', "--patch_h_size", help="Patch Size of Height", default=DEFAULT_PATCH_SIZE[0], type=int)
-    parser.add_argument('-pw', "--patch_w_size", help="Patch Size of Width", default=DEFAULT_PATCH_SIZE[1], type=int)
     args = vars(parser.parse_args())
     
     conf = file_io.FileJson().read(args["config"])
-    patch_size = (args["patch_h_size"], args["patch_w_size"])
      
     # 1. Build FeatureExtrator instance
-    extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], patch_size)
+    extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], 
+                                                 conf["descriptor"]["parameters"], 
+                                                 conf["detector"]["window_dim"])
       
     # 2. Get Feature sets
     extractor.add_positive_sets(image_dir=conf["dataset"]["pos_data_dir"],
