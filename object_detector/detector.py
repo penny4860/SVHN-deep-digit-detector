@@ -144,7 +144,12 @@ class Detector(object):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
           
             # detect objects in the image
-            (boxes, probs) = self.run(image, window_size, step, pyramid_scale, threshold_prob, do_nms=False, show_operation=False)
+            (boxes, probs) = self.run(image, 
+                                      window_size, step, pyramid_scale, 
+                                      threshold_prob, 
+                                      do_nms=False, 
+                                      show_result=False, 
+                                      show_operation=False)
 
             for (y1, y2, x1, x2), prob in zip(boxes, probs):
                 negative_patch = cv2.resize(image[y1:y2, x1:x2], (window_size[1], window_size[0]), interpolation=cv2.INTER_AREA)
