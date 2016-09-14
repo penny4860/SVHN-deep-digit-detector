@@ -2,15 +2,22 @@
 
 import object_detector.file_io as file_io
 import object_detector.factory as factory
+import argparse as ap
 
 DEFAULT_CONFIG_FILE = "conf/car_side.json"
-PATCH_SIZE = (32, 96)
+DEFAULT_PATCH_SIZE = (32, 96)
 
 if __name__ == "__main__":
-    conf = file_io.FileJson().read(DEFAULT_CONFIG_FILE)
+    
+    parser = ap.ArgumentParser()
+    parser.add_argument('-c', "--config", help="Configuration File", default=DEFAULT_CONFIG_FILE)
+    parser.add_argument('-p', "--patchsize", help="Patch Size", default=DEFAULT_PATCH_SIZE)
+    args = vars(parser.parse_args())
+    
+    conf = file_io.FileJson().read(args["config"])
      
     # 1. Build FeatureExtrator instance
-    extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], PATCH_SIZE)
+    extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], args["patchsize"])
       
     # 2. Get Feature sets
     extractor.add_positive_sets(image_dir=conf["dataset"]["pos_data_dir"],
@@ -33,7 +40,7 @@ if __name__ == "__main__":
 #     del extractor
 #       
 #     # 4. Test Loading dataset
-#     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], PATCH_SIZE, conf["extractor"]["output_file"])
+#     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], DEFAULT_PATCH_SIZE, conf["extractor"]["output_file"])
 #     extractor.summary()
  
  
