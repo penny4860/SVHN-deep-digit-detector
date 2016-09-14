@@ -25,6 +25,10 @@ class File(object):
     def write(self, data, filename, write_mode="w"):
         pass
     
+    def _check_directory(self, filename):
+        directory = os.path.split(filename)[0]
+        if not os.path.exists(directory):
+            os.mkdir(directory)
 
 class FileJson(File):
     def read(self, filename):
@@ -47,6 +51,7 @@ class FileJson(File):
     
     # Todo : Exception 처리
     def write(self, data, filename, write_mode="w"):
+        self._check_directory(filename)        
         with open(filename, write_mode) as f:
             json.dump(data, f, indent=4)
 
@@ -71,6 +76,7 @@ class FileMat(File):
         return io.loadmat(filename)
     
     def write(self, data, filename, write_mode="w"):
+        self._check_directory(filename)        
         io.savemat(filename, data)
 
 
@@ -98,7 +104,7 @@ class FileHDF5(File):
             database name
             
         """
-        
+        self._check_directory(filename)        
         # todo : overwrite check
         db = h5py.File(filename, write_mode)
         dataset = db.create_dataset(db_name, data.shape, dtype="float")
