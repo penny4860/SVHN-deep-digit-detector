@@ -45,7 +45,7 @@ class Detector(object):
             color = (0,255,0)
             self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
 
-    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_result=True, show_operation=False):
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.5, do_nms=True, show_result=True, show_operation=False):
         """
         
         Parameters
@@ -144,7 +144,12 @@ class Detector(object):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
           
             # detect objects in the image
-            (boxes, probs) = self.run(image, window_size, step, pyramid_scale, threshold_prob, do_nms=False)
+            (boxes, probs) = self.run(image, 
+                                      window_size, step, pyramid_scale, 
+                                      threshold_prob, 
+                                      do_nms=False, 
+                                      show_result=False, 
+                                      show_operation=False)
 
             for (y1, y2, x1, x2), prob in zip(boxes, probs):
                 negative_patch = cv2.resize(image[y1:y2, x1:x2], (window_size[1], window_size[0]), interpolation=cv2.INTER_AREA)

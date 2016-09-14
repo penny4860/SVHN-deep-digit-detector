@@ -62,7 +62,11 @@ class Evaluator(object):
             test_image = cv2.imread(image_file)
             test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
 
-            boxes, probs_ = detector.run(test_image, window_dim, window_step, pyramid_scale, threshold_prob=0.0)
+            boxes, probs_ = detector.run(test_image, 
+                                         window_dim, window_step, pyramid_scale, 
+                                         threshold_prob=0.0,
+                                         show_result=False, 
+                                         show_operation=False)
               
             truth_bb = self._get_truth_bb(image_file, annotation_path)
             ious = self._calc_iou(boxes, truth_bb)
