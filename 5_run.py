@@ -3,12 +3,12 @@ import object_detector.file_io as file_io
 import object_detector.factory as factory
 import cv2
 
-CONFIGURATION_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/car_side.json"
 
 if __name__ == "__main__":
     
     # 1. Load configuration file and test images
-    conf = file_io.FileJson().read(CONFIGURATION_FILE)
+    conf = file_io.FileJson().read(DEFAULT_CONFIG_FILE)
     test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
     test_image_files = test_image_files[:1]
     

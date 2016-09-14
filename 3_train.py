@@ -4,11 +4,11 @@ import object_detector.file_io as file_io
 import object_detector.factory as factory
 
 HARD_NEGATIVE_OPTION = True
-CONFIGURATION_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/car_side.json"
 PATCH_SIZE = (32, 96)
 
 if __name__ == "__main__":
-    conf = file_io.FileJson().read(CONFIGURATION_FILE)
+    conf = file_io.FileJson().read(DEFAULT_CONFIG_FILE)
     
     #1. Load Features and Labels
     getter = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], PATCH_SIZE, conf["extractor"]["output_file"])
