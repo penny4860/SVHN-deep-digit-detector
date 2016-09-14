@@ -45,7 +45,7 @@ class Detector(object):
             color = (0,255,0)
             self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
 
-    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.7, do_nms=True, show_result=True, show_operation=False):
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.5, do_nms=True, show_result=True, show_operation=False):
         """
         
         Parameters
