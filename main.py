@@ -2,16 +2,16 @@
 import subprocess
 import object_detector.file_io as file_io
 
-CONFIG_FILE = "conf/car_side.json"
-N_RUNNING_TEST_IMAGE = 5                 
+#CONFIG_FILE = "conf/car_side.json"
+CONFIG_FILE = "conf/faces.json"
+
+N_RUNNING_TEST_IMAGE = 1                 
 N_EVALUATION_TEST_IMAGE = "all"
+SHOW_RUNNING_OPERATION = False
 
 if __name__ == "__main__":
     
     conf = file_io.FileJson().read(CONFIG_FILE)
-    
-    print "\n[Step 0] Checking dataset path"
-    subprocess.call("python 0_check_dataset_path.py -c {}".format(CONFIG_FILE))
     
     print "\n[Step 1] Getting average size of the target object.\n\
             You can set or edit your detector's window size referring this result.\n\
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     subprocess.call("python 3_train.py -c {} -i {}".format(CONFIG_FILE, True))
     
     print "\n[Step 6] Running detector"
-    subprocess.call("python 5_run.py -c {} -t {} -n {} -s {}".format(CONFIG_FILE, N_RUNNING_TEST_IMAGE, True, True))
+    subprocess.call("python 5_run.py -c {} -t {} -n {} -s {}".format(CONFIG_FILE, N_RUNNING_TEST_IMAGE, True, SHOW_RUNNING_OPERATION))
     
     print "\n[Step 7] Evaluate detector using average-precision metric"
     subprocess.call("python 6_evaluate.py -c {} -t {}".format(CONFIG_FILE, N_EVALUATION_TEST_IMAGE))
