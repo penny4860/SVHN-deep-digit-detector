@@ -42,8 +42,8 @@
 	{
 		"window_step": [4, 4],
 		"overlap_thresh": 0.3,
-		"pyramid_scale": 0.5,
-		"window_dim": [64, 48],
+		"pyramid_scale": 0.6,
+		"window_dim": [96, 64],
 		"min_probability": 0.8,
 		"output_file": "../datasets/output/faces_detector.pkl"
 	},
