@@ -7,7 +7,7 @@ CONFIG_FILE = "conf/faces.json"
 
 N_RUNNING_TEST_IMAGE = 1                 
 N_EVALUATION_TEST_IMAGE = "all"
-SHOW_RUNNING_OPERATION = False
+SHOW_RUNNING_OPERATION = 0
 
 if __name__ == "__main__":
     
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     subprocess.call("python 3_train.py -c {} -i {}".format(CONFIG_FILE, True))
     
     print "\n[Step 6] Running detector"
-    subprocess.call("python 5_run.py -c {} -t {} -n {} -s {}".format(CONFIG_FILE, N_RUNNING_TEST_IMAGE, True, SHOW_RUNNING_OPERATION))
+    subprocess.call("python 5_run.py -c {} -t {} -n {} -s {}".format(CONFIG_FILE, N_RUNNING_TEST_IMAGE, 1, SHOW_RUNNING_OPERATION))
     
     print "\n[Step 7] Evaluate detector using average-precision metric"
     subprocess.call("python 6_evaluate.py -c {} -t {}".format(CONFIG_FILE, N_EVALUATION_TEST_IMAGE))
