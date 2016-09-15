@@ -38,7 +38,8 @@ if __name__ == "__main__":
         boxes, probs = detector.run(test_image, 
                                     conf["detector"]["window_dim"], 
                                     conf["detector"]["window_step"], 
-                                    conf["detector"]["pyramid_scale"], 
+                                    conf["detector"]["pyramid_scale"],
+                                    conf["detector"]["min_probability"],
                                     do_nms=args["nms"], 
                                     show_result=True,
                                     show_operation=args["show_operation"])
