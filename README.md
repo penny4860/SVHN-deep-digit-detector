@@ -61,4 +61,10 @@ It is also displayed [precision-recall curve](https://en.wikipedia.org/wiki/Prec
 
 <img src="examples/precision-recall.png">
 
+## 2. Build other object detectors in Caltech-101
 
+It is easily build other detector. It is needed just 3-steps.
+
+* Write configuration file like ```Project/Directory/conf/car_side.conf``` or ```Project/Directory/conf/faces.conf```
+* In the main.py change CONFIG_FILE parameter
+* Run the main.py
