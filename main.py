@@ -2,8 +2,8 @@
 import subprocess
 import object_detector.file_io as file_io
 
-#CONFIG_FILE = "conf/car_side.json"
-CONFIG_FILE = "conf/faces.json"
+CONFIG_FILE = "conf/car_side.json"
+#CONFIG_FILE = "conf/faces.json"
 
 N_RUNNING_TEST_IMAGE = 1                 
 N_EVALUATION_TEST_IMAGE = "all"
