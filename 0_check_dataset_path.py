@@ -3,7 +3,7 @@ import os
 import argparse as ap
 import object_detector.file_io as file_io
 
-DEFAULT_CONFIG_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/faces.json"
 
 if __name__ == "__main__":
     
@@ -18,14 +18,12 @@ if __name__ == "__main__":
     else:
         raise ValueError ("Positive dataset specified \"{0}\" is not exists. \n\
             Please check data path [\"dataset\"][\"pos_data_dir\"] in \"{0}\"".format(args["config"]))
-        os.sys.exit()
      
     if os.path.exists(conf["dataset"]["neg_data_dir"]):
         print "Negative dataset location is correct"
     else:
         raise ValueError ("Negative dataset specified \"{0}\" is not exists. \n\
             Please check data path [\"dataset\"][\"neg_data_dir\"] in \"{0}\"".format(args["config"])) 
-        os.sys.exit()
 
 
 

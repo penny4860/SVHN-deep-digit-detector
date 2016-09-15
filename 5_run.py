@@ -4,10 +4,10 @@ import object_detector.factory as factory
 import cv2
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/car_side.json"
-DEFAULT_N_TEST_IMAGE = None                 # if this is None, it tests every images as possible
-DEFAULT_NMS = True
-DEFAULT_SHOW_OP = False
+DEFAULT_CONFIG_FILE = "conf/faces.json"
+DEFAULT_N_TEST_IMAGE = 1                 
+DEFAULT_NMS = 1
+DEFAULT_SHOW_OP = 1
 
 if __name__ == "__main__":
     
@@ -15,14 +15,13 @@ if __name__ == "__main__":
     parser = ap.ArgumentParser()
     parser.add_argument('-c', "--config", help="Configuration File", default=DEFAULT_CONFIG_FILE)
     parser.add_argument('-t', "--n_test_image", help="Number of Test Images", default=DEFAULT_N_TEST_IMAGE, type=int)
-    parser.add_argument('-n', "--nms", help="Non Maxima Suppresiion", default=DEFAULT_NMS, type=bool)
-    parser.add_argument('-s', "--show_operation", help="Show Detect Running Operation", default=DEFAULT_SHOW_OP, type=bool)
+    parser.add_argument('-n', "--nms", help="Non Maxima Suppresiion", default=DEFAULT_NMS, type=int)
+    parser.add_argument('-s', "--show_operation", help="Show Detect Running Operation", default=DEFAULT_SHOW_OP, type=int)
     args = vars(parser.parse_args())
     conf = file_io.FileJson().read(args["config"])
 
     test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
-    if args["n_test_image"] is not None:
-        test_image_files = test_image_files[:2]
+    test_image_files = test_image_files[:args["n_test_image"]]
     
     # 2. Build detector and save it   
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], 
@@ -39,7 +38,8 @@ if __name__ == "__main__":
         boxes, probs = detector.run(test_image, 
                                     conf["detector"]["window_dim"], 
                                     conf["detector"]["window_step"], 
-                                    conf["detector"]["pyramid_scale"], 
+                                    conf["detector"]["pyramid_scale"],
+                                    conf["detector"]["min_probability"],
                                     do_nms=args["nms"], 
                                     show_result=True,
                                     show_operation=args["show_operation"])

@@ -169,6 +169,9 @@ class Detector(object):
 
     # todo: code review
     def _do_nms(self, boxes, probs, overlapThresh=0.5):
+        """
+        Reference: http://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/
+        """
         if len(boxes) == 0:
             return []
      

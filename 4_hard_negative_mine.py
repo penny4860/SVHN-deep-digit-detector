@@ -43,8 +43,7 @@ if __name__ == "__main__":
     extractor.add_data(features, -1)
     print "After adding hard-negative-mined samples"
     extractor.summary()
-    
-    #extractor.save(data_file=conf["extractor"]["output_file"])
+    extractor.save(data_file=conf["extractor"]["output_file"])
 
     
     

@@ -5,7 +5,7 @@ import object_detector.evaluate as evaluate
 import argparse as ap
 
 DEFAULT_CONFIG_FILE = "conf/car_side.json"
-DEFAULT_N_TEST_IMAGE = "all"                 # if this is None, it tests every images as possible
+DEFAULT_N_TEST_IMAGE = "all"                 
 
 if __name__ == "__main__":
     
