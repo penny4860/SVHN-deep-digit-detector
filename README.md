@@ -23,7 +23,7 @@ References for building this project is [pyimagesearch](https://gurus.pyimagesea
         |--- [caltech101]
                 |--- [101_ObjectCategories]
                 |--- [Annotations]
-        |--- [google_things]
+        |--- [houses]
 ```
 
 ### 3) Confirm the path of the dataset
@@ -60,7 +60,5 @@ Average Precision : 0.937441470843
 It is also displayed [precision-recall curve](https://en.wikipedia.org/wiki/Precision_and_recall).
 
 <img src="examples/precision-recall.png">
-
-
 
 
