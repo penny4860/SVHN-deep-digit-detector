@@ -4,13 +4,13 @@
 		"pos_data_dir": "../datasets/caltech101/101_ObjectCategories/Faces",
 		"pos_format": "*.jpg",
 		"annotations_dir": "../datasets/caltech101/Annotations/Faces_2",
-		"neg_data_dir": "../datasets/google_things",
+		"neg_data_dir": "../datasets/houses",
 		"neg_format": "*.jpg"
 	},
 
 	"extractor":
 	{
-		"output_file": "../datasets/output/car_features.hdf5",
+		"output_file": "../datasets/output/faces_features.hdf5",
 		"padding": 5,
 		"sampling_ratio_for_positive_images": 0.5,
 		"sampling_ratio_for_negative_images": 0.5,

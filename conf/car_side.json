@@ -4,7 +4,7 @@
 		"pos_data_dir": "../datasets/caltech101/101_ObjectCategories/car_side",
 		"pos_format": "*.jpg",
 		"annotations_dir": "../datasets/caltech101/Annotations/car_side",
-		"neg_data_dir": "../datasets/google_things",
+		"neg_data_dir": "../datasets/houses",
 		"neg_format": "*.jpg"
 	},
 
