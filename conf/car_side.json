@@ -51,7 +51,7 @@
 	"hard_negative_mine":
 	{
 		"window_step": [4, 4],
-		"n_images" : 20,
+		"n_images" : 10,
 		"pyramid_scale" : 0.5,
 		"min_probability" : 0.5
 	}
