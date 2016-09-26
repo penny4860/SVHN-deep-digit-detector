@@ -1,0 +1,61 @@
+{
+	"dataset":
+	{
+		"pos_data_dir": "../datasets/svhn/train",
+		"pos_format": "*.png",
+		"annotation_file": "../datasets/svhn/train/digitStruct.json",
+		"neg_data_dir": "../datasets/houses",
+		"neg_format": "*.png"
+	},
+
+	"extractor":
+	{
+		"output_file": "../datasets/output/faces_features.hdf5",
+		"padding": 5,
+		"sampling_ratio_for_positive_images": 0.5,
+		"sampling_ratio_for_negative_images": 0.5,
+		"num_patches_per_negative_image": 5
+	},
+	
+	"descriptor":
+	{
+		"algorithm": "HOG",
+		"parameters":
+		{
+			"orientations": 9,
+			"pixels_per_cell": [4, 4],
+			"cells_per_block": [2, 2]
+		}
+	},
+	
+	"classifier":
+	{
+		"algorithm": "LinearSVM",
+		"parameters":
+		{
+			"C": 0.01
+		},
+		"output_file": "../datasets/output/faces_cls.pkl"
+	},
+	
+	"detector":
+	{
+		"window_step": [4, 4],
+		"overlap_thresh": 0.3,
+		"pyramid_scale": 0.6,
+		"window_dim": [96, 64],
+		"min_probability": 0.8,
+		"output_file": "../datasets/output/faces_detector.pkl"
+	},
+
+	"hard_negative_mine":
+	{
+		"window_step": [4, 4],
+		"n_images" : 20,
+		"pyramid_scale" : 0.5,
+		"min_probability" : 0.5
+	}
+	
+	
+}
+
