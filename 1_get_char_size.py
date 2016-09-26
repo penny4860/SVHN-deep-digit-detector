@@ -53,12 +53,6 @@ def calc_average_patch_size(annotation_file):
     data = np.array([(h, w, h+w) for h, w in zip(heights, widths)])
     print data.shape
     
-    # w 가 최소인 pair, h 가 최소인 pair
-    
-    # 1. pair 의 1st dim 으로 정렬
-    # 2. pair 의 2nd dim 으로 정렬
-    # 3. pair 의 3rd dim 으로 정렬
-
     data = data[data[:, 0].argsort()]
     print data[:20]
 
@@ -82,39 +76,5 @@ if __name__ == "__main__":
     # 33.861310182 16.6504907381
     # (32, 16)
     
-    
-#     """    
-#     {
-#         u'boxes': 
-#             [
-#                 {u'height': 219.0, u'width': 81.0, u'top': 77.0, u'left': 246.0, u'label': 1.0}, 
-#                 {u'height': 219.0, u'width': 96.0, u'top': 81.0, u'left': 323.0, u'label': 9.0}
-#             ], 
-#         u'filename': u'1.png'
-#     }
-#     """
-#     image_path = "../datasets/svhn/train"
-#     image = cv2.imread(os.path.join(image_path, annotations[0]["filename"]))
-#     print image.shape
-# 
-#     annotations = file_io.FileJson().read("../datasets/svhn/train/digitStruct.json")
-#     for box in annotations[0]["boxes"]:
-#         x1 = int(box["left"])
-#         y1 = int(box["top"])
-#         w = int(box["width"])
-#         h = int(box["height"])
-#         label = int(box["label"])
-#         cv2.rectangle(image, (x1, y1), (x1+w, y1+h), (0, 0, 255), 2)
-#         cv2.putText(image, str(label), (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), thickness=2)
-#     cv2.imshow("Test", image)
-#     cv2.waitKey(0)
-
-
-
-
-
-
-
-
     
 
