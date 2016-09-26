@@ -5,7 +5,7 @@
 		"pos_format": "*.png",
 		"annotation_file": "../datasets/svhn/train/digitStruct.json",
 		"neg_data_dir": "../datasets/houses",
-		"neg_format": "*.png"
+		"neg_format": "*.jpg"
 	},
 
 	"extractor":
@@ -43,7 +43,7 @@
 		"window_step": [4, 4],
 		"overlap_thresh": 0.3,
 		"pyramid_scale": 0.6,
-		"window_dim": [96, 64],
+		"window_dim": [32, 16],
 		"min_probability": 0.8,
 		"output_file": "../datasets/output/faces_detector.pkl"
 	},
