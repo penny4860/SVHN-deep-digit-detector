@@ -4,7 +4,7 @@ import object_detector.detector as detector
 import object_detector.factory as factory
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/svhn.json"
 
 if __name__ == "__main__":
     parser = ap.ArgumentParser()
