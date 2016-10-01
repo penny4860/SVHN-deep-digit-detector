@@ -5,7 +5,7 @@ import object_detector.factory as factory
 import argparse as ap
 
 DEFAULT_HNM_OPTION = True
-DEFAULT_CONFIG_FILE = "conf/faces.json"
+DEFAULT_CONFIG_FILE = "conf/svhn.json"
 
 if __name__ == "__main__":
     
@@ -21,12 +21,13 @@ if __name__ == "__main__":
                                               conf["descriptor"]["parameters"], 
                                               conf["detector"]["window_dim"], 
                                               conf["extractor"]["output_file"])
-    # getter.summary()
+    getter.summary()
     data = getter.get_dataset(include_hard_negative=args["include_hnm"])
     
-    y = data[:, 0]
+    y = data[:, 0].astype(int)
+    y[y > 0] = 1
     X = data[:, 1:]
- 
+    
     #2. Load classifier and Train
     cls = factory.Factory.create_classifier(conf["classifier"]["algorithm"], 
                                             conf["classifier"]["parameters"])
