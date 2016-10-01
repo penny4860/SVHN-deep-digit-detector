@@ -7,7 +7,7 @@ import argparse as ap
 DEFAULT_CONFIG_FILE = "conf/svhn.json"
 DEFAULT_N_TEST_IMAGE = 1                 
 DEFAULT_NMS = 1
-DEFAULT_SHOW_OP = 1
+DEFAULT_SHOW_OP = 0
 
 if __name__ == "__main__":
     
