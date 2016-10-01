@@ -44,6 +44,8 @@ class FeatureExtractor():
 
 
     def add_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
+        # Todo : progressbar
+        # Todo : 한꺼번에 write 하지말고, 10개 이미지를 모아서 write 를 자주하는 방식으로 수정
         
         features_set = []
         image_files = self._get_image_files(image_dir, pattern, sample_ratio)
