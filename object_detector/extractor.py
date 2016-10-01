@@ -44,6 +44,8 @@ class FeatureExtractor():
 
 
     def add_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
+        # Todo : progressbar
+        # Todo : 한꺼번에 write 하지말고, 10개 이미지를 모아서 write 를 자주하는 방식으로 수정
         
         features_set = []
         image_files = self._get_image_files(image_dir, pattern, sample_ratio)
@@ -97,6 +99,42 @@ class FeatureExtractor():
         image_files = file_io.list_files(directory, pattern)
         image_files = random.sample(image_files, int(len(image_files) * sample_ratio))
         return image_files
+
+
+class SVHNFeatureExtractor(FeatureExtractor):
+    # Todo : Template Method Pattern??
+    def add_positive_sets(self, annotation_file, sample_ratio=1.0, padding=5, augment=True, label=1):
+        
+        features_set = []
+        image_path = os.path.split(annotation_file)[0]
+        annotations = file_io.FileJson().read(annotation_file)
+
+        for annotation in annotations:
+            image = cv2.imread(os.path.join(image_path, annotation["filename"]))
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)    
+            
+            patches = []
+            for box in annotation["boxes"]:
+                x1 = int(box["left"])
+                y1 = int(box["top"])
+                w = int(box["width"])
+                h = int(box["height"])
+
+                bb = (y1, y1+h, x1, x1+w)
+                label = int(box["label"])
+                
+                roi = utils.crop_bb(image, bb, padding=padding, dst_size=self._patch_size)
+                patches.append(roi)
+
+            # Todo : augment modulization
+            features = self._desc.describe(patches)
+            features_set += features.tolist()
+            
+        labels = np.zeros((len(features_set), 1)) + label
+        dataset = np.concatenate([labels, np.array(features_set)], axis=1)
+        self._dataset += dataset.tolist()
+
+    
 
 
 import os

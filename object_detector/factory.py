@@ -47,7 +47,7 @@ class Factory(object):
     @staticmethod
     def create_extractor(desc_type, desc_param, patch_size, data_file=None):
         desc = Factory.create_descriptor(desc_type, desc_param)
-        ext = extractor.FeatureExtractor(desc, patch_size, data_file)
+        ext = extractor.SVHNFeatureExtractor(desc, patch_size, data_file)
         return ext
     
     @staticmethod

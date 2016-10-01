@@ -4,7 +4,7 @@ import object_detector.file_io as file_io
 import object_detector.factory as factory
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/faces.json"
+DEFAULT_CONFIG_FILE = "conf/svhn.json"
 
 if __name__ == "__main__":
     
@@ -20,9 +20,7 @@ if __name__ == "__main__":
                                                  conf["detector"]["window_dim"])
       
     # 2. Get Feature sets
-    extractor.add_positive_sets(image_dir=conf["dataset"]["pos_data_dir"],
-                             pattern=conf["dataset"]["pos_format"], 
-                             annotation_path=conf["dataset"]['annotations_dir'],
+    extractor.add_positive_sets(annotation_file=conf["dataset"]["annotation_file"],
                              sample_ratio=conf["extractor"]["sampling_ratio_for_positive_images"],
                              padding=conf["extractor"]['padding'],
                              )
