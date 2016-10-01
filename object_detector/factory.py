@@ -35,6 +35,8 @@ class Factory(object):
          
         if cls_type == "LinearSVM":
             cls = classifier.LinearSVM(**params)
+        elif cls_type == "LogisticRegression":
+            cls = classifier.LogisticRegression(**params)
         
         if model_file is not None:
             with open(model_file, 'rb') as f:

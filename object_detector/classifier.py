@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 import pickle
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
+import sklearn
 
 class Classifier(object):
     __metaclass__ = ABCMeta
@@ -55,6 +56,22 @@ class LinearSVM(Classifier):
     def predict_proba(self, X):
         return self._model.predict_proba(X)
     
+from sklearn import linear_model
+class LogisticRegression(Classifier):
+    
+    def __init__(self, C):
+        self._C = C
+        self._model = linear_model.LogisticRegression(C=C)
+        
+    def train(self, X, y):
+        self._model.fit(X, y)
+    
+    def predict(self, X):
+        return self._model.predict(X)
+    
+    def predict_proba(self, X):
+        return self._model.predict_proba(X)
+
 
 if __name__ == "__main__":
     pass
