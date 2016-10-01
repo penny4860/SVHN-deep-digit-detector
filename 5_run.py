@@ -4,7 +4,7 @@ import object_detector.factory as factory
 import cv2
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/faces.json"
+DEFAULT_CONFIG_FILE = "conf/svhn.json"
 DEFAULT_N_TEST_IMAGE = 1                 
 DEFAULT_NMS = 1
 DEFAULT_SHOW_OP = 1
