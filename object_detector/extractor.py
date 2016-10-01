@@ -108,6 +108,7 @@ class SVHNFeatureExtractor(FeatureExtractor):
         features_set = []
         image_path = os.path.split(annotation_file)[0]
         annotations = file_io.FileJson().read(annotation_file)
+        annotations = annotations[:int(len(annotations)*sample_ratio)]
 
         for annotation in annotations:
             image = cv2.imread(os.path.join(image_path, annotation["filename"]))
