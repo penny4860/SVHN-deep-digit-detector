@@ -106,6 +106,7 @@ class SVHNFeatureExtractor(FeatureExtractor):
     def add_positive_sets(self, annotation_file, sample_ratio=1.0, padding=5, augment=True, label=1):
         
         features_set = []
+        labels_set = []
         image_path = os.path.split(annotation_file)[0]
         annotations = file_io.FileJson().read(annotation_file)
         annotations = annotations[:int(len(annotations)*sample_ratio)]
@@ -115,6 +116,7 @@ class SVHNFeatureExtractor(FeatureExtractor):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)    
             
             patches = []
+            labels = []
             for box in annotation["boxes"]:
                 x1 = int(box["left"])
                 y1 = int(box["top"])
@@ -126,13 +128,15 @@ class SVHNFeatureExtractor(FeatureExtractor):
                 
                 roi = utils.crop_bb(image, bb, padding=padding, dst_size=self._patch_size)
                 patches.append(roi)
+                labels.append(label)
 
             # Todo : augment modulization
             features = self._desc.describe(patches)
             features_set += features.tolist()
+            labels_set += labels
             
-        labels = np.zeros((len(features_set), 1)) + label
-        dataset = np.concatenate([labels, np.array(features_set)], axis=1)
+        #labels = np.zeros((len(features_set), 1)) + label
+        dataset = np.concatenate([np.array(labels_set).reshape(-1, 1), np.array(features_set)], axis=1)
         self._dataset += dataset.tolist()
 
     
