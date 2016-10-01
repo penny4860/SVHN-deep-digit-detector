@@ -46,7 +46,7 @@ class Detector(object):
             color = (0,255,0)
             self.show_boxes([bb], "{:.2f}".format(prob), delay, color)
 
-    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.5, do_nms=True, show_result=True, show_operation=False):
+    def run(self, image, window_size, step, pyramid_scale=0.7, threshold_prob=0.5, overlapThresh=0.5, do_nms=True, show_result=True, show_operation=False):
         """
         
         Parameters
@@ -88,7 +88,7 @@ class Detector(object):
 
         if do_nms and boxes != []:
             # Todo : overlapThresh를 0.5 로 바꾸고 테스트해보자.
-            boxes, probs = self._do_nms(boxes, probs, overlapThresh=0.3)
+            boxes, probs = self._do_nms(boxes, probs, overlapThresh=overlapThresh)
             
         boxes = np.array(boxes, "int")
         probs = np.array(probs)

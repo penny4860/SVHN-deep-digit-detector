@@ -40,6 +40,7 @@ if __name__ == "__main__":
                                     conf["detector"]["window_step"], 
                                     conf["detector"]["pyramid_scale"],
                                     conf["detector"]["min_probability"],
+                                    conf["detector"]["overlap_thresh"],
                                     do_nms=args["nms"], 
                                     show_result=True,
                                     show_operation=args["show_operation"])
