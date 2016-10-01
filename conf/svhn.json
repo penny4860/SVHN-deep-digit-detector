@@ -12,9 +12,9 @@
 	{
 		"output_file": "../datasets/output/svhn_features.hdf5",
 		"padding": 3,
-		"sampling_ratio_for_positive_images": 0.1,
+		"sampling_ratio_for_positive_images": 0.5,
 		"sampling_ratio_for_negative_images": 0.5,
-		"num_patches_per_negative_image": 50
+		"num_patches_per_negative_image": 100
 	},
 	
 	"descriptor":
@@ -23,14 +23,14 @@
 		"parameters":
 		{
 			"orientations": 9,
-			"pixels_per_cell": [8, 4],
+			"pixels_per_cell": [4, 4],
 			"cells_per_block": [2, 2]
 		}
 	},
 	
 	"classifier":
 	{
-		"algorithm": "LinearSVM",
+		"algorithm": "LogisticRegression",
 		"parameters":
 		{
 			"C": 0.01
@@ -51,7 +51,7 @@
 	"hard_negative_mine":
 	{
 		"window_step": [4, 4],
-		"n_images" : 20,
+		"n_images" : 100,
 		"pyramid_scale" : 0.5,
 		"min_probability" : 0.5
 	}

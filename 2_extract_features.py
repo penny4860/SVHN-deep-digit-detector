@@ -24,6 +24,7 @@ if __name__ == "__main__":
                              sample_ratio=conf["extractor"]["sampling_ratio_for_positive_images"],
                              padding=conf["extractor"]['padding'],
                              )
+    extractor.summary()
      
     # Todo : positive sample 숫자에 따라 negative sample 숫자를 자동으로 정할 수 있도록 설정
     extractor.add_negative_sets(image_dir=conf["dataset"]["neg_data_dir"],
