@@ -41,7 +41,7 @@
 	"detector":
 	{
 		"window_step": [4, 4],
-		"overlap_thresh": 0.3,
+		"overlap_thresh": 0.5,
 		"pyramid_scale": 0.6,
 		"window_dim": [32, 16],
 		"min_probability": 0.8,
