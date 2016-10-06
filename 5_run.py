@@ -5,7 +5,7 @@ import cv2
 import argparse as ap
 
 DEFAULT_CONFIG_FILE = "conf/svhn.json"
-DEFAULT_N_TEST_IMAGE = 1                 
+DEFAULT_N_TEST_IMAGE = 10                 
 DEFAULT_NMS = 1
 DEFAULT_SHOW_OP = 0
 
@@ -20,8 +20,9 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     conf = file_io.FileJson().read(args["config"])
 
-    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
-    test_image_files = test_image_files[:args["n_test_image"]]
+    #test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=args["n_test_image"])
+    test_image_files = [conf["dataset"]["pos_data_dir"] + "/1.png", conf["dataset"]["pos_data_dir"] + "/20.png"]
+    
     
     # 2. Build detector and save it   
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], 
@@ -29,6 +30,7 @@ if __name__ == "__main__":
                                                conf["classifier"]["algorithm"], 
                                                conf["classifier"]["parameters"], 
                                                conf["classifier"]["output_file"])
+
 
     # 3. Run detector on Test images 
     for image_file in test_image_files:

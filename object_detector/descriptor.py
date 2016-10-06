@@ -33,8 +33,7 @@ class HOG(Descriptor):
             feature_vector = feature.hog(image, 
                                    orientations=self._orientations, 
                                    pixels_per_cell=self._pixels_per_cell,
-                                   cells_per_block=self._cells_per_block, 
-                                   transform_sqrt=True)
+                                   cells_per_block=self._cells_per_block)
             features.append(feature_vector)
         features = np.array(features)
         return features
