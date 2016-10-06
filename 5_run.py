@@ -4,10 +4,10 @@ import object_detector.factory as factory
 import cv2
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/faces.json"
+DEFAULT_CONFIG_FILE = "conf/svhn.json"
 DEFAULT_N_TEST_IMAGE = 1                 
 DEFAULT_NMS = 1
-DEFAULT_SHOW_OP = 1
+DEFAULT_SHOW_OP = 0
 
 if __name__ == "__main__":
     
@@ -40,6 +40,7 @@ if __name__ == "__main__":
                                     conf["detector"]["window_step"], 
                                     conf["detector"]["pyramid_scale"],
                                     conf["detector"]["min_probability"],
+                                    conf["detector"]["overlap_thresh"],
                                     do_nms=args["nms"], 
                                     show_result=True,
                                     show_operation=args["show_operation"])
