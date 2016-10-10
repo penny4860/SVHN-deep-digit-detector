@@ -18,9 +18,9 @@ def test_hog_descriptor():
     assert features.shape == (1L, 4356L)
 
 
-if __name__ == "__main__":
-    import nose
-    nose.run()    
+import pytest
+if __name__ == '__main__':
+    pytest.main(["-vv", __file__])
     
     
     
