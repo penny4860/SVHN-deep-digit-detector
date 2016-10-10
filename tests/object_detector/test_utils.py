@@ -55,8 +55,8 @@ def test_get_file_id():
 
 
 import pytest
-if __name__ == "__main__":
-    pytest.main()
+if __name__ == '__main__':
+    pytest.main([__file__])
     
 
     

@@ -53,11 +53,10 @@ def test_sliding_window():
             
             #todo : bounding-box in original image (scanner.bounding_box)
             
-if __name__ == "__main__":
-    import nose
-    nose.run()    
-    
 
+import pytest
+if __name__ == '__main__':
+    pytest.main([__file__])
     
     
     
