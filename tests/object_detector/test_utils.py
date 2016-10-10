@@ -53,9 +53,10 @@ def test_get_file_id():
     # Then     
     assert id_desired == id_gotten, "utils.get_file_id() unit test failed!!"
 
-if __name__ == "__main__":
-    import nose
-    nose.run()    
+
+import pytest
+if __name__ == '__main__':
+    pytest.main([__file__])
     
 
     
