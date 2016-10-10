@@ -17,6 +17,26 @@ def generate_file_and_data(data_type):
     return os.path.join(test_root_dir, test_file), test_data
 
 
+def test_list_files_at_non_recursive_option():
+
+    # Setup    
+    tmp_dir = "TestDir"
+    os.mkdir(tmp_dir)
+    files = [os.path.join(tmp_dir, afile) for afile in ["a.txt", "b.txt", "c.txt"]]
+    for filename in files:
+        with open(filename, "w") as _: pass
+
+    # When
+    files_listed = file_io.list_files(directory=tmp_dir, pattern="*.txt", n_files_to_sample=None, recursive_option=True)
+    
+    # Should
+    assert set(files) == set(files_listed)
+    
+    # Clean up
+    shutil.rmtree(tmp_dir)
+    
+
+
 def test_list_files():
     # Given the following directories and files
     test_root_dir = tempfile.mkdtemp()
@@ -85,11 +105,10 @@ def test_FileHDF5_interface():
     # Then it should be equal to the original test_data
     assert test_data.all() == read_data.all()
 
-if __name__ == "__main__":
-    import nose
-    nose.run()    
 
-    
-    
+import pytest
+if __name__ == '__main__':
+    pytest.main([__file__])
+
     
     
