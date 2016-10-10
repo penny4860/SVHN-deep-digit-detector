@@ -60,9 +60,9 @@ def test_dump_and_load_of_linear_svm():
     os.remove(filename)    
     
             
-if __name__ == "__main__":
-    import nose
-    nose.run()    
+import pytest
+if __name__ == '__main__':
+    pytest.main(["-vv", __file__])
     
     
     
