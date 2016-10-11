@@ -6,6 +6,8 @@ import object_detector.file_io as file_io
 import numpy as np
 import random
 
+import numpy as np
+
 class FeatureExtractor():
     
     def __init__(self, descriptor, patch_size, data_file):
