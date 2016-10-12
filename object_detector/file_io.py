@@ -27,7 +27,7 @@ class File(object):
     
     def _check_directory(self, filename):
         directory = os.path.split(filename)[0]
-        if not os.path.exists(directory):
+        if directory != "" and not os.path.exists(directory):
             os.mkdir(directory)
 
 class FileJson(File):
