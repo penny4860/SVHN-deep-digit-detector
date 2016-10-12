@@ -142,39 +142,57 @@ class SVHNFeatureExtractor(FeatureExtractor):
         dataset = np.concatenate([np.array(labels_set).reshape(-1, 1), np.array(features_set)], axis=1)
         self._dataset += dataset.tolist()
 
-    
-def test_add_positive_behavior():
-    import object_detector.descriptor as desc
-    import object_detector.file_io as file_io
-    
+import object_detector.descriptor as desc
+import object_detector.file_io as file_io
+
+def setup_extractor():
     descriptor = desc.HOG(9, [4,4], [2,2])
     extractor = SVHNFeatureExtractor(descriptor, [32, 16], None)
+    return extractor 
 
+def setup_params():
     annotation_filename = "../datasets/positive/digitStruct.json"
     negative_dir = "../datasets/negative"
     output_file = "svhn_features.hdf5"
+    return annotation_filename, negative_dir, output_file
+
+def test_add_positive_behavior():
+    
+    extractor = setup_extractor()
+    annotation_filename, negative_dir, output_file = setup_params()
 
     # 2. Get Feature sets
     extractor.add_positive_sets(annotation_file=annotation_filename,
                              sample_ratio=1.0,
                              padding=0,
                              )
-    extractor.summary()
+
+    dataset = extractor.get_dataset(include_hard_negative=True)
+    assert dataset.shape == (8, 757)
+
+
+def test_add_negative_behavior():
+
+    extractor = setup_extractor()
+    annotation_filename, negative_dir, output_file = setup_params()
       
     # Todo : positive sample 숫자에 따라 negative sample 숫자를 자동으로 정할 수 있도록 설정
     extractor.add_negative_sets(image_dir=negative_dir,
                              pattern="*.jpg",
                              n_samples_per_img=10,
                              sample_ratio=1.0)
-       
-    extractor.summary()
-       
-    # 3. Save dataset
-    extractor.save(data_file=output_file)
+    
+    dataset = extractor.get_dataset(include_hard_negative=True)
+    assert dataset.shape == (40, 757)
+
+    
+#     # 3. Save dataset
+#     extractor.save(data_file=output_file)
 
 if __name__ == "__main__":
-
-    test_add_positive_behavior()
+    import pytest
+    pytest.main([__file__])
+    
 
 
 
