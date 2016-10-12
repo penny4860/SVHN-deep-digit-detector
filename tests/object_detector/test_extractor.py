@@ -151,6 +151,8 @@ def test_add_positive_behavior():
     extractor = SVHNFeatureExtractor(descriptor, [32, 16], None)
 
     annotation_filename = "../datasets/positive/digitStruct.json"
+    negative_dir = "../datasets/negative"
+    output_file = "svhn_features.hdf5"
 
     # 2. Get Feature sets
     extractor.add_positive_sets(annotation_file=annotation_filename,
@@ -160,15 +162,15 @@ def test_add_positive_behavior():
     extractor.summary()
       
     # Todo : positive sample 숫자에 따라 negative sample 숫자를 자동으로 정할 수 있도록 설정
-    extractor.add_negative_sets(image_dir=conf["dataset"]["neg_data_dir"],
-                             pattern=conf["dataset"]["neg_format"],
-                             n_samples_per_img=conf["extractor"]["num_patches_per_negative_image"],
-                             sample_ratio=conf["extractor"]["sampling_ratio_for_negative_images"])
+    extractor.add_negative_sets(image_dir=negative_dir,
+                             pattern="*.jpg",
+                             n_samples_per_img=10,
+                             sample_ratio=1.0)
        
     extractor.summary()
        
     # 3. Save dataset
-    extractor.save(data_file=conf["extractor"]["output_file"])
+    extractor.save(data_file=output_file)
 
 if __name__ == "__main__":
 
