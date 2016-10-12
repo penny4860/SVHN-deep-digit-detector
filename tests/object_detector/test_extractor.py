@@ -1,12 +1,13 @@
 #-*- coding: utf-8 -*-
 
 import cv2
-import utils
+import object_detector.utils as utils
 import object_detector.file_io as file_io
 import numpy as np
 import random
 
 import numpy as np
+import os
 
 class FeatureExtractor():
     
