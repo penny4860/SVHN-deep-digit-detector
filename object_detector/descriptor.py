@@ -2,6 +2,7 @@
 
 import abc
 import numpy as np
+import cv2
 from skimage import feature
 
 
@@ -15,6 +16,21 @@ class Descriptor(object):
     @abc.abstractmethod    
     def describe(self, images):
         pass
+
+class Image(Descriptor):
+    def __init__(self, color_type="gray"):
+        self._color_type = color_type
+    
+    def describe(self, images):
+        features = []
+        for image in images:
+            if self._color_type == "gray" and len(image.shape) == 3:
+                feature = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                feature = image.copy()
+            features.append(feature)
+        features = np.array(features)
+        return features
 
 
 class HOG(Descriptor):

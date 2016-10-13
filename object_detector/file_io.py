@@ -27,7 +27,7 @@ class File(object):
     
     def _check_directory(self, filename):
         directory = os.path.split(filename)[0]
-        if not os.path.exists(directory):
+        if directory != "" and not os.path.exists(directory):
             os.mkdir(directory)
 
 class FileJson(File):
@@ -89,7 +89,7 @@ class FileHDF5(File):
         
         return np_data
     
-    def write(self, data, filename, db_name, write_mode="w"):
+    def write(self, data, filename, db_name, write_mode="a"):
         """Write data to hdf5 format.
         
         Parameters
