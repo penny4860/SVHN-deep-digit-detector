@@ -6,7 +6,6 @@ import object_detector.file_io as file_io
 import numpy as np
 import random
 
-import numpy as np
 import os
 
 class FeatureExtractor():
@@ -16,9 +15,13 @@ class FeatureExtractor():
         self._patch_size = patch_size
         
         if data_file is None:
-            self._dataset = []
-        else:
-            self._dataset = file_io.FileHDF5().read(data_file, "label_and_features").tolist()
+            self._features = None   # (N, n, m, ...)     
+            self._labels = None     # (N, 1)
+#         else:
+#             self._images = None
+#             self._labels = None
+#             
+#             # self._dataset = file_io.FileHDF5().read(data_file, "label_and_features").tolist()
     
     # Todo : Template Method Pattern??
     def add_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
@@ -41,9 +44,8 @@ class FeatureExtractor():
             features = self._desc.describe(patches)
             features_set += features.tolist()
             
-        labels = np.zeros((len(features_set), 1)) + label
-        dataset = np.concatenate([labels, np.array(features_set)], axis=1)
-        self._dataset += dataset.tolist()
+        self._labels = np.zeros((len(features_set), 1)) + label
+        self._features = np.array(features_set)
 
 
     def add_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
@@ -62,23 +64,29 @@ class FeatureExtractor():
             features = self._desc.describe(patches)
             features_set += features.tolist()
 
-        labels = np.zeros((len(features_set), 1))
-        dataset = np.concatenate([labels, np.array(features_set)], axis=1)
-        self._dataset += dataset.tolist()
+        self._labels = np.zeros((len(features_set), 1))
+        self._features = np.array(features_set)
         
     def add_data(self, features, label):
         labels = np.zeros((len(features), 1)) + label
-        dataset = np.concatenate([labels, features], axis=1)
-
-        self._dataset += dataset.tolist()
+        
+        if self._features is None:
+            self._features = features
+            self._labels = label
+        else:
+            self._features = np.concatenate([self._features, features], axis=0)
+            self._labels = np.concatenate([self._labels, labels], axis=0)
+        
     
     def save(self, data_file):
-        file_io.FileHDF5().write(np.array(self._dataset), data_file, "label_and_features")
+        file_io.FileHDF5().write(self._features, data_file, "features")
+        file_io.FileHDF5().write(self._labels, data_file, "labels")
+
 
     def summary(self):
         
-        labels = np.array(self._dataset)[:, 0]
-        feature_shape = np.array(self._dataset)[:, 1:].shape
+        labels = self._labels
+        feature_shape = self._features.shape
         
         n_positive_samples = len(labels[labels > 0])
         n_negative_samples = len(labels[labels == 0])
@@ -87,16 +95,21 @@ class FeatureExtractor():
         print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}, Hard Negative Mined samples: {}".format(n_positive_samples, n_negative_samples, n_hard_negative_samples)
         print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
 
+
     def get_dataset(self, include_hard_negative=True):
-        if self._dataset is None:
+        
+        if self._features is None:
             raise ValueError('There is no dataset in this instance')
         else:
-            dataset = np.array(self._dataset)
+            labels = self._labels
             if include_hard_negative:
-                dataset[dataset[:,0] < 0, 0] = 0
+                features = self._features
+                labels[labels < 0] = 0
             else:
-                dataset = dataset[dataset[:,0] >= 0]
-            return dataset
+                features = self._features[self._labels >= 0]
+                labels = self._labels[self._labels >= 0]
+            return features, labels
+    
     
     def _get_image_files(self, directory, pattern, sample_ratio):
         image_files = file_io.list_files(directory, pattern)
@@ -138,12 +151,10 @@ class SVHNFeatureExtractor(FeatureExtractor):
             features_set += features.tolist()
             labels_set += labels
             
-        #labels = np.zeros((len(features_set), 1)) + label
-        dataset = np.concatenate([np.array(labels_set).reshape(-1, 1), np.array(features_set)], axis=1)
-        self._dataset += dataset.tolist()
+        self._features = np.array(features_set)
+        self._labels = np.array(labels_set).reshape(-1, 1)
 
 import object_detector.descriptor as desc
-import object_detector.file_io as file_io
 
 def setup_extractor():
     descriptor = desc.HOG(9, [4,4], [2,2])
@@ -167,9 +178,10 @@ def test_add_positive_behavior():
                              padding=0,
                              )
 
-    dataset = extractor.get_dataset(include_hard_negative=True)
-    assert dataset.shape == (8, 757)
-
+    features, labels = extractor.get_dataset(include_hard_negative=True)
+    assert features.shape == (8, 756)
+    assert labels.shape == (8, 1)
+    
 
 def test_add_negative_behavior():
 
@@ -182,10 +194,10 @@ def test_add_negative_behavior():
                              n_samples_per_img=10,
                              sample_ratio=1.0)
     
-    dataset = extractor.get_dataset(include_hard_negative=True)
-    assert dataset.shape == (40, 757)
+    features, labels = extractor.get_dataset(include_hard_negative=True)
+    assert features.shape == (40, 756)
+    assert labels.shape == (40, 1)
 
-    
 #     # 3. Save dataset
 #     extractor.save(data_file=output_file)
 
