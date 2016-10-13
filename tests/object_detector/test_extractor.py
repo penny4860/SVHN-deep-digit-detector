@@ -8,7 +8,7 @@ import object_detector.extractor as extractor_
 
 def setup_extractor(datafile = None):
     descriptor = desc.HOG(9, [4,4], [2,2])
-    extractor = extractor_.SVHNFeatureExtractor(descriptor, [32, 16], datafile)
+    extractor = extractor_.FeatureExtractor(descriptor, [32, 16], datafile)
     return extractor 
 
 def setup_params():

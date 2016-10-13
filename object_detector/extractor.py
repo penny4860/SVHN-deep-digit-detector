@@ -19,29 +19,40 @@ class FeatureExtractor():
             self._features = file_io.FileHDF5().read(data_file, "features")
             self._labels = file_io.FileHDF5().read(data_file, "labels")
     
-    # Todo : Template Method Pattern??
-    def add_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
+    def add_positive_sets(self, annotation_file, sample_ratio=1.0, padding=0, label=1):
         
         features_set = []
-        image_files = self._get_image_files(image_dir, pattern, sample_ratio)
-    
-        for image_file in image_files:
-            image = cv2.imread(image_file)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            image_id = utils.get_file_id(image_file)
+        labels_set = []
+        image_path = os.path.split(annotation_file)[0]
+        annotations = file_io.FileJson().read(annotation_file)
+        annotations = annotations[:int(len(annotations)*sample_ratio)]
+
+        for annotation in annotations:
+            image = cv2.imread(os.path.join(image_path, annotation["filename"]))
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)    
             
-            annotation_file = "{}/annotation_{}.mat".format(annotation_path, image_id)
-            bb = file_io.FileMat().read(annotation_file)["box_coord"][0]
-            roi = utils.crop_bb(image, bb, padding=padding, dst_size=self._patch_size)
-            
-            patches = (roi, cv2.flip(roi, 1)) if augment else (roi,)
-            
+            patches = []
+            labels = []
+            for box in annotation["boxes"]:
+                x1 = int(box["left"])
+                y1 = int(box["top"])
+                w = int(box["width"])
+                h = int(box["height"])
+
+                bb = (y1, y1+h, x1, x1+w)
+                label = int(box["label"])
+                
+                roi = utils.crop_bb(image, bb, padding=padding, dst_size=self._patch_size)
+                patches.append(roi)
+                labels.append(label)
+
             # Todo : augment modulization
             features = self._desc.describe(patches)
             features_set += features.tolist()
+            labels_set += labels
             
-        self._labels = np.zeros((len(features_set), 1)) + label
         self._features = np.array(features_set)
+        self._labels = np.array(labels_set).reshape(-1, 1)
 
 
     def add_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
@@ -111,46 +122,6 @@ class FeatureExtractor():
         image_files = file_io.list_files(directory, pattern)
         image_files = random.sample(image_files, int(len(image_files) * sample_ratio))
         return image_files
-
-
-class SVHNFeatureExtractor(FeatureExtractor):
-    # Todo : Template Method Pattern??
-    def add_positive_sets(self, annotation_file, sample_ratio=1.0, padding=5, augment=True, label=1):
-        
-        features_set = []
-        labels_set = []
-        image_path = os.path.split(annotation_file)[0]
-        annotations = file_io.FileJson().read(annotation_file)
-        annotations = annotations[:int(len(annotations)*sample_ratio)]
-
-        for annotation in annotations:
-            image = cv2.imread(os.path.join(image_path, annotation["filename"]))
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)    
-            
-            patches = []
-            labels = []
-            for box in annotation["boxes"]:
-                x1 = int(box["left"])
-                y1 = int(box["top"])
-                w = int(box["width"])
-                h = int(box["height"])
-
-                bb = (y1, y1+h, x1, x1+w)
-                label = int(box["label"])
-                
-                roi = utils.crop_bb(image, bb, padding=padding, dst_size=self._patch_size)
-                patches.append(roi)
-                labels.append(label)
-
-            # Todo : augment modulization
-            features = self._desc.describe(patches)
-            features_set += features.tolist()
-            labels_set += labels
-            
-        self._features = np.array(features_set)
-        self._labels = np.array(labels_set).reshape(-1, 1)
-
-    
 
 
 import os
