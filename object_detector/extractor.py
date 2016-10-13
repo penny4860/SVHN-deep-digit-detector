@@ -51,15 +51,20 @@ class FeatureExtractor():
             features_set += features.tolist()
             labels_set += labels
         
-        # Todo : list 를 모두 ndarray 로 바꾸자.
-        self._features = np.concatenate([self._features, np.array(features_set)], axis = 0) if self._features is not None else np.array(features_set)
-        self._labels = np.concatenate([self._labels, np.array(labels_set).reshape(-1, 1)], axis = 0) if self._labels is not None else np.array(labels_set).reshape(-1, 1)
+        features = np.array(features_set)
+        labels = np.array(labels_set).reshape(-1, 1)
 
+        if self._features is None:
+            self._features = features
+            self._labels = labels
+        else:
+            self._features = np.concatenate([self._features, features], axis = 0) if self._features is not None else features
+            self._labels = np.concatenate([self._labels, labels], axis = 0) if self._labels is not None else labels
+            
 
     def add_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
         # Todo : progressbar
         # Todo : 한꺼번에 write 하지말고, 10개 이미지를 모아서 write 를 자주하는 방식으로 수정
-        
         features_set = []
         image_files = self._get_image_files(image_dir, pattern, sample_ratio)
 
@@ -72,10 +77,16 @@ class FeatureExtractor():
             features = self._desc.describe(patches)
             features_set += features.tolist()
 
-        # Todo : list 를 모두 ndarray 로 바꾸자.
-        self._features = np.concatenate([self._features, np.array(features_set)], axis = 0) if self._features is not None else np.array(features_set)
-        self._labels = np.concatenate([self._labels, np.zeros((len(features_set), 1))], axis = 0) if self._labels is not None else np.zeros((len(features_set), 1))
-        
+        features = np.array(features_set)
+        labels = np.zeros((len(features_set), 1))
+
+        if self._features is None:
+            self._features = features
+            self._labels = labels
+        else:
+            self._features = np.concatenate([self._features, features], axis = 0) if self._features is not None else features
+            self._labels = np.concatenate([self._labels, labels], axis = 0) if self._labels is not None else labels
+
         
     def add_data(self, features, label):
         labels = np.zeros((len(features), 1)) + label
