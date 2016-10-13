@@ -17,37 +17,31 @@ def setup_params():
     output_file = "svhn_features.hdf5"
     return annotation_filename, negative_dir, output_file
 
-def test_add_positive_behavior():
+def test_add_dataset_behavior():
     
     extractor = setup_extractor()
     annotation_filename, negative_dir, output_file = setup_params()
 
     # 2. Get Feature sets
+    
     extractor.add_positive_sets(annotation_file=annotation_filename,
                              sample_ratio=1.0,
                              padding=0,
                              )
-
-    features, labels = extractor.get_dataset(include_hard_negative=True)
-    assert features.shape == (8, 756)
-    assert labels.shape == (8, 1)
     
-
-def test_add_negative_behavior():
-
-    extractor = setup_extractor()
-    annotation_filename, negative_dir, output_file = setup_params()
-      
-    # Todo : positive sample 숫자에 따라 negative sample 숫자를 자동으로 정할 수 있도록 설정
     extractor.add_negative_sets(image_dir=negative_dir,
                              pattern="*.jpg",
                              n_samples_per_img=10,
                              sample_ratio=1.0)
-    
-    features, labels = extractor.get_dataset(include_hard_negative=True)
-    assert features.shape == (40, 756)
-    assert labels.shape == (40, 1)
 
+    features, labels = extractor.get_dataset(include_hard_negative=True)
+    
+    n_positive_data = 8
+    n_negative_data = 40
+    assert features.shape == (n_positive_data + n_negative_data, 756)
+    assert labels.shape == (n_positive_data + n_negative_data, 1)
+    assert len(features[labels > 0]) == n_positive_data
+    assert len(features[labels <= 0]) == n_negative_data
 
 def test_save_and_load_extractor():
     extractor = setup_extractor()
