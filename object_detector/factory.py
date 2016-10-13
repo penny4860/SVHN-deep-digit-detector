@@ -22,6 +22,9 @@ class Factory(object):
          
         if desc_type == "HOG":
             return descriptor.HOG(**params)
+        elif desc_type == "Image":
+            return descriptor.Image(**params)
+        
         assert 0, "Bad creation: " + desc_type
  
     @staticmethod
