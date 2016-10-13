@@ -50,9 +50,10 @@ class FeatureExtractor():
             features = self._desc.describe(patches)
             features_set += features.tolist()
             labels_set += labels
-            
-        self._features = np.array(features_set)
-        self._labels = np.array(labels_set).reshape(-1, 1)
+        
+        # Todo : list 를 모두 ndarray 로 바꾸자.
+        self._features = np.concatenate([self._features, np.array(features_set)], axis = 0) if self._features is not None else np.array(features_set)
+        self._labels = np.concatenate([self._labels, np.array(labels_set).reshape(-1, 1)], axis = 0) if self._labels is not None else np.array(labels_set).reshape(-1, 1)
 
 
     def add_negative_sets(self, image_dir, pattern, n_samples_per_img, sample_ratio=1.0):
@@ -71,8 +72,10 @@ class FeatureExtractor():
             features = self._desc.describe(patches)
             features_set += features.tolist()
 
-        self._labels = np.zeros((len(features_set), 1))
-        self._features = np.array(features_set)
+        # Todo : list 를 모두 ndarray 로 바꾸자.
+        self._features = np.concatenate([self._features, np.array(features_set)], axis = 0) if self._features is not None else np.array(features_set)
+        self._labels = np.concatenate([self._labels, np.zeros((len(features_set), 1))], axis = 0) if self._labels is not None else np.zeros((len(features_set), 1))
+        
         
     def add_data(self, features, label):
         labels = np.zeros((len(features), 1)) + label
