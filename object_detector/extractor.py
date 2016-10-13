@@ -114,7 +114,7 @@ class FeatureExtractor():
         n_hard_negative_samples = len(labels[labels == -1])
                                  
         print "[FeatureGetter INFO] Positive samples: {}, Negative samples: {}, Hard Negative Mined samples: {}".format(n_positive_samples, n_negative_samples, n_hard_negative_samples)
-        print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1])
+        print "[FeatureGetter INFO] Feature Dimension: {}".format(feature_shape[1:])
 
 
     def get_dataset(self, include_hard_negative=True):
