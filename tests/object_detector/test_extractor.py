@@ -17,11 +17,9 @@ class FeatureExtractor():
         if data_file is None:
             self._features = None   # (N, n, m, ...)     
             self._labels = None     # (N, 1)
-#         else:
-#             self._images = None
-#             self._labels = None
-#             
-#             # self._dataset = file_io.FileHDF5().read(data_file, "label_and_features").tolist()
+        else:
+            self._features = file_io.FileHDF5().read(data_file, "features")
+            self._labels = file_io.FileHDF5().read(data_file, "labels")
     
     # Todo : Template Method Pattern??
     def add_positive_sets(self, image_dir, pattern, annotation_path, sample_ratio=1.0, padding=5, augment=True, label=1):
@@ -156,9 +154,9 @@ class SVHNFeatureExtractor(FeatureExtractor):
 
 import object_detector.descriptor as desc
 
-def setup_extractor():
+def setup_extractor(datafile = None):
     descriptor = desc.HOG(9, [4,4], [2,2])
-    extractor = SVHNFeatureExtractor(descriptor, [32, 16], None)
+    extractor = SVHNFeatureExtractor(descriptor, [32, 16], datafile)
     return extractor 
 
 def setup_params():
@@ -198,8 +196,37 @@ def test_add_negative_behavior():
     assert features.shape == (40, 756)
     assert labels.shape == (40, 1)
 
-#     # 3. Save dataset
-#     extractor.save(data_file=output_file)
+
+def test_save_and_load_extractor():
+    extractor = setup_extractor()
+    annotation_filename, negative_dir, output_file = setup_params()
+      
+    extractor.add_positive_sets(annotation_file=annotation_filename,
+                             sample_ratio=1.0,
+                             padding=0,
+                             )
+    extractor.add_negative_sets(image_dir=negative_dir,
+                             pattern="*.jpg",
+                             n_samples_per_img=10,
+                             sample_ratio=1.0)
+    
+    # 3. Save dataset
+    extractor.save(data_file=output_file)
+    
+    features, labels = extractor.get_dataset()
+    features_loaded = file_io.FileHDF5().read(output_file, "features")
+    labels_loaded = file_io.FileHDF5().read(output_file, "labels")
+    
+    assert features.all() == features_loaded.all()
+    assert labels.all() == labels_loaded.all()
+    
+    extractor_loaded = setup_extractor(output_file)
+    features_loaded, labels_loaded = extractor_loaded.get_dataset()
+
+    assert features.all() == features_loaded.all()
+    assert labels.all() == labels_loaded.all()
+    os.remove(output_file)
+
 
 if __name__ == "__main__":
     import pytest

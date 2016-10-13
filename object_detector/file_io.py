@@ -89,7 +89,7 @@ class FileHDF5(File):
         
         return np_data
     
-    def write(self, data, filename, db_name, write_mode="w"):
+    def write(self, data, filename, db_name, write_mode="a"):
         """Write data to hdf5 format.
         
         Parameters
