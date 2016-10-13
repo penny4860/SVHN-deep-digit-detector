@@ -19,12 +19,10 @@
 	
 	"descriptor":
 	{
-		"algorithm": "HOG",
+		"algorithm": "Image",
 		"parameters":
 		{
-			"orientations": 9,
-			"pixels_per_cell": [4, 4],
-			"cells_per_block": [2, 2]
+			"color_type": "gray"
 		}
 	},
 	
