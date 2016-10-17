@@ -39,7 +39,7 @@ if __name__ == "__main__":
 #     del extractor
 #       
 #     # 4. Test Loading dataset
-#     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], DEFAULT_PATCH_SIZE, conf["extractor"]["output_file"])
+#     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], conf["detector"]["window_dim"], conf["extractor"]["output_file"])
 #     extractor.summary()
  
  
