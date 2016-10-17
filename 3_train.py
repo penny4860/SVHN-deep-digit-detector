@@ -22,21 +22,28 @@ if __name__ == "__main__":
                                               conf["detector"]["window_dim"], 
                                               conf["extractor"]["output_file"])
     getter.summary()
-    data = getter.get_dataset(include_hard_negative=args["include_hnm"])
+    features, labels = getter.get_dataset(include_hard_negative=args["include_hnm"])
     
-    y = data[:, 0].astype(int)
-    y[y > 0] = 1
-    X = data[:, 1:]
+    print type(features), type(labels)
+    print features.shape, labels.shape
     
-    #2. Load classifier and Train
-    cls = factory.Factory.create_classifier(conf["classifier"]["algorithm"], 
-                                            conf["classifier"]["parameters"])
+    import keras
     
-    cls.train(X, y)
-    print "[INFO] Training result is as follows"
-    print cls.evaluate(X, y)
- 
-    #3. Save classifier
-    cls.dump(conf["classifier"]["output_file"])
+    
+    
+#     y = data[:, 0].astype(int)
+#     y[y > 0] = 1
+#     X = data[:, 1:]
+#     
+#     #2. Load classifier and Train
+#     cls = factory.Factory.create_classifier(conf["classifier"]["algorithm"], 
+#                                             conf["classifier"]["parameters"])
+#     
+#     cls.train(X, y)
+#     print "[INFO] Training result is as follows"
+#     print cls.evaluate(X, y)
+#  
+#     #3. Save classifier
+#     cls.dump(conf["classifier"]["output_file"])
 
 
