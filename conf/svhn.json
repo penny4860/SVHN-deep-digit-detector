@@ -22,7 +22,8 @@
 		"algorithm": "Image",
 		"parameters":
 		{
-			"color_type": "gray"
+			"color_type": "gray",
+			"mean_value": 125.413
 		}
 	},
 	
