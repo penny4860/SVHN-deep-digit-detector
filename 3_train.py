@@ -124,6 +124,10 @@ if __name__ == "__main__":
 
     X_train, X_test, Y_train, Y_test, mean_value = preprocess(features, labels, 2)
     train_detector(X_train, X_test, Y_train, Y_test, "temp.hdf5")
+    
+#     import object_detector.classifier as classifier
+#     cls = classifier.ConvNet('models/detector_model.hdf5')
+
      
 
 
