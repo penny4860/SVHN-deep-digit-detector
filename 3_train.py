@@ -37,7 +37,7 @@ def imshow(X):
     cv2.waitKey(0)
 
 
-def train_detector(X_train, X_test, Y_train, Y_test, save_file='detector_model.hdf5'):
+def train_detector(X_train, X_test, Y_train, Y_test, save_file='models/detector_model.hdf5'):
     import numpy as np
     np.random.seed(1337)  # for reproducibility
       
