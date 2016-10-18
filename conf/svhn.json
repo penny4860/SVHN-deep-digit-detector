@@ -28,12 +28,12 @@
 	
 	"classifier":
 	{
-		"algorithm": "LogisticRegression",
+		"algorithm": "ConvNet",
 		"parameters":
 		{
-			"C": 0.01
+			"model_file": "models/detector_model.hdf5"
 		},
-		"output_file": "../datasets/output/svhn_cls.pkl"
+		"output_file": "models/detector_model.hdf5"
 	},
 	
 	"detector":
