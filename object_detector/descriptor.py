@@ -19,8 +19,7 @@ class Descriptor(object):
 
 
 class Image(Descriptor):
-    def __init__(self, color_type = "gray", mean_value=0.0):
-        self._mean_value = mean_value
+    def __init__(self, color_type = "gray"):
         self._color_type = color_type
         
     def describe(self, images):
