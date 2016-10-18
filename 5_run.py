@@ -29,7 +29,7 @@ if __name__ == "__main__":
     import object_detector.classifier as classifier
     import object_detector.detector as detector
     desc = descriptor.Image()
-    cls = classifier.ConvNet(conf["classifier"]["output_file"])
+    cls = classifier.ConvNet(conf["classifier"]["output_file"], conf["classifier"]["parameters"]["mean_value"])
     d = detector.Detector(desc, cls)
 
     # 3. Run detector on Test images 
