@@ -40,6 +40,8 @@ class Factory(object):
             cls = classifier.LinearSVM(**params)
         elif cls_type == "LogisticRegression":
             cls = classifier.LogisticRegression(**params)
+        elif cls_type == "ConvNet":
+            cls = classifier.ConvNet(**params)
         
         if model_file is not None:
             with open(model_file, 'rb') as f:
@@ -81,6 +83,11 @@ if __name__ == "__main__":
 
     print cls._model
 
+    parameters = {
+            "model_file": "../models/detector_model.hdf5"
+        }
+    cls = Factory.create_classifier("ConvNet", parameters)
+    print cls._model
 
 
 
