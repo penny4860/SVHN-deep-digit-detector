@@ -17,11 +17,14 @@ class Descriptor(object):
     def describe(self, images):
         pass
 
+
 class Image(Descriptor):
-    def __init__(self, color_type="gray"):
+    def __init__(self, color_type = "gray", mean_value=0.0):
+        self._mean_value = mean_value
         self._color_type = color_type
-    
+        
     def describe(self, images):
+        
         features = []
         for image in images:
             if self._color_type == "gray" and len(image.shape) == 3:
@@ -30,6 +33,8 @@ class Image(Descriptor):
                 feature = image.copy()
             features.append(feature)
         features = np.array(features)
+        features = features.reshape(features.shape[0], features.shape[1], features.shape[2], 1) - self._mean_value
+        
         return features
 
 
