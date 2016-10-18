@@ -45,6 +45,21 @@ class LogisticRegression(Classifier):
         self._model = linear_model.LogisticRegression(C=C)
         
 
+class ConvNet(Classifier):
+    
+    def __init__(self, model_file):
+        from keras.models import load_model
+        self._model = load_model(model_file)
+
+    def train(self):
+        pass
+    
+    def dump(self):
+        pass
+    
+    def evaluate(self):
+        pass
+
 if __name__ == "__main__":
     pass
     
