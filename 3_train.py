@@ -28,6 +28,15 @@ def preprocess(features, labels, nb_classes=2):
     return X_train, X_test, Y_train, Y_test, mean_value
     
 
+def imshow(X):
+    img = X.reshape(32, 16)
+    import cv2
+    img = cv2.resize(img, (100, 200), interpolation=cv2.INTER_AREA)
+    img = img.astype('uint8')
+    cv2.imshow("", img)
+    cv2.waitKey(0)
+
+
 
 if __name__ == "__main__":
     
