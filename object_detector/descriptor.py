@@ -33,7 +33,7 @@ class Image(Descriptor):
                 feature = image.copy()
             features.append(feature)
         features = np.array(features)
-        features = features.reshape(features.shape[0], features.shape[1], features.shape[2], 1) - self._mean_value
+        features = features.reshape(features.shape[0], features.shape[1], features.shape[2], 1)
         
         return features
 
