@@ -76,7 +76,13 @@ class Detector(object):
             for _, _, window in scanner_.get_next_patch(step[0], step[1], window_size[0], window_size[1]):
                 
                 # Todo: Refactoring, direct access should be denied
-                features = self.descriptor.describe([window]).reshape(1, -1)
+                # Todo : mean substraction 과 reshape 을 descriptor 에서 하자.
+                features = self.descriptor.describe([window])
+                features = features.astype("float32")
+                features -= 125.413
+                # (N, 32, 16)
+                features = features.reshape(features.shape[0], features.shape[1], features.shape[2], 1)
+                
                 prob = self.classifier.predict_proba(features)[0][1]
                 
                 if prob > threshold_prob:
