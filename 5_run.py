@@ -23,21 +23,20 @@ if __name__ == "__main__":
     #test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=args["n_test_image"])
     test_image_files = [conf["dataset"]["pos_data_dir"] + "/1.png", conf["dataset"]["pos_data_dir"] + "/20.png"]
     
-    
     # 2. Build detector and save it   
-    import object_detector.descriptor as descriptor
-    import object_detector.classifier as classifier
-    import object_detector.detector as detector
-    desc = descriptor.Image()
-    cls = classifier.ConvNet(conf["classifier"]["output_file"], conf["classifier"]["parameters"]["mean_value"])
-    d = detector.Detector(desc, cls)
+    detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], 
+                                               conf["descriptor"]["parameters"],
+                                               conf["classifier"]["algorithm"], 
+                                               conf["classifier"]["parameters"], 
+                                               conf["classifier"]["output_file"])
+
 
     # 3. Run detector on Test images 
     for image_file in test_image_files:
         test_image = cv2.imread(image_file)
         #test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
         gray = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
-        boxes, probs = d.run(test_image, 
+        boxes, probs = detector.run(test_image, 
                                     conf["detector"]["window_dim"], 
                                     conf["detector"]["window_step"], 
                                     conf["detector"]["pyramid_scale"],

@@ -43,7 +43,7 @@ class Factory(object):
         elif cls_type == "ConvNet":
             cls = classifier.ConvNet(**params)
         
-        if model_file is not None:
+        if model_file is not None and cls_type != "ConvNet":
             with open(model_file, 'rb') as f:
                 model = pickle.load(f)
                 cls._model = model
@@ -84,7 +84,8 @@ if __name__ == "__main__":
     print cls._model
 
     parameters = {
-            "model_file": "../models/detector_model.hdf5"
+            "model_file": "../models/detector_model.hdf5",
+            "mean_value": 125.0,
         }
     cls = Factory.create_classifier("ConvNet", parameters)
     print cls._model
