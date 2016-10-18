@@ -43,7 +43,7 @@ class Factory(object):
         elif cls_type == "ConvNet":
             cls = classifier.ConvNet(**params)
         
-        if model_file is not None:
+        if model_file is not None and cls_type != "ConvNet":
             with open(model_file, 'rb') as f:
                 model = pickle.load(f)
                 cls._model = model
