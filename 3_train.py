@@ -37,27 +37,7 @@ def imshow(X):
     cv2.waitKey(0)
 
 
-
-if __name__ == "__main__":
-    
-    parser = ap.ArgumentParser()
-    parser.add_argument('-c', "--config", help="Configuration File", default=DEFAULT_CONFIG_FILE)
-    parser.add_argument('-i', "--include_hnm", help="Include Hard Negative Mined Set", default=DEFAULT_HNM_OPTION, type=bool)
-    args = vars(parser.parse_args())
-    
-    conf = file_io.FileJson().read(args["config"])
-    
-    #1. Load Features and Labels
-    getter = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], 
-                                              conf["descriptor"]["parameters"], 
-                                              conf["detector"]["window_dim"], 
-                                              conf["extractor"]["output_file"])
-    getter.summary()
-    features, labels = getter.get_dataset(include_hard_negative=args["include_hnm"])
-
-    X_train, X_test, Y_train, Y_test, mean_value = preprocess(features, labels, 2)
-
-    
+def train_detector(X_train, X_test, Y_train, Y_test, save_file='detector_model.hdf5'):
     import numpy as np
     np.random.seed(1337)  # for reproducibility
       
@@ -113,19 +93,37 @@ if __name__ == "__main__":
     score = model.evaluate(X_test, Y_test, verbose=0)
     print('Test score:', score[0])
     print('Test accuracy:', score[1])
-     
-    from keras.models import load_model
- 
-    model.save('detector_model.hdf5')  # creates a HDF5 file 'my_model.h5'
-    del model  # deletes the existing model
+    model.save(save_file)  
     
-    # returns a compiled model
-    # identical to the previous one
+
+def load_model(filename):
     from keras.models import load_model
-    model = load_model('detector_model.hdf5')
+    model = load_model(filename)
     score = model.evaluate(X_test, Y_test, verbose=0)
     print('Test score:', score[0])
     print('Test accuracy:', score[1])
+    return model
+
+
+if __name__ == "__main__":
+    
+    parser = ap.ArgumentParser()
+    parser.add_argument('-c', "--config", help="Configuration File", default=DEFAULT_CONFIG_FILE)
+    parser.add_argument('-i', "--include_hnm", help="Include Hard Negative Mined Set", default=DEFAULT_HNM_OPTION, type=bool)
+    args = vars(parser.parse_args())
+    
+    conf = file_io.FileJson().read(args["config"])
+    
+    #1. Load Features and Labels
+    getter = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], 
+                                              conf["descriptor"]["parameters"], 
+                                              conf["detector"]["window_dim"], 
+                                              conf["extractor"]["output_file"])
+    getter.summary()
+    features, labels = getter.get_dataset(include_hard_negative=args["include_hnm"])
+
+    X_train, X_test, Y_train, Y_test, mean_value = preprocess(features, labels, 2)
+    train_detector(X_train, X_test, Y_train, Y_test, "temp.hdf5")
      
 
 
