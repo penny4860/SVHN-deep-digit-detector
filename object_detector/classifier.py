@@ -56,6 +56,9 @@ class ConvNet(Classifier):
         X -= self._mean_value
         return self._model.predict(X)
 
+    def predict_proba(self, X):
+        return self._model.predict_proba(X, verbose=0)
+
     def train(self):
         pass
     
