@@ -100,8 +100,8 @@ class FeatureExtractor():
         
     
     def save(self, data_file):
-        file_io.FileHDF5().write(self._features, data_file, "features")
-        file_io.FileHDF5().write(self._labels, data_file, "labels")
+        file_io.FileHDF5().write(self._features, data_file, "features", write_mode="w")
+        file_io.FileHDF5().write(self._labels, data_file, "labels", write_mode="w")
 
 
     def summary(self):
