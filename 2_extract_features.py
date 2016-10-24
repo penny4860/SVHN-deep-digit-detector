@@ -36,11 +36,11 @@ if __name__ == "__main__":
       
     # 3. Save dataset
     extractor.save(data_file=conf["extractor"]["output_file"])
-#     del extractor
-#       
-#     # 4. Test Loading dataset
-#     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], conf["detector"]["window_dim"], conf["extractor"]["output_file"])
-#     extractor.summary()
+    del extractor
+       
+    # 4. Test Loading dataset
+    extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], conf["detector"]["window_dim"], conf["extractor"]["output_file"])
+    extractor.summary()
  
  
      
