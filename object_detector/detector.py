@@ -134,10 +134,11 @@ class Detector(object):
         
         else:
             # sort by probability        
-            data = np.concatenate([np.array(probs).reshape(-1,1), np.array(features)], axis=1)
-            data = data[data[:, 0].argsort()[::-1]]
-            features = data[:, 1:]
-            probs = data[:, 0]
+            probs = np.array(probs)
+            features = np.array(features)
+            
+            features = features[probs.argsort()[::-1]]
+            probs = probs[probs.argsort()[::-1]]
         
         return features, probs
 
