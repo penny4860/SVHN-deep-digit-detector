@@ -32,7 +32,7 @@
 		"parameters":
 		{
 			"model_file": "models/detector_model.hdf5",
-			"mean_value": 125.509
+			"mean_value": 124.508
 		},
 		"output_file": "models/detector_model.hdf5"
 	},
