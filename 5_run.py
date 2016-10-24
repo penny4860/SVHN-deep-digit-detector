@@ -21,7 +21,11 @@ if __name__ == "__main__":
     conf = file_io.FileJson().read(args["config"])
 
     #test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], n_files_to_sample=args["n_test_image"])
-    test_image_files = [conf["dataset"]["pos_data_dir"] + "/1.png", conf["dataset"]["pos_data_dir"] + "/20.png"]
+    test_image_files = [conf["dataset"]["pos_data_dir"] + "/1.png",
+                         conf["dataset"]["pos_data_dir"] + "/2.png",
+                         conf["dataset"]["pos_data_dir"] + "/3.png",
+                         conf["dataset"]["pos_data_dir"] + "/4.png",
+                        conf["dataset"]["pos_data_dir"] + "/5.png"]
     
     # 2. Build detector and save it   
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], 
