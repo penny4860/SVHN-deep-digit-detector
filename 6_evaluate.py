@@ -4,7 +4,7 @@ import object_detector.factory as factory
 import object_detector.evaluate as evaluate
 import argparse as ap
 
-DEFAULT_CONFIG_FILE = "conf/car_side.json"
+DEFAULT_CONFIG_FILE = "conf/svhn.json"
 DEFAULT_N_TEST_IMAGE = "all"                 
 
 if __name__ == "__main__":
