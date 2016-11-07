@@ -5,7 +5,9 @@
 		"pos_format": "*.png",
 		"annotation_file": "../datasets/svhn/train/digitStruct.json",
 		"neg_data_dir": "../datasets/houses",
-		"neg_format": "*.jpg"
+		"neg_format": "*.jpg",
+		"neg_data_from_train": "../datasets/svhn/train/negative_images",
+		"neg_data_from_train_format": "*.png"
 	},
 
 	"extractor":
@@ -32,7 +34,7 @@
 		"parameters":
 		{
 			"model_file": "models/detector_model.hdf5",
-			"mean_value": 124.508
+			"mean_value": 84.9649
 		},
 		"output_file": "models/detector_model.hdf5"
 	},
@@ -43,7 +45,7 @@
 		"overlap_thresh": 0.3,
 		"pyramid_scale": 0.6,
 		"window_dim": [32, 16],
-		"min_probability": 0.999,
+		"min_probability": 0.5,
 		"output_file": "../datasets/output/svhn_detector.pkl"
 	},
 
@@ -51,7 +53,7 @@
 	{
 		"window_step": [4, 4],
 		"n_images" : 100,
-		"pyramid_scale" : 0.5,
+		"pyramid_scale" : 0.6,
 		"min_probability" : 0.5
 	}
 	
