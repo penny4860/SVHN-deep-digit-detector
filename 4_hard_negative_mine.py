@@ -22,17 +22,21 @@ if __name__ == "__main__":
     negative_image_files = file_io.list_files(conf["dataset"]["neg_data_dir"], 
                                               conf["dataset"]["neg_format"], 
                                               n_files_to_sample=conf["hard_negative_mine"]["n_images"])
-    
+    #2. Load negative images
+    negative_image_files += file_io.list_files(conf["dataset"]["neg_data_from_train"], 
+                                              conf["dataset"]["neg_data_from_train_format"], 
+                                              n_files_to_sample=None)
+
     #3. Get hard negative mined features
     features, probs = detector.hard_negative_mine(negative_image_files, 
                                                   conf["detector"]["window_dim"], 
                                                   conf["hard_negative_mine"]["window_step"], 
                                                   conf["hard_negative_mine"]["pyramid_scale"], 
                                                   threshold_prob=conf["hard_negative_mine"]["min_probability"])
-    
+     
     print "[HNM INFO] : number of mined negative patches {}".format(len(features))
     print "[HNM INFO] : probabilities of mined negative patches {}".format(probs)
-    
+     
     #4. Add hard negative mined features to the extractor
     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], 
                                               conf["descriptor"]["parameters"], 
@@ -44,7 +48,7 @@ if __name__ == "__main__":
     print "After adding hard-negative-mined samples"
     extractor.summary()
     extractor.save(data_file=conf["extractor"]["output_file"])
-
+ 
     del extractor
     # 4. Test Loading dataset
     extractor = factory.Factory.create_extractor(conf["descriptor"]["algorithm"], conf["descriptor"]["parameters"], conf["detector"]["window_dim"], conf["extractor"]["output_file"])

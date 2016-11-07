@@ -5,7 +5,9 @@
 		"pos_format": "*.png",
 		"annotation_file": "../datasets/svhn/train/digitStruct.json",
 		"neg_data_dir": "../datasets/houses",
-		"neg_format": "*.jpg"
+		"neg_format": "*.jpg",
+		"neg_data_from_train": "../datasets/svhn/train/negative_images",
+		"neg_data_from_train_format": "*.png"
 	},
 
 	"extractor":
@@ -51,7 +53,7 @@
 	{
 		"window_step": [4, 4],
 		"n_images" : 100,
-		"pyramid_scale" : 0.5,
+		"pyramid_scale" : 0.6,
 		"min_probability" : 0.5
 	}
 	
