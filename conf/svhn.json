@@ -45,7 +45,7 @@
 		"overlap_thresh": 0.3,
 		"pyramid_scale": 0.6,
 		"window_dim": [32, 16],
-		"min_probability": 0.999,
+		"min_probability": 0.5,
 		"output_file": "../datasets/output/svhn_detector.pkl"
 	},
 
