@@ -46,8 +46,8 @@ def train_detector(X_train, X_test, Y_train, Y_test, save_file='models/detector_
     from keras.layers import Convolution2D, MaxPooling2D
     from keras import backend as K
       
-    batch_size = 128
-    nb_epoch = 2
+    batch_size = 256
+    nb_epoch = 10
       
     # input image dimensions
     img_rows, img_cols = X_train.shape[1], X_train.shape[2]
@@ -87,8 +87,27 @@ def train_detector(X_train, X_test, Y_train, Y_test, save_file='models/detector_
     model.compile(loss='categorical_crossentropy',
                   optimizer='adadelta',
                   metrics=['accuracy'])
+    
+    from keras.preprocessing.image import ImageDataGenerator
+    datagen = ImageDataGenerator(
+            rotation_range=10,
+            width_shift_range=0.1,
+            height_shift_range=0.1,
+            zoom_range=[0.1, 0.1],
+            fill_mode='nearest')
+    
+#     datagen.fit(X_train)
+    
+    class_weight = {0 : 1.0, 1: 10.0}
+#     model.fit_generator(
+#             datagen.flow(X_train, Y_train, batch_size=batch_size),
+#             samples_per_epoch=X_train.shape[0]/10,
+#             nb_epoch=nb_epoch,
+#             validation_data=(X_test, Y_test),
+#             class_weight=class_weight
+#             )    
         
-    model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
+    model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch, class_weight=class_weight,
               verbose=1, validation_data=(X_test, Y_test))
     score = model.evaluate(X_test, Y_test, verbose=0)
     print('Test score:', score[0])
