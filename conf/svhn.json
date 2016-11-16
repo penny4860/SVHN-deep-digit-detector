@@ -5,6 +5,7 @@
 		"pos_format": "*.png",
 		"test_data_dir": "../datasets/svhn/test",
 		"extra_data_dir": "../datasets/svhn/extra",
+		"easy_data_dir": "../datasets/svhn/easy_test",
 		"annotation_file": "../datasets/svhn/train/digitStruct.json",
 		"neg_data_dir": "../datasets/houses",
 		"neg_format": "*.jpg",
