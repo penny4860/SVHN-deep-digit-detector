@@ -14,7 +14,7 @@ class Evaluator(object):
         self._dataset = None
     
     def eval_average_precision(self, test_image_files, 
-                               annotation_path, 
+                               annotation_file, 
                                detector, 
                                window_dim, window_step, pyramid_scale):
         
@@ -68,7 +68,7 @@ class Evaluator(object):
                                          show_result=False, 
                                          show_operation=False)
               
-            truth_bb = self._get_truth_bb(image_file, annotation_path)
+            truth_bbs = self._get_truth_bb(image_file, annotation_file)
             ious = self._calc_iou(boxes, truth_bb)
             is_positive = ious > 0.5
              
@@ -188,10 +188,42 @@ class Evaluator(object):
 
 
     # Todo : extractor module과 중복되는 내용 제거
-    def _get_truth_bb(self, image_file, annotation_path):
-        image_id = utils.get_file_id(image_file)
-        annotation_file = "{}/annotation_{}.mat".format(annotation_path, image_id)
-        bb = file_io.FileMat().read(annotation_file)["box_coord"][0]
-        return bb
-
+    def _get_truth_bb(self, image_file, annotation_file):
         
+        image_id = int(utils.get_file_id(image_file))
+        annotations = file_io.FileJson().read(annotation_file)
+        annotations.insert(0, None)
+        annotation = annotations[image_id]
+        
+        print image_file
+        print image_id
+        print annotation
+        
+        boxes = []
+        for box in annotation["boxes"]:
+            x1 = int(box["left"])
+            y1 = int(box["top"])
+            w = int(box["width"])
+            h = int(box["height"])
+            
+            bb = (y1, y1+h, x1, x1+w)
+            boxes.append(bb)
+        
+        return boxes
+        
+#         for annotation in annotations:
+#             
+#             patches = []
+#             labels = []
+#             for box in annotation["boxes"]:
+#                 x1 = int(box["left"])
+#                 y1 = int(box["top"])
+#                 w = int(box["width"])
+#                 h = int(box["height"])
+# 
+#                 bb = (y1, y1+h, x1, x1+w)
+
+
+
+
+
