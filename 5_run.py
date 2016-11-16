@@ -20,7 +20,8 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     conf = file_io.FileJson().read(args["config"])
 
-    test_image_files = file_io.list_files(conf["dataset"]["test_data_dir"], n_files_to_sample=args["n_test_image"])
+    test_image_files = file_io.list_files(conf["dataset"]["easy_data_dir"])
+
 
     # 2. Build detector and save it   
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], 
@@ -32,6 +33,9 @@ if __name__ == "__main__":
 
     # 3. Run detector on Test images 
     for image_file in test_image_files:
+        
+        print image_file
+        
         test_image = cv2.imread(image_file)
         #test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
         gray = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
