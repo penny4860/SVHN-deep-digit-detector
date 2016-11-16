@@ -3,6 +3,9 @@
 	{
 		"pos_data_dir": "../datasets/svhn/train",
 		"pos_format": "*.png",
+		"test_data_dir": "../datasets/svhn/test",
+		"extra_data_dir": "../datasets/svhn/extra",
+		"easy_data_dir": "../datasets/svhn/easy_test",
 		"annotation_file": "../datasets/svhn/train/digitStruct.json",
 		"neg_data_dir": "../datasets/houses",
 		"neg_format": "*.jpg",
@@ -41,11 +44,11 @@
 	
 	"detector":
 	{
-		"window_step": [4, 4],
-		"overlap_thresh": 0.3,
-		"pyramid_scale": 0.6,
+		"window_step": [1, 1],
+		"overlap_thresh": 0.2,
+		"pyramid_scale": 0.9,
 		"window_dim": [32, 16],
-		"min_probability": 0.5,
+		"min_probability": 0.7,
 		"output_file": "../datasets/output/svhn_detector.pkl"
 	},
 
