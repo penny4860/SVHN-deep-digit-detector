@@ -43,11 +43,11 @@
 	
 	"detector":
 	{
-		"window_step": [4, 4],
-		"overlap_thresh": 0.3,
-		"pyramid_scale": 0.7,
+		"window_step": [1, 1],
+		"overlap_thresh": 0.2,
+		"pyramid_scale": 0.9,
 		"window_dim": [32, 16],
-		"min_probability": 0.8,
+		"min_probability": 0.7,
 		"output_file": "../datasets/output/svhn_detector.pkl"
 	},
 
