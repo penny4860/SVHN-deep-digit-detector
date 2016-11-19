@@ -66,16 +66,23 @@ class Evaluator(object):
                                          threshold_prob=0.0, overlapThresh=overlapThresh,
                                          show_result=False, 
                                          show_operation=False)
-              
+
             truth_bbs = self._get_truth_bb(image_file, annotation_file)
-            ious = self._calc_iou(boxes, truth_bbs)
-            is_positive = ious > 0.5
+
+            # Image Size 가 윈도우보다 작아서 검출은 전혀 못한 경우
+            if boxes.tolist() == []:
+                probs_ = np.zeros((len(truth_bbs,)))
+                is_positive = np.ones((len(truth_bbs,)))
             
-            # IOU 가 50% 이상인 것 중에서 최대확률을 갖는 bounding-box n_truth 개만 truth 로 간주한다.
-            idxes = np.where(is_positive == 1)
-            is_positive = np.zeros_like(is_positive)
-            is_positive[idxes[0][0:len(truth_bbs)]] = 1
-             
+            else:
+                ious = self._calc_iou(boxes, truth_bbs)
+                is_positive = ious > 0.5
+                
+                # IOU 가 50% 이상인 것 중에서 최대확률을 갖는 bounding-box n_truth 개만 truth 로 간주한다.
+                idxes = np.where(is_positive == 1)
+                is_positive = np.zeros_like(is_positive)
+                is_positive[idxes[0][0:len(truth_bbs)]] = 1
+                 
             probs += probs_.tolist()
             gts += is_positive.tolist()
             
