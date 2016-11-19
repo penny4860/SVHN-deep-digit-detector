@@ -71,6 +71,11 @@ class Evaluator(object):
             truth_bbs = self._get_truth_bb(image_file, annotation_file)
             ious = self._calc_iou(boxes, truth_bb)
             is_positive = ious > 0.5
+            
+            # IOU 가 50% 이상인 것 중에서 최대확률을 갖는 bounding-box 1개만 truth 로 간주한다.
+            idxes = np.where(is_positive == 1)
+            is_positive = np.zeros_like(is_positive)
+            is_positive[idxes[0][0]] = 1
              
             patches += boxes.tolist()
             probs += probs_.tolist()
