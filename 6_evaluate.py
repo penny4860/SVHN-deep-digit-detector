@@ -39,7 +39,7 @@ if __name__ == "__main__":
                                detector,
                                conf["detector"]["window_dim"],
                                conf["detector"]["window_step"],
-                               conf["detector"]["pyramid_scale"])
+                               conf["detector"]["pyramid_scale"],conf["detector"]["overlap_thresh"])
     print "Average Precision : {}".format(ap)
     evaluator.plot_recall_precision()
     # print evaluator.dataset
