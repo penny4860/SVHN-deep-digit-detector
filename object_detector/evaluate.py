@@ -16,7 +16,7 @@ class Evaluator(object):
     def eval_average_precision(self, test_image_files, 
                                annotation_file, 
                                detector, 
-                               window_dim, window_step, pyramid_scale):
+                               window_dim, window_step, pyramid_scale, overlapThresh):
         
         """Public function to calculate average precision of the detector.
 
@@ -63,7 +63,7 @@ class Evaluator(object):
 
             boxes, probs_ = detector.run(test_image, 
                                          window_dim, window_step, pyramid_scale, 
-                                         threshold_prob=0.0,
+                                         threshold_prob=0.0, overlapThresh=overlapThresh,
                                          show_result=False, 
                                          show_operation=False)
               
