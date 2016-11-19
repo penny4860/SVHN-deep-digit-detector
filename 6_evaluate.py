@@ -35,8 +35,8 @@ if __name__ == "__main__":
     # 3. Evaluate average precision     
     evaluator = evaluate.Evaluator()
     ap = evaluator.eval_average_precision(test_image_files, 
-                               conf["dataset"]['annotations_dir'], 
-                               detector, 
+                               conf["dataset"]["annotation_file"],
+                               detector,
                                conf["detector"]["window_dim"],
                                conf["detector"]["window_step"],
                                conf["detector"]["pyramid_scale"])
