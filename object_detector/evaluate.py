@@ -69,7 +69,7 @@ class Evaluator(object):
                                          show_operation=False)
               
             truth_bbs = self._get_truth_bb(image_file, annotation_file)
-            ious = self._calc_iou(boxes, truth_bb)
+            ious = self._calc_iou(boxes, truth_bbs)
             is_positive = ious > 0.5
             
             # IOU 가 50% 이상인 것 중에서 최대확률을 갖는 bounding-box 1개만 truth 로 간주한다.
@@ -166,6 +166,9 @@ class Evaluator(object):
         return inter_precision
     
     def _calc_iou(self, boxes, truth_box):
+        
+        truth_box = truth_box[0]
+        
         y1 = boxes[:, 0]
         y2 = boxes[:, 1]
         x1 = boxes[:, 2]
