@@ -214,10 +214,6 @@ class Evaluator(object):
         annotations.insert(0, None)
         annotation = annotations[image_id]
         
-        print image_file
-        print image_id
-        print annotation
-        
         boxes = []
         for box in annotation["boxes"]:
             x1 = int(box["left"])
