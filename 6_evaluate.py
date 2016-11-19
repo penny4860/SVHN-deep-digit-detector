@@ -5,7 +5,7 @@ import object_detector.evaluate as evaluate
 import argparse as ap
 
 DEFAULT_CONFIG_FILE = "conf/svhn.json"
-DEFAULT_N_TEST_IMAGE = "all"                 
+DEFAULT_N_TEST_IMAGE = "10"                 
 
 if __name__ == "__main__":
     
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     
     conf = file_io.FileJson().read(DEFAULT_CONFIG_FILE)
-    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
+    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"], recursive_option=False)
     
     if args["n_test_image"] == "all":
         pass
