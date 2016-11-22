@@ -5,7 +5,7 @@ import object_detector.evaluate as evaluate
 import argparse as ap
 
 DEFAULT_CONFIG_FILE = "conf/svhn.json"
-DEFAULT_N_TEST_IMAGE = "all"                 
+DEFAULT_N_TEST_IMAGE = "10"                 
 
 if __name__ == "__main__":
     
@@ -16,14 +16,14 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     
     conf = file_io.FileJson().read(DEFAULT_CONFIG_FILE)
-    test_image_files = file_io.list_files(conf["dataset"]["pos_data_dir"])
+    test_image_files = file_io.list_files(conf["dataset"]["test_data_dir"], recursive_option=False)
     
     if args["n_test_image"] == "all":
         pass
     else:
         n_test_imgs = int(args["n_test_image"])
         test_image_files = test_image_files[:n_test_imgs]
-    print len(test_image_files)
+    print test_image_files
 
     # 2. Build detector
     detector = factory.Factory.create_detector(conf["descriptor"]["algorithm"], 
@@ -35,14 +35,14 @@ if __name__ == "__main__":
     # 3. Evaluate average precision     
     evaluator = evaluate.Evaluator()
     ap = evaluator.eval_average_precision(test_image_files, 
-                               conf["dataset"]['annotations_dir'], 
-                               detector, 
+                               conf["dataset"]["annotation_file_test"],
+                               detector,
                                conf["detector"]["window_dim"],
                                conf["detector"]["window_step"],
-                               conf["detector"]["pyramid_scale"])
+                               conf["detector"]["pyramid_scale"],conf["detector"]["overlap_thresh"])
     print "Average Precision : {}".format(ap)
     evaluator.plot_recall_precision()
-    # print evaluator.dataset
+    print evaluator.dataset
     
     
     

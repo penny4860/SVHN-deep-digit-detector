@@ -103,12 +103,12 @@ def get_file_id(filename):
 
     Examples
     --------
-    >>> filename = "C:\Windows\System32\cmd.exe\image_0122.jpg"
+    >>> filename = "C:\Windows\System32\cmd.exe/122.png"
     >>> get_file_id(filename)
-    '0122'
+    '122'
 
     """
-    file_id = filename[filename.rfind("_") + 1:filename.rfind(".")]
+    file_id = filename[filename.rfind("/") + 1:filename.rfind(".")]
     return file_id
 
 if __name__ == "__main__":
