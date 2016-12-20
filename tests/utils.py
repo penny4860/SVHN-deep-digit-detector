@@ -1,0 +1,163 @@
+#-*- coding: utf-8 -*-
+import cv2
+import os
+import glob
+import random
+import sklearn.feature_extraction.image as skimg
+
+def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
+    """Crop patches from an image with desired bounding box.
+
+    Parameters
+    ----------
+    image : array, shape (n_rows, n_cols, n_channels) or (n_rows, n_cols)
+        Input image to crop.
+        
+    bb : tuple, (y1, y2, x1, x2)
+        Desired bounding box.
+    
+    dst_size : tuple, (h_size, w_size)
+        Desired size for returning bounding box.
+    
+    Returns
+    ----------
+    patches : array, shape of dst_size
+
+    Examples
+    --------
+    >>> from skimage import data
+    >>> img = data.camera()        # Get Sample Image
+    >>> patch = crop_bb(img, (0,10, 10, 20), 2, (6,6))
+    >>> patch
+    array([[157, 157, 158, 157, 157, 158],
+           [158, 158, 158, 158, 158, 156],
+           [157, 158, 158, 157, 158, 156],
+           [158, 158, 158, 158, 158, 156],
+           [158, 156, 155, 155, 157, 155],
+           [157, 155, 156, 156, 156, 152]], dtype=uint8)
+    
+    """
+    
+    h = image.shape[0]
+    w = image.shape[1]
+
+    (y1, y2, x1, x2) = bb
+    
+    (x1, y1) = (max(x1 - padding, 0), max(y1 - padding, 0))
+    (x2, y2) = (min(x2 + padding, w), min(y2 + padding, h))
+    
+    patch = image[y1:y2, x1:x2]
+    
+    # Caution : dst_size is ordered in (y, x) but desired parameter in cv2.resize() is (x, y) order.
+    desired_ysize = dst_size[0]
+    desired_xsize = dst_size[1]
+    patch = cv2.resize(patch, (desired_xsize, desired_ysize), interpolation=cv2.INTER_AREA)
+ 
+    return patch
+
+def crop_random(image, dst_size=(32, 32), n_patches=5):
+    """Randomly crop patches from an image as desired size.
+
+    Parameters
+    ----------
+    image : array, shape (n_rows, n_cols, n_channels) or (n_rows, n_cols)
+        Input image to crop.
+        
+    dst_size : tuple, (h_size, w_size)
+        Desired size for croppig.
+    
+    max_patches : int
+        Desired number of patches to crop
+    
+    Returns
+    ----------
+    patches : array, shape (max_patches, n_rows, n_cols, n_channels) or (max_patches, n_rows, n_cols)
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import sklearn.feature_extraction.image as skimg
+    >>> one_image = np.arange(100).reshape((10, 10))
+    >>> patches = crop_random(one_image, (5,5), 2)
+    >>> patches.shape
+    (2L, 5L, 5L)
+    
+    """
+    
+    patches = skimg.extract_patches_2d(image, 
+                                       dst_size,
+                                       max_patches=n_patches)
+    return patches
+
+
+def get_file_id(filename):
+    """Get file id from filename which has "($var)_($id).($extension)" format.
+    ($var) and ($extension) can be allowed anything format.
+    
+    Parameters
+    ----------
+    filename : str
+        Input filename to extract id
+        
+    Returns
+    ----------
+    file_id : str
+        ($id) from "($var)_($id).($extension)" format
+
+    Examples
+    --------
+    >>> filename = "C:\Windows\System32\cmd.exe/122.png"
+    >>> get_file_id(filename)
+    '122'
+
+    """
+    file_id = filename[filename.rfind("/") + 1:filename.rfind(".")]
+    return file_id
+
+def list_files(directory, pattern="*.*", n_files_to_sample=None, recursive_option=True):
+    """list files in a directory matched in defined pattern.
+    Parameters
+    ----------
+    directory : str
+        filename of json file
+    pattern : str
+        regular expression for file matching
+    
+    n_files_to_sample : int or None
+        number of files to sample randomly and return.
+        If this parameter is None, function returns every files.
+    
+    recursive_option : boolean
+        option for searching subdirectories. If this option is True, 
+        function searches all subdirectories recursively.
+        
+    Returns
+    ----------
+    conf : dict
+        dictionary containing contents of json file
+    Examples
+    --------
+    """
+
+    if recursive_option == True:
+        dirs = [path for path, _, _ in os.walk(directory)]
+    else:
+        dirs = [directory]
+    
+    files = []
+    for dir_ in dirs:
+        for p in glob.glob(os.path.join(dir_, pattern)):
+            files.append(p)
+    
+    if n_files_to_sample is not None:
+        files = random.sample(files, n_files_to_sample)
+
+    return files
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+    
+    
+
