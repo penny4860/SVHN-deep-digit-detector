@@ -67,3 +67,20 @@ def plot_bounding_boxes(img, bounding_boxes):
     plt.show()
 
 
+def plot_images(images):
+    n_images = len(images)
+    n_rows = int(np.sqrt(n_images)) + 1
+    n_cols = int(np.sqrt(n_images)) + 2
+    
+    # plot original image 
+    plt.subplot(n_rows, n_cols, n_rows * n_cols-1)
+      
+    for i, img in enumerate(images):
+        clone = img.copy()
+        plt.subplot(n_rows, n_cols, i+1), plt.imshow(img)
+        plt.title('Contours'), plt.xticks([]), plt.yticks([])
+     
+    plt.show()
+
+
+
