@@ -46,6 +46,21 @@ def load_images(folder_name='../../datasets/svhn/train', n_images=None):
 images = load_images(folder_name='../../datasets/svhn/train', n_images=2)
 
 # 2. MSER 로 region detection
+for img in images:
+    mser = cv2.MSER(_delta = 1)
+    regions = mser.detect(img, None)
+
+    # loop over the contours
+    for region in regions:
+        clone = img.copy()
+        # fit a bounding box to the contour
+        (x, y, w, h) = cv2.boundingRect(region.reshape(-1,1,2))
+        if h > w:
+            cv2.rectangle(clone, (x, y), (x + w, y + h), (0, 255, 0), 1)
+            cv2.imshow('img', clone)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
 
 
 # 3. Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
