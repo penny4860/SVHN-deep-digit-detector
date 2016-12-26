@@ -23,14 +23,10 @@ for image_file in files:
     
     gts, labels = ann.get_annotation(image_file, annotation_file)
     
-    for ground_truth in gts:
-        y1, y2, x1, x2 = ground_truth
-        
-        clone = image.copy()
-        cv2.rectangle(clone, (x1, y1), (x2, y2), (255, 0, 0), 1)
-    plt.imshow(clone)
-    plt.title('Ground Truth'), plt.xticks([]), plt.yticks([])
-    plt.show()
+    
+    import show
+    show.plot_bounding_boxes(image, gts)
+    
     
     
 
