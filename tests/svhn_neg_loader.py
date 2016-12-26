@@ -7,8 +7,8 @@ import cv2
 # 1. file 을 load
 files = loader.load_files(folder_name='../../datasets/svhn/train', n_images=2)
 
+annotations = file_io.FileJson().read(annotation_file)
 
-print files
 
 detector = rp.MserDetector()
 for image_file in files:
