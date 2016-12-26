@@ -2,7 +2,7 @@
 
 import numpy as np
     
-def _calc_iou(boxes, truth_boxes):
+def calc_iou(boxes, truth_boxes):
     
     ious_for_each_gt = []
     
