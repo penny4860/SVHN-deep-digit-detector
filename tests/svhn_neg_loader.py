@@ -8,22 +8,26 @@ from matplotlib import pyplot as plt
 
 import re
 
-def tryint(s):
-    try:
-        return int(s)
-    except:
-        return s
 
-def alphanum_key(s):
-    """ Turn a string into a list of string and number chunks.
-        "z23a" -> ["z", 23, "a"]
-    """
-    return [ tryint(c) for c in re.split('([0-9]+)', s) ]
+class FileSorter:
+    def __init__(self):
+        pass
+    
+    def sort(self, list_of_strs):
+        list_of_strs.sort(key=self._alphanum_key)
 
-def sort_nicely(l):
-    """ Sort the given list in the way that humans expect.
-    """
-    l.sort(key=alphanum_key)
+    def _tryint(self, s):
+        try:
+            return int(s)
+        except:
+            return s
+    
+    def _alphanum_key(self, s):
+        """ Turn a string into a list of string and number chunks.
+            "z23a" -> ["z", 23, "a"]
+        """
+        return [ self._tryint(c) for c in re.split('([0-9]+)', s) ]
+
 
 def load_images(folder_name='../../datasets/svhn/train', n_images=None):
     """
@@ -31,7 +35,7 @@ def load_images(folder_name='../../datasets/svhn/train', n_images=None):
         images (list of image (n_rows, n_cols))
     """
     files = utils.list_files(folder_name, pattern="*.png", n_files_to_sample=None, recursive_option=False)
-    sort_nicely(files)
+    FileSorter().sort(files)
     
     if n_images is not None:
         files = files[:n_images]
