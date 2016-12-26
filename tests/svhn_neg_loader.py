@@ -2,20 +2,23 @@
 
 import region_proposal as rp
 import image_loader as loader
+import cv2
 
-# 1. svhn natural image 를 모두 load
-images = loader.load_images(folder_name='../../datasets/svhn/train', n_images=2)
+# 1. file 을 load
+files = loader.load_files(folder_name='../../datasets/svhn/train', n_images=2)
 
-boxes = []
 
-# 2. MSER 로 region detection
+print files
+
 detector = rp.MserDetector()
+for image_file in files:
+    image = cv2.imread(image_file)
+    candidates = detector.detect(image, True)
+    
+    
+    # gts 를 구한다.
+    
 
-for img in images:
-    bounding_boxes = detector.detect(img, True)
-    boxes.append(bounding_boxes)
-
-print len(boxes), len(boxes[0]), len(boxes[1])
 
 # 3. digitStruct.json file load
 

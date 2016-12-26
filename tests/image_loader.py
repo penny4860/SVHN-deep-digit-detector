@@ -23,17 +23,18 @@ class FileSorter:
         """
         return [ self._tryint(c) for c in re.split('([0-9]+)', s) ]
 
+def load_files(folder_name='../../datasets/svhn/train', n_images=None):
+    files = utils.list_files(folder_name, pattern="*.png", n_files_to_sample=None, recursive_option=False)
+    FileSorter().sort(files)
+    if n_images is not None:
+        files = files[:n_images]
+    return files
 
-def load_images(folder_name='../../datasets/svhn/train', n_images=None):
+def load_images(files, n_images=None):
     """
     Returns 
         images (list of image (n_rows, n_cols))
     """
-    files = utils.list_files(folder_name, pattern="*.png", n_files_to_sample=None, recursive_option=False)
-    FileSorter().sort(files)
-    
-    if n_images is not None:
-        files = files[:n_images]
     
     images = []
     for image_file in files:
