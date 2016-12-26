@@ -32,7 +32,8 @@ class MserDetector:
         bbs = []
         for i, region in enumerate(regions):
             (x, y, w, h) = cv2.boundingRect(region.reshape(-1,1,2))
-            bbs.append((x, y, w, h))
+            bbs.append((y, y+h, x, x+w))
+            
         return bbs
     
     def _plot(self, img, regions):
