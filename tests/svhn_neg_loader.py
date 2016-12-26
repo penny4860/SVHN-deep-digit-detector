@@ -5,27 +5,49 @@ import scipy.io as io
 import cv2
 import utils
 
-files = utils.list_files('../../datasets/svhn/train/negative_images', pattern="*.png", n_files_to_sample=5000, recursive_option=False)
+import re
 
-print len(files)
+def tryint(s):
+    try:
+        return int(s)
+    except:
+        return s
 
-patch_size = [32, 32]
-n_samples_per_img = 10
+def alphanum_key(s):
+    """ Turn a string into a list of string and number chunks.
+        "z23a" -> ["z", 23, "a"]
+    """
+    return [ tryint(c) for c in re.split('([0-9]+)', s) ]
 
-negative_images = []
+def sort_nicely(l):
+    """ Sort the given list in the way that humans expect.
+    """
+    l.sort(key=alphanum_key)
 
-for image_file in files:
-    image = cv2.imread(image_file)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def load_images(folder_name='../../datasets/svhn/train', n_images=None):
+    """
+    Returns 
+        images (list of image (n_rows, n_cols))
+    """
+    files = utils.list_files(folder_name, pattern="*.png", n_files_to_sample=None, recursive_option=False)
+    sort_nicely(files)
     
-    if image.shape[0] >= patch_size[0] and image.shape[1] >= patch_size[0]:
-        patches = utils.crop_random(image, patch_size, n_samples_per_img)
-        negative_images.append(patches)
+    if n_images is not None:
+        files = files[:n_images]
     
-negative_images = np.concatenate(negative_images, axis=0)
-print negative_images.shape
-# (39350, 32, 32)
+    images = []
+    for image_file in files:
+        image = cv2.imread(image_file)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        images.append(image)
+    return images
 
-cv2.imshow("", negative_images[-2])
-cv2.waitKey()
+# 1. svhn natural image 를 모두 load
+images = load_images(folder_name='../../datasets/svhn/train', n_images=2)
+
+# 2. MSER 로 region detection
+
+
+# 3. Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
+
 
