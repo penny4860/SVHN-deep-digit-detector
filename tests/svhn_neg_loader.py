@@ -2,7 +2,6 @@
 
 import region_proposal as rp
 import file_io
-import image_loader as loader
 import cv2
 import os
 
@@ -45,8 +44,7 @@ def get_annotation(filename, annotation_file):
         print "Annotation file should be sorted!!!!"
 
 # 1. file 을 load
-# Todo : refactoring : load_files 함수를 file_io 모듈에 넣자. 
-files = loader.load_files(folder_name='../../datasets/svhn/train', n_images=N_IMAGES)
+files = file_io.list_files(directory='../../datasets/svhn/train', n_files_to_sample=N_IMAGES, random_order=False)
 annotation_file = "../../datasets/svhn/train/digitStruct.json"
 detector = rp.MserDetector()
 
