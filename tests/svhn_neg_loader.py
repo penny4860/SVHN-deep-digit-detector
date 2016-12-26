@@ -22,20 +22,27 @@ for image_file in files:
     image = cv2.imread(image_file)
     candidates = detector.detect(image, True)
     
-    gts, labels = ann.get_annotation(image_file, annotation_file)
+    gts, _ = ann.get_annotation(image_file, annotation_file)
     show.plot_bounding_boxes(image, gts)
+
+    # 3. Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
+    # gts, candidates 의 overlap 을 구한다.
     
     
     
-
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
-# 3. digitStruct.json file load
 
-
-
-# 3. Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
 
 
