@@ -36,7 +36,7 @@ class MserDetector:
             (x, y, w, h) = cv2.boundingRect(region.reshape(-1,1,2))
             bbs.append((y, y+h, x, x+w))
             
-        return bbs
+        return np.array(bbs)
     
     def _plot(self, img, regions):
         show.plot_contours(img, regions)
