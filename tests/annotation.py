@@ -2,6 +2,7 @@
 
 import file_io
 import os
+import numpy as np
 
 def get_bbs(annotation):
     
@@ -19,7 +20,7 @@ def get_bbs(annotation):
         
         bbs.append(bb)
         labels.append(label)
-    return bbs, labels
+    return np.array(bbs), np.array(labels)
         
 def get_annotation(filename, annotation_file):
     annotations = file_io.FileJson().read(annotation_file)
