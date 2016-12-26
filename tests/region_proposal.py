@@ -3,6 +3,8 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 
+import show
+
 
 class MserDetector:
 
@@ -37,7 +39,6 @@ class MserDetector:
         return bbs
     
     def _plot(self, img, regions):
-        import show
         show.plot_contours(img, regions)
         
 
