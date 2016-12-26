@@ -42,8 +42,8 @@ for image_file in files:
 
 negative_samples = np.array(negative_samples)    
 print negative_samples.shape
-    
-    
+
+show.plot_images(negative_samples)
     
     
     
