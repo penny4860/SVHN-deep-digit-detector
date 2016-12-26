@@ -4,6 +4,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 
+# Todo : 그림 그리는 방식을 데코레이터 패턴이로 정리해보자.
+
+def draw_contour(image, region):
+    image_drawn = image.copy()
+    cv2.drawContours(image_drawn, region.reshape(-1,1,2), -1, (0, 255, 0), 1)
+    return image_drawn
+    
+def draw_box(image, box):
+    image_drawn = image.copy()
+    y1, y2, x1, x2 = box
+    cv2.rectangle(image_drawn, (x1, y1), (x2, y2), (255, 0, 0), 1)
+    return image_drawn
+
+
 def plot_contours(img, regions):
     n_regions = len(regions)
     n_rows = int(np.sqrt(n_regions)) + 1
@@ -16,16 +30,18 @@ def plot_contours(img, regions):
       
     for i, region in enumerate(regions):
         clone = img.copy()
-        cv2.drawContours(clone, region.reshape(-1,1,2), -1, (0, 255, 0), 1)
+        clone = draw_contour(clone, region)
+        
         (x, y, w, h) = cv2.boundingRect(region.reshape(-1,1,2))
-        cv2.rectangle(clone, (x, y), (x + w, y + h), (255, 0, 0), 1)
+        clone = draw_box(clone, (y, y+h, x, x+w))
+        
         plt.subplot(n_rows, n_cols, i+1), plt.imshow(clone)
         plt.title('Contours'), plt.xticks([]), plt.yticks([])
      
     plt.show()
 
 
-def plot_bounding_box(img, bounding_boxes):
+def plot_bounding_boxes(img, bounding_boxes):
     """
     Parameters:
         img (ndarray)
@@ -44,9 +60,7 @@ def plot_bounding_box(img, bounding_boxes):
       
     for i, box in enumerate(bounding_boxes):
         clone = img.copy()
-        
-        y1, y2, x1, x2 = box
-        cv2.rectangle(clone, (x1, y1), (x2, y2), (255, 0, 0), 1)
+        clone = draw_box(clone, box)
         plt.subplot(n_rows, n_cols, i+1), plt.imshow(clone)
         plt.title('Contours'), plt.xticks([]), plt.yticks([])
      
