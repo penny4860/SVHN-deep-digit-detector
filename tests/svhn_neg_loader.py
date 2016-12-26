@@ -5,6 +5,7 @@ import file_io
 import cv2
 import os
 import annotation as ann
+import show
 
 import matplotlib.pyplot as plt
 
@@ -22,9 +23,6 @@ for image_file in files:
     candidates = detector.detect(image, True)
     
     gts, labels = ann.get_annotation(image_file, annotation_file)
-    
-    
-    import show
     show.plot_bounding_boxes(image, gts)
     
     
