@@ -15,20 +15,29 @@ def load_svhn_images(file_name):
     # (N, 1)
     return images, labels
 
+
 images, labels = load_svhn_images(MAT_FILE)    
-print images.shape, labels.shape
-# (73257L, 32L, 32L, 3L) (73257L, 1L)
 
 import digit_detector.file_io as file_io
 
-#     def write(self, data, filename, db_name, write_mode="a"):
+file_io.FileHDF5().write(images, "svhn_dataset.hdf5", "features", "w")
+file_io.FileHDF5().write(labels, "svhn_dataset.hdf5", "labels", "a")
 
-file_io.FileHDF5().write(images, "dataset.hdf5", "positive")
+features = file_io.FileHDF5().read("svhn_dataset.hdf5", "features")
+labels_ = file_io.FileHDF5().read("svhn_dataset.hdf5", "labels")
 
+print images.shape, labels.shape
+print features.shape
 
+if np.array_equal(images, features):
+    print "True"
+else:
+    print "False"
 
-
-
+if np.array_equal(labels_, labels):
+    print "True"
+else:
+    print "False"
 
 
 
