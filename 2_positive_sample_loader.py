@@ -17,8 +17,18 @@ def load_svhn_images(file_name):
 
 images, labels = load_svhn_images(MAT_FILE)    
 print images.shape, labels.shape
+# (73257L, 32L, 32L, 3L) (73257L, 1L)
 
-# cv2.imshow("", images[0])
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+import digit_detector.file_io as file_io
+
+#     def write(self, data, filename, db_name, write_mode="a"):
+
+file_io.FileHDF5().write(images, "dataset.hdf5", "positive")
+
+
+
+
+
+
+
 
