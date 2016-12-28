@@ -44,7 +44,7 @@ for i, image_file in enumerate(files):
     
     # negative box 를 crop, resize to 32x32 해서 sample 에 추가
     for bb in negative_boxes:
-        sample = utils.crop_bb(image, bb, padding=0, dst_size=(32,32))
+        sample = utils.crop_bb(image, bb, pad_size=(0,0), dst_size=(32,32))
         negative_samples.append(sample)
     
     print image_file
