@@ -110,7 +110,7 @@ class FileHDF5(File):
         
         return np_data
     
-    def write(self, data, filename, db_name, write_mode="a"):
+    def write(self, data, filename, db_name, write_mode="a", dtype="float"):
         """Write data to hdf5 format.
         
         Parameters
@@ -128,7 +128,7 @@ class FileHDF5(File):
         self._check_directory(filename)        
         # todo : overwrite check
         db = h5py.File(filename, write_mode)
-        dataset = db.create_dataset(db_name, data.shape, dtype="float")
+        dataset = db.create_dataset(db_name, data.shape, dtype=dtype)
         dataset[:] = data[:]
         db.close()
 
