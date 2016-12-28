@@ -4,7 +4,7 @@ import cv2
 from matplotlib import pyplot as plt
 
 import show
-
+import utils
 
 class MserDetector:
 
@@ -41,6 +41,26 @@ class MserDetector:
     def _plot(self, img, regions):
         show.plot_contours(img, regions)
         
+        
+def propose_patches(image, dst_size=(32, 32)):
+    detector = MserDetector()
+    candidates_bbs = detector.detect(image, False)
+
+    patches = []
+    for bb in candidates_bbs:
+        y1, y2, x1, x2 = bb
+        width = x2 - x1 + 1
+        height = y2 - y1 + 1
+        
+        if width >= height:
+            pad_y = 0
+            pad_x = 0
+        else:
+            pad_x = int((height-width)/2)
+            pad_y = 0
+        sample = utils.crop_bb(image, bb, pad_size=(pad_y ,pad_x), dst_size=dst_size)
+        patches.append(sample)
+    return np.array(patches)
 
 
 
