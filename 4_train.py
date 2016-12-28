@@ -44,7 +44,7 @@ def train_detector(X_train, X_test, Y_train, Y_test, save_file='models/detector_
     from keras import backend as K
       
     batch_size = 128
-    nb_epoch = 2
+    nb_epoch = 10
       
     # input image dimensions
     img_rows, img_cols = X_train.shape[1], X_train.shape[2]
@@ -53,7 +53,7 @@ def train_detector(X_train, X_test, Y_train, Y_test, save_file='models/detector_
     # size of pooling area for max pooling
     pool_size = (2, 2)
     # convolution kernel size
-    kernel_size = (3, 3)
+    kernel_size = (3, 3) 
     input_shape = (img_rows, img_cols, 1)
 
 
