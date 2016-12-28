@@ -18,11 +18,11 @@ def load_svhn_images(file_name):
 
 images, labels = load_svhn_images(MAT_FILE)    
 
-file_io.FileHDF5().write(images, "svhn_dataset.hdf5", "features", "w")
-file_io.FileHDF5().write(labels, "svhn_dataset.hdf5", "labels", "a")
+file_io.FileHDF5().write(images, "positive_images.hdf5", "images", "w", dtype="uint8")
+file_io.FileHDF5().write(labels, "positive_images.hdf5", "labels", "a", dtype="int")
 
-features = file_io.FileHDF5().read("svhn_dataset.hdf5", "features")
-labels_ = file_io.FileHDF5().read("svhn_dataset.hdf5", "labels")
+features = file_io.FileHDF5().read("positive_images.hdf5", "images")
+labels_ = file_io.FileHDF5().read("positive_images.hdf5", "labels")
 
 if np.array_equal(images, features):
     print "True"

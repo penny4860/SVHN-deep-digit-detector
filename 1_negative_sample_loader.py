@@ -57,9 +57,8 @@ negative_samples = np.array(negative_samples)
 print negative_samples.shape
 labels = np.zeros((len(negative_samples), 1))
 
-file_io.FileHDF5().write(negative_samples, "svhn_dataset.hdf5", "features", "a")
-file_io.FileHDF5().write(labels, "svhn_dataset.hdf5", "labels", "a")
-
+file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "features", "w", dtype="uint8")
+file_io.FileHDF5().write(labels, "negative_images.hdf5", "labels", "a", dtype="int")
 
 # show.plot_images(negative_samples)
     
