@@ -5,7 +5,7 @@ import glob
 import random
 import sklearn.feature_extraction.image as skimg
 
-def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
+def crop_bb(image, bb, pad_size=(10, 10), dst_size=(32, 32)):
     """Crop patches from an image with desired bounding box.
 
     Parameters
@@ -15,6 +15,8 @@ def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
         
     bb : tuple, (y1, y2, x1, x2)
         Desired bounding box.
+        
+    pad_size : tuple, (h_pad, w_pad)
     
     dst_size : tuple, (h_size, w_size)
         Desired size for returning bounding box.
@@ -27,7 +29,7 @@ def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
     --------
     >>> from skimage import data
     >>> img = data.camera()        # Get Sample Image
-    >>> patch = crop_bb(img, (0,10, 10, 20), 2, (6,6))
+    >>> patch = crop_bb(img, (0,10, 10, 20), (2,2), (6,6))
     >>> patch
     array([[157, 157, 158, 157, 157, 158],
            [158, 158, 158, 158, 158, 156],
@@ -43,8 +45,11 @@ def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
 
     (y1, y2, x1, x2) = bb
     
-    (x1, y1) = (max(x1 - padding, 0), max(y1 - padding, 0))
-    (x2, y2) = (min(x2 + padding, w), min(y2 + padding, h))
+    pad_y = pad_size[0]
+    pad_x = pad_size[1]
+    
+    (x1, y1) = (max(x1 - pad_x, 0), max(y1 - pad_y, 0))
+    (x2, y2) = (min(x2 + pad_x, w), min(y2 + pad_y, h))
     
     patch = image[y1:y2, x1:x2]
     
@@ -54,6 +59,7 @@ def crop_bb(image, bb, padding=10, dst_size=(32, 32)):
     patch = cv2.resize(patch, (desired_xsize, desired_ysize), interpolation=cv2.INTER_AREA)
  
     return patch
+
 
 def crop_random(image, dst_size=(32, 32), n_patches=5):
     """Randomly crop patches from an image as desired size.
