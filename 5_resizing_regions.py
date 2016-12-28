@@ -16,33 +16,44 @@ import digit_detector.region_proposal as rp
 import digit_detector.show as show
 import digit_detector.utils as utils
 
+def propose_patches(image, dst_size=(32, 32)):
+    detector = rp.MserDetector()
+    candidates_bbs = detector.detect(img, False)
 
+    patches = []
+    for bb in candidates_bbs:
+        y1, y2, x1, x2 = bb
+        width = x2 - x1 + 1
+        height = y2 - y1 + 1
+        
+        if width >= height:
+            pad_y = 0
+            pad_x = 0
+        else:
+            pad_x = int((height-width)/2)
+            pad_y = 0
+        sample = utils.crop_bb(img, bb, pad_size=(pad_y ,pad_x), dst_size=(32,32))
+        patches.append(sample)
+    return np.array(patches)
+
+# 1. image files
 img_file = img_files[0]
+
+# 2. image
 img = cv2.imread(img_file)
+#img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-detector = rp.MserDetector()
-candidates_bbs = detector.detect(img, False)
+# 3. region proposals (N, 32, 32, 3)
+patches = propose_patches(img)
+show.plot_images(patches)
 
-samples = []
+# 4. Convert to gray
+patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
+patches = np.array(patches)
+patches = patches.reshape(-1, 32, 32, 1)
+print patches.shape
 
-for bb in candidates_bbs:
-    y1, y2, x1, x2 = bb
-    width = x2 - x1 + 1
-    height = y2 - y1 + 1
-    
-    if width >= height:
-        pad_y = 0
-        pad_x = 0
-    else:
-        pad_x = int((height-width)/2)
-        pad_y = 0
-    sample = utils.crop_bb(img, bb, pad_size=(pad_y ,pad_x), dst_size=(32,32))
-    samples.append(sample)
-
-print len(samples)
-show.plot_images(samples)
-
-
+# 5. Run pre-trained classifier
 
 
 
