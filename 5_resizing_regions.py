@@ -7,6 +7,14 @@
 #         natural 영상의 edge 부에서의 처리 ?
 #            - 균등하게 분할 할 수 있는 만큼만 crop 해서 rescale
 
+def load_model(filename):
+    from keras.models import load_model
+    model = load_model(filename)
+#     score = model.evaluate(X_test, Y_test, verbose=0)
+#     print('Test score:', score[0])
+#     print('Test accuracy:', score[1])
+    return model
+
 img_files = ['imgs/1.png', 'imgs/2.png']
 
 import cv2
@@ -33,7 +41,9 @@ patches = patches.reshape(-1, 32, 32, 1)
 print patches.shape
 
 # 5. Run pre-trained classifier
+model = load_model("models/detector_model.hdf5")
+print "Done"
 
-
+model.
 
 
