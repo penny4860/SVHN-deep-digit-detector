@@ -41,7 +41,7 @@ def plot_contours(img, regions):
     plt.show()
 
 
-def plot_bounding_boxes(img, bounding_boxes):
+def plot_bounding_boxes(img, bounding_boxes, titles=None):
     """
     Parameters:
         img (ndarray)
@@ -62,7 +62,8 @@ def plot_bounding_boxes(img, bounding_boxes):
         clone = img.copy()
         clone = draw_box(clone, box)
         plt.subplot(n_rows, n_cols, i+1), plt.imshow(clone)
-        plt.title('Contours'), plt.xticks([]), plt.yticks([])
+        if titles:
+            plt.title("{0:.2f}".format(titles[i])), plt.xticks([]), plt.yticks([])
      
     plt.show()
 
