@@ -3,6 +3,13 @@
 import numpy as np
     
 def calc_iou(boxes, truth_boxes):
+    """
+    Parameters
+        boxes (ndarray of shape, (N, 4))
+        truth_boxes (ndarray of shape, (M, 4))
+    Returns:
+        ious (n_boxes,)
+    """
     
     ious_for_each_gt = []
     
