@@ -16,7 +16,7 @@ import digit_detector.eval as eval
 import digit_detector.utils as utils
 
 
-N_IMAGES = 10000
+N_IMAGES = None
 DIR = '../datasets/svhn/train'
 
 # 1. file 을 load
@@ -41,14 +41,15 @@ for i, image_file in enumerate(files):
 #     show.plot_bounding_boxes(image, bbs[overlaps<0.05]) #negative sample plot
  
     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-    negative_samples = candidates[overlaps<0.05, :, :, :]
-    print image_file
+    negative_samples.append(candidates[overlaps<0.5, :, :, :])
+    
+    print image_file, len(candidates[overlaps<0.5, :, :, :])
     bar.update(i)
 
 bar.finish()
 
 
-negative_samples = np.array(negative_samples)    
+negative_samples = np.concatenate(negative_samples, axis=0)    
 print negative_samples.shape
 labels = np.zeros((len(negative_samples), 1))
 
