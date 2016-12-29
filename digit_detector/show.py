@@ -14,7 +14,7 @@ def draw_contour(image, region):
 def draw_box(image, box):
     image_drawn = image.copy()
     y1, y2, x1, x2 = box
-    cv2.rectangle(image_drawn, (x1, y1), (x2, y2), (255, 0, 0), 1)
+    cv2.rectangle(image_drawn, (x1, y1), (x2, y2), (255, 0, 0), 4)
     return image_drawn
 
 
