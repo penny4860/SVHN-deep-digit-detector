@@ -57,7 +57,8 @@ def plot_bounding_boxes(img, bounding_boxes, titles=None):
     plt.subplot(n_rows, n_cols, n_rows * n_cols-1)
     plt.imshow(img)
     plt.title('Original Image'), plt.xticks([]), plt.yticks([])
-      
+    
+    # Todo : plt 에서는 RGB 순으로 plot 한다. (opencv 에서는 BGR순) opencv 기준으로 정리하자.
     for i, box in enumerate(bounding_boxes):
         clone = img.copy()
         clone = draw_box(clone, box)
