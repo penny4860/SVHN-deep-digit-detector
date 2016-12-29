@@ -26,12 +26,8 @@ def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold
 #     show.plot_images(temp, probs.tolist())
 #     show.plot_bounding_boxes(image, bbs, probs.tolist())
 
-    print probs.shape, bbs.shape
-
     bbs = bbs[probs > threshold]
     probs = probs[probs > threshold]
-    
-    print probs.shape, bbs.shape
     
     for i, bb in enumerate(bbs):
         image = show.draw_box(image, bb, 2)
