@@ -1,17 +1,15 @@
 #-*- coding: utf-8 -*-
 import cv2
 import numpy as np
+import keras.models
 
 import digit_detector.region_proposal as rp
 import digit_detector.show as show
+import digit_detector.cnn as cnn
 
-def load_model(filename):
-    from keras.models import load_model
-    model = load_model(filename)
-    return model
 
 img_files = ['imgs/1.png', 'imgs/2.png']
-
+model_filename = "detector_model.hdf5"
 
 if __name__ == "__main__":
     # 1. image files
@@ -32,7 +30,7 @@ if __name__ == "__main__":
     print patches.shape
     
     # 5. Run pre-trained classifier
-    model = load_model("detector_model.hdf5")
+    model = keras.models.load_model(model_filename)
     
     probs = model.predict_proba(patches)[:, 1]
     
