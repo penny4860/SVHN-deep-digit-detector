@@ -11,10 +11,10 @@ def draw_contour(image, region):
     cv2.drawContours(image_drawn, region.reshape(-1,1,2), -1, (0, 255, 0), 1)
     return image_drawn
     
-def draw_box(image, box):
+def draw_box(image, box, thickness=4):
     image_drawn = image.copy()
     y1, y2, x1, x2 = box
-    cv2.rectangle(image_drawn, (x1, y1), (x2, y2), (255, 0, 0), 4)
+    cv2.rectangle(image_drawn, (x1, y1), (x2, y2), (255, 0, 0), thickness)
     return image_drawn
 
 
