@@ -11,10 +11,10 @@ def draw_contour(image, region):
     cv2.drawContours(image_drawn, region.reshape(-1,1,2), -1, (0, 255, 0), 1)
     return image_drawn
     
-def draw_box(image, box):
+def draw_box(image, box, thickness=4):
     image_drawn = image.copy()
     y1, y2, x1, x2 = box
-    cv2.rectangle(image_drawn, (x1, y1), (x2, y2), (255, 0, 0), 1)
+    cv2.rectangle(image_drawn, (x1, y1), (x2, y2), (255, 0, 0), thickness)
     return image_drawn
 
 
@@ -41,7 +41,7 @@ def plot_contours(img, regions):
     plt.show()
 
 
-def plot_bounding_boxes(img, bounding_boxes):
+def plot_bounding_boxes(img, bounding_boxes, titles=None):
     """
     Parameters:
         img (ndarray)
@@ -57,17 +57,25 @@ def plot_bounding_boxes(img, bounding_boxes):
     plt.subplot(n_rows, n_cols, n_rows * n_cols-1)
     plt.imshow(img)
     plt.title('Original Image'), plt.xticks([]), plt.yticks([])
-      
+    
+    # Todo : plt 에서는 RGB 순으로 plot 한다. (opencv 에서는 BGR순) opencv 기준으로 정리하자.
     for i, box in enumerate(bounding_boxes):
         clone = img.copy()
         clone = draw_box(clone, box)
         plt.subplot(n_rows, n_cols, i+1), plt.imshow(clone)
-        plt.title('Contours'), plt.xticks([]), plt.yticks([])
+        if titles:
+            plt.title("{0:.2f}".format(titles[i])), plt.xticks([]), plt.yticks([])
      
     plt.show()
 
 
-def plot_images(images):
+def plot_images(images, titles=None):
+    """
+    Parameters:
+        images (ndarray)
+        
+        titles (list of str)
+    """
     n_images = len(images)
     n_rows = int(np.sqrt(n_images)) + 1
     n_cols = int(np.sqrt(n_images)) + 2
@@ -78,7 +86,8 @@ def plot_images(images):
     for i, img in enumerate(images):
         clone = img.copy()
         plt.subplot(n_rows, n_cols, i+1), plt.imshow(img)
-        plt.title('Contours'), plt.xticks([]), plt.yticks([])
+        if titles:
+            plt.title("{0:.2f}".format(titles[i])), plt.xticks([]), plt.yticks([])
      
     plt.show()
 

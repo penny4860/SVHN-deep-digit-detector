@@ -60,7 +60,7 @@ def propose_patches(image, dst_size=(32, 32)):
             pad_y = 0
         sample = utils.crop_bb(image, bb, pad_size=(pad_y ,pad_x), dst_size=dst_size)
         patches.append(sample)
-    return np.array(patches)
+    return np.array(patches), candidates_bbs
 
 
 
