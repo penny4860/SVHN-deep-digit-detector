@@ -10,6 +10,7 @@ import digit_detector.cnn as cnn
 
 img_files = ['imgs/1.png', 'imgs/2.png']
 model_filename = "detector_model.hdf5"
+mean_value = 109.467
 
 if __name__ == "__main__":
     # 1. image files
@@ -26,6 +27,9 @@ if __name__ == "__main__":
     # 4. Convert to gray
     patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
     patches = np.array(patches)
+    patches = patches.astype('float32')
+    patches -= mean_value
+
     patches = patches.reshape(-1, 32, 32, 1)
     print patches.shape
     
