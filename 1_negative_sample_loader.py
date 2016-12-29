@@ -16,7 +16,7 @@ import digit_detector.eval as eval
 import digit_detector.utils as utils
 
 
-N_IMAGES = 100
+N_IMAGES = 10000
 DIR = '../datasets/svhn/train'
 
 # 1. file 을 load
@@ -30,23 +30,18 @@ bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progress
 
 for i, image_file in enumerate(files):
     image = cv2.imread(image_file)
-    candidates = detector.detect(image, False)
-    
+#     candidates = detector.detect(image, False)
+    candidates, bbs = rp.propose_patches(image, dst_size = (32, 32))
+
     gts, _ = ann.get_annotation(image_file, annotation_file)
     #show.plot_bounding_boxes(image, gts)
-
+ 
     # gts, candidates 의 overlap 을 구한다.
-    overlaps = eval.calc_iou(candidates, gts)
-    #show.plot_bounding_boxes(image, candidates[overlaps>0.05])
-
+    overlaps = eval.calc_iou(bbs, gts)
+#     show.plot_bounding_boxes(image, bbs[overlaps<0.05]) #negative sample plot
+ 
     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-    negative_boxes = candidates[overlaps<0.05]
-    
-    # negative box 를 crop, resize to 32x32 해서 sample 에 추가
-    for bb in negative_boxes:
-        sample = utils.crop_bb(image, bb, pad_size=(0,0), dst_size=(32,32))
-        negative_samples.append(sample)
-    
+    negative_samples = candidates[overlaps<0.05, :, :, :]
     print image_file
     bar.update(i)
 
