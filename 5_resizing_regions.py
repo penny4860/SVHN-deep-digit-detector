@@ -22,7 +22,7 @@ if __name__ == "__main__":
     #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
     # 3. region proposals (N, 32, 32, 3)
-    patches = rp.propose_patches(img)
+    patches, bbs = rp.propose_patches(img)
     temp = patches
     
     # 4. Convert to gray
@@ -37,11 +37,9 @@ if __name__ == "__main__":
     probs = model.predict_proba(patches)[:, 1]
     
     print probs.shape
-    
+     
     show.plot_images(temp, probs.tolist())
-
-
-
+    show.plot_bounding_boxes(img, bbs, probs.tolist())
 
 
 
