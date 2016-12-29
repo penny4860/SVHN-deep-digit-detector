@@ -5,12 +5,13 @@ import keras.models
 
 import digit_detector.region_proposal as rp
 import digit_detector.show as show
-import digit_detector.cnn as cnn
+import digit_detector.detect as detector
 
 
 img_files = ['imgs/1.png', 'imgs/2.png']
 model_filename = "detector_model.hdf5"
 mean_value = 109.467
+
 
 if __name__ == "__main__":
     # 1. image files
@@ -20,35 +21,11 @@ if __name__ == "__main__":
     img = cv2.imread(img_file)
     #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # 3. region proposals (N, 32, 32, 3)
-    patches, bbs = rp.propose_patches(img)
-    temp = patches
-    
-    # 4. Convert to gray
-    patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
-    patches = np.array(patches)
-    patches = patches.astype('float32')
-    patches -= mean_value
+    detector.detect(img, model_filename, mean_value)
 
-    patches = patches.reshape(-1, 32, 32, 1)
-    print patches.shape
-    
-    # 5. Run pre-trained classifier
-    model = keras.models.load_model(model_filename)
-    
-    probs = model.predict_proba(patches)[:, 1]
-    
-    print probs.shape
-     
-#     show.plot_images(temp, probs.tolist())
-#     show.plot_bounding_boxes(img, bbs, probs.tolist())
-    
-    for i, bb in enumerate(bbs):
-        if probs[i] > 0.9:
-            img = show.draw_box(img, bb, 2)
-            
-    cv2.imshow("MSER + CNN", img)
-    cv2.waitKey(0)
+
+
+
 
 
 
