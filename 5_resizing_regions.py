@@ -40,9 +40,15 @@ if __name__ == "__main__":
     
     print probs.shape
      
-    show.plot_images(temp, probs.tolist())
-    show.plot_bounding_boxes(img, bbs, probs.tolist())
-
+#     show.plot_images(temp, probs.tolist())
+#     show.plot_bounding_boxes(img, bbs, probs.tolist())
+    
+    for i, bb in enumerate(bbs):
+        if probs[i] > 0.9:
+            img = show.draw_box(img, bb, 2)
+            
+    cv2.imshow("MSER + CNN", img)
+    cv2.waitKey(0)
 
 
 
