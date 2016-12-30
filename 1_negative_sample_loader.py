@@ -21,7 +21,7 @@ DIR = '../datasets/svhn/train'
 OVERLAP_THD = 0.05
 
 # 1. file 을 load
-files = file_io.list_files(directory=DIR, n_files_to_sample=N_IMAGES, random_order=False)
+files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=N_IMAGES, random_order=False)
 annotation_file = "../datasets/svhn/train/digitStruct.json"
 detector = rp.MserDetector()
 
