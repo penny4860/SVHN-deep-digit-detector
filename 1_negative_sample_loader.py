@@ -18,6 +18,7 @@ import digit_detector.utils as utils
 
 N_IMAGES = None
 DIR = '../datasets/svhn/train'
+OVERLAP_THD = 0.05
 
 # 1. file 을 load
 files = file_io.list_files(directory=DIR, n_files_to_sample=N_IMAGES, random_order=False)
@@ -30,7 +31,6 @@ bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progress
 
 for i, image_file in enumerate(files):
     image = cv2.imread(image_file)
-#     candidates = detector.detect(image, False)
     candidates, bbs = rp.propose_patches(image, dst_size = (32, 32))
 
     gts, _ = ann.get_annotation(image_file, annotation_file)
@@ -41,9 +41,7 @@ for i, image_file in enumerate(files):
 #     show.plot_bounding_boxes(image, bbs[overlaps<0.05]) #negative sample plot
  
     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-    negative_samples.append(candidates[overlaps<0.5, :, :, :])
-    
-    print image_file, len(candidates[overlaps<0.5, :, :, :])
+    negative_samples.append(candidates[overlaps<OVERLAP_THD, :, :, :])
     bar.update(i)
 
 bar.finish()
@@ -53,8 +51,8 @@ negative_samples = np.concatenate(negative_samples, axis=0)
 print negative_samples.shape
 labels = np.zeros((len(negative_samples), 1))
 
-file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "features", "w", dtype="uint8")
-file_io.FileHDF5().write(labels, "negative_images.hdf5", "labels", "a", dtype="int")
+file_io.FileHDF5().write(negative_samples, "negative_images_2.hdf5", "features", "w", dtype="uint8")
+file_io.FileHDF5().write(labels, "negative_images_2.hdf5", "labels", "a", dtype="int")
 
 # show.plot_images(negative_samples)
     
