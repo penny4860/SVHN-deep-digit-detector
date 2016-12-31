@@ -30,6 +30,7 @@ negative_samples = []
 bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Bar(), ' (', progressbar.ETA(), ') ',], maxval=len(files)).start()
 
 for i, image_file in enumerate(files):
+    print image_file,
     image = cv2.imread(image_file)
     candidates, bbs = rp.propose_patches(image, dst_size = (32, 32))
 
