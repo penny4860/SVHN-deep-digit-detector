@@ -10,7 +10,7 @@ import digit_detector.detect as detector
 
 img_files = ['imgs/1.png', 'imgs/2.png']
 model_filename = "detector_model.hdf5"
-mean_value = 109.467
+mean_value = 108.546
 
 
 if __name__ == "__main__":
