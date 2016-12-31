@@ -32,7 +32,7 @@ bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progress
 for i, image_file in enumerate(files):
     print image_file,
     image = cv2.imread(image_file)
-    candidates, bbs = rp.propose_patches(image, dst_size = (32, 32))
+    candidates, bbs = rp.propose_patches(image, dst_size = (32, 32), pad=False)
 
     gts, _ = ann.get_annotation(image_file, annotation_file)
     #show.plot_bounding_boxes(image, gts)
@@ -52,8 +52,8 @@ negative_samples = np.concatenate(negative_samples, axis=0)
 print negative_samples.shape
 labels = np.zeros((len(negative_samples), 1))
 
-file_io.FileHDF5().write(negative_samples, "negative_images_2.hdf5", "features", "w", dtype="uint8")
-file_io.FileHDF5().write(labels, "negative_images_2.hdf5", "labels", "a", dtype="int")
+file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
+file_io.FileHDF5().write(labels, "negative_images.hdf5", "labels", "a", dtype="int")
 
 # show.plot_images(negative_samples)
     
