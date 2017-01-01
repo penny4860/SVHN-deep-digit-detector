@@ -8,7 +8,7 @@ import digit_detector.show as show
 
 
 def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold=0.9, do_nms=True):
-    patches, bbs = rp.propose_patches(image, dst_size = (input_shape[0], input_shape[1]))
+    patches, bbs = rp.propose_patches(image, dst_size = (input_shape[0], input_shape[1]), pad = False)
 #     temp = patches
     
     # 4. Convert to gray
