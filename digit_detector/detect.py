@@ -7,8 +7,8 @@ import digit_detector.region_proposal as rp
 import digit_detector.show as show
 
 
-def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold=0.9):
-    patches, bbs = rp.propose_patches(image, dst_size = (input_shape[0], input_shape[1]))
+def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold=0.9, do_nms=True):
+    patches, bbs = rp.propose_patches(image, dst_size = (input_shape[0], input_shape[1]), pad = False)
 #     temp = patches
     
     # 4. Convert to gray
@@ -31,7 +31,8 @@ def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold
     probs = probs[probs > threshold]
 
     # Non Maximum Suppression
-    bbs, probs = _do_nms(bbs, probs, 0.3)
+    if do_nms and len(bbs) != 0:
+        bbs, probs = _do_nms(bbs, probs, 0.1)
 
     for i, bb in enumerate(bbs):
         image = show.draw_box(image, bb, 2)

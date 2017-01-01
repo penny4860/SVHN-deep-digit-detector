@@ -103,12 +103,13 @@ if __name__ == "__main__":
     
     print images_train.shape, labels_train.shape
     print images_val.shape, labels_val.shape
+    
 
     X_train, X_val, Y_train, Y_val, mean_value = preprocess(images_train, labels_train, images_val, labels_val)
     print mean_value
     
     print X_train.shape, X_val.shape
-    
+     
     train_detector(X_train, X_val, Y_train, Y_val, 'detector_model.hdf5')
 
 

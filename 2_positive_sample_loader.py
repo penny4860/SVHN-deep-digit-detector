@@ -1,39 +1,63 @@
-import numpy as np
-import scipy.io as io
+#-*- coding: utf-8 -*-
+
+import os
 import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+import time
+import progressbar
+
+import digit_detector.region_proposal as rp
 import digit_detector.file_io as file_io
+import digit_detector.annotation as ann
+import digit_detector.show as show
+import digit_detector.eval as eval
+import digit_detector.utils as utils
 
-N_IMAGES = 2
-MAT_FILE = '../datasets/svhn/train_32x32.mat'
 
-def load_svhn_images(file_name):
-    dataset = io.loadmat(file_name)
-    images = dataset['X']
-    labels = dataset['y']
-    images = np.transpose(images, (3, 0, 1, 2))
+N_IMAGES = None
+DIR = '../datasets/svhn/train'
+
+# 1. file 을 load
+files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=N_IMAGES, random_order=False)
+annotation_file = "../datasets/svhn/train/digitStruct.json"
+detector = rp.MserDetector()
+
+positive_samples = []
+positive_labels = []
+
+bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Bar(), ' (', progressbar.ETA(), ') ',], maxval=len(files)).start()
+
+for i, image_file in enumerate(files):
+    print image_file,
+    image = cv2.imread(image_file)
+
+    gt_bbs, labels = ann.get_annotation(image_file, annotation_file)
     
-    # (N, rows, cols, channels)
-    # (N, 1)
-    return images, labels
+    for bb, label in zip(gt_bbs, labels):
+        patches = utils.crop_bb(image, bb, pad_size=(0, 0), dst_size=(32, 32))
+        positive_samples.append(patches)
+        positive_labels.append(label)
+    
+    bar.update(i)
 
-images, labels = load_svhn_images(MAT_FILE)    
+bar.finish()
 
-file_io.FileHDF5().write(images, "positive_images.hdf5", "images", "w", dtype="uint8")
-file_io.FileHDF5().write(labels, "positive_images.hdf5", "labels", "a", dtype="int")
 
-features = file_io.FileHDF5().read("positive_images.hdf5", "images")
-labels_ = file_io.FileHDF5().read("positive_images.hdf5", "labels")
+positive_samples = np.array(positive_samples)
+positive_labels = np.array(positive_labels).reshape(-1,1)
+print positive_samples.shape
 
-if np.array_equal(images, features):
-    print "True"
-else:
-    print "False"
+file_io.FileHDF5().write(positive_samples, "positive_images.hdf5", "images", "w", dtype="uint8")
+file_io.FileHDF5().write(positive_labels, "positive_images.hdf5", "labels", "a", dtype="int")
 
-if np.array_equal(labels_, labels):
-    print "True"
-else:
-    print "False"
+show.plot_images(positive_samples)
+    
+    
+    
 
-print images.shape, labels.shape
+
+
 
 

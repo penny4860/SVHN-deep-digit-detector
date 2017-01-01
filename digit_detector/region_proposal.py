@@ -42,7 +42,7 @@ class MserDetector:
         show.plot_contours(img, regions)
         
         
-def propose_patches(image, dst_size=(32, 32)):
+def propose_patches(image, dst_size=(32, 32), pad=True):
     detector = MserDetector()
     candidates_bbs = detector.detect(image, False)
 
@@ -52,12 +52,17 @@ def propose_patches(image, dst_size=(32, 32)):
         width = x2 - x1 + 1
         height = y2 - y1 + 1
         
-        if width >= height:
+        if pad:
+            if width >= height:
+                pad_y = 0
+                pad_x = 0
+            else:
+                pad_x = int((height-width)/2)
+                pad_y = 0
+        else:
             pad_y = 0
             pad_x = 0
-        else:
-            pad_x = int((height-width)/2)
-            pad_y = 0
+            
         sample = utils.crop_bb(image, bb, pad_size=(pad_y ,pad_x), dst_size=dst_size)
         patches.append(sample)
     return np.array(patches), candidates_bbs
