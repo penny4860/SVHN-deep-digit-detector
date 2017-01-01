@@ -8,7 +8,7 @@ DIR = "../datasets/svhn"
 positive_images = file_io.FileHDF5().read(os.path.join(DIR, "positive_images.hdf5"), "images")
 positive_labels = file_io.FileHDF5().read(os.path.join(DIR, "positive_images.hdf5"), "labels")
 
-negative_images = file_io.FileHDF5().read(os.path.join(DIR, "negative_images.hdf5"), "features")
+negative_images = file_io.FileHDF5().read(os.path.join(DIR, "negative_images.hdf5"), "images")
 negative_labels = file_io.FileHDF5().read(os.path.join(DIR, "negative_images.hdf5"), "labels")
 
 print positive_images.shape
