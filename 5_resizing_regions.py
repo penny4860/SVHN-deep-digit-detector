@@ -10,7 +10,7 @@ import digit_detector.file_io as file_io
 
 
 model_filename = "detector_model.hdf5"
-mean_value = 108.546
+mean_value = 106.759
 DIR = '../datasets/svhn/train'
 
 if __name__ == "__main__":
