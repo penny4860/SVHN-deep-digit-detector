@@ -22,7 +22,7 @@ if __name__ == "__main__":
         img = cv2.imread(img_file)
         #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
-        detector.detect(img, model_filename, mean_value, threshold=0.5, do_nms=False)
+        detector.detect(img, model_filename, mean_value, threshold=0.2, do_nms=True)
 
 
 
