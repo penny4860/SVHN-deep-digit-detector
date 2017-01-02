@@ -6,29 +6,65 @@ from matplotlib import pyplot as plt
 import show
 import utils
 
-class MserDetector:
 
+class Regions:
+    
+    def __init__(self, image, boxes):
+        self._image = image
+        self._boxes = boxes
+    
+    def get_boxes(self):
+        return self._boxes
+    
+    def get_patches(self, pad_y, pad_x, dst_size=None):
+        patches = []
+        for bb in self._boxes:
+            patch = self._crop(bb, pad_y ,pad_x)
+            
+            if dst_size:
+                desired_ysize = dst_size[0]
+                desired_xsize = dst_size[1]
+                patch = cv2.resize(patch, (desired_xsize, desired_ysize), interpolation=cv2.INTER_AREA)
+                
+            patches.append(patch)
+        return np.array(patches)
+    
+    def _crop(self, box, pad_y, pad_x):
+        h = self._image.shape[0]
+        w = self._image.shape[1]
+        (y1, y2, x1, x2) = box
+        
+        (x1, y1) = (max(x1 - pad_x, 0), max(y1 - pad_y, 0))
+        (x2, y2) = (min(x2 + pad_x, w), min(y2 + pad_y, h))
+        patch = image[y1:y2, x1:x2]
+        return patch
+
+
+class _RegionProposer:
+    
     def __init__(self):
         pass
     
-    def detect(self, img, show_option=False):
-        gray = self._to_gray(img)
-    
-        mser = cv2.MSER(_delta = 1)
-        regions = mser.detect(gray, None)
-        bounding_boxes = self._get_boxes(regions)
-    
-        if show_option:
-            self._plot(img, regions)
+    def detect(self, img):
+        pass
 
-        return bounding_boxes
-    
     def _to_gray(self, image):
         if len(image.shape) == 3:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         else:
             gray = image
         return gray
+
+    
+class MserRegionProposer(_RegionProposer):
+    
+    def detect(self, img):
+        gray = self._to_gray(img)
+        mser = cv2.MSER(_delta = 1)
+        regions = mser.detect(gray, None)
+        bounding_boxes = self._get_boxes(regions)
+        regions = Regions(img, bounding_boxes)
+        return regions
     
     def _get_boxes(self, regions):
         bbs = []
@@ -37,36 +73,8 @@ class MserDetector:
             bbs.append((y, y+h, x, x+w))
             
         return np.array(bbs)
-    
-    def _plot(self, img, regions):
-        show.plot_contours(img, regions)
+
+
+
         
         
-def propose_patches(image, dst_size=(32, 32), pad=True):
-    detector = MserDetector()
-    candidates_bbs = detector.detect(image, False)
-
-    patches = []
-    for bb in candidates_bbs:
-        y1, y2, x1, x2 = bb
-        width = x2 - x1 + 1
-        height = y2 - y1 + 1
-        
-        if pad:
-            if width >= height:
-                pad_y = 0
-                pad_x = 0
-            else:
-                pad_x = int((height-width)/2)
-                pad_y = 0
-        else:
-            pad_y = 0
-            pad_x = 0
-            
-        sample = utils.crop_bb(image, bb, pad_size=(pad_y ,pad_x), dst_size=dst_size)
-        patches.append(sample)
-    return np.array(patches), candidates_bbs
-
-
-
-
