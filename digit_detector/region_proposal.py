@@ -1,4 +1,4 @@
-
+#-*- coding: utf-8 -*-
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
@@ -8,6 +8,8 @@ import utils
 
 
 class Regions:
+    
+    """ Image 에서의 bounding box 를 관리하는 class """
     
     def __init__(self, image, boxes):
         self._image = image
