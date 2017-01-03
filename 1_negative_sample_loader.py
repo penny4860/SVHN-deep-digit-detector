@@ -50,12 +50,10 @@ for i, image_file in enumerate(files):
     print overlaps
     
     show.plot_bounding_boxes(image, candidate_regions.get_boxes())
-
-    
-#     show.plot_bounding_boxes(image, bbs[overlaps<0.05]) #negative sample plot
-#  
-#     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-#     negative_samples.append(candidates[overlaps<OVERLAP_THD, :, :, :])
+    show.plot_bounding_boxes(image, candidate_regions.get_boxes()[overlaps<OVERLAP_THD]) #negative sample plot
+  
+    # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
+    negative_samples.append(candidate_regions.get_boxes()[overlaps<OVERLAP_THD, :, :, :])
     bar.update(i)
 
 bar.finish()
