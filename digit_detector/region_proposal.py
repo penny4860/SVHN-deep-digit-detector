@@ -36,7 +36,7 @@ class Regions:
         
         (x1, y1) = (max(x1 - pad_x, 0), max(y1 - pad_y, 0))
         (x2, y2) = (min(x2 + pad_x, w), min(y2 + pad_y, h))
-        patch = image[y1:y2, x1:x2]
+        patch = self._image[y1:y2, x1:x2]
         return patch
 
 
