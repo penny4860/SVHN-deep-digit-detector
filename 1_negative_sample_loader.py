@@ -42,25 +42,21 @@ for i, image_file in enumerate(files):
     truth_regions = rp.Regions(image, true_boxes)
     truth_patches = truth_regions.get_patches(0, 0, dst_size=(32,32))
 
-    print patches.shape, truth_patches.shape
-
-    show.plot_bounding_boxes(image, truth_regions.get_boxes())
-
+#     show.plot_bounding_boxes(image, truth_regions.get_boxes())
     overlaps = iou_calculator.calc(candidate_regions, truth_regions)
-    print overlaps
     
-    show.plot_bounding_boxes(image, candidate_regions.get_boxes())
-    show.plot_bounding_boxes(image, candidate_regions.get_boxes()[overlaps<OVERLAP_THD]) #negative sample plot
+#     show.plot_bounding_boxes(image, candidate_regions.get_boxes())
+#     show.plot_bounding_boxes(image, candidate_regions.get_boxes()[overlaps<OVERLAP_THD]) #negative sample plot
   
     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-    negative_samples.append(candidate_regions.get_boxes()[overlaps<OVERLAP_THD, :, :, :])
+    negative_samples.append(candidate_regions.get_patches(0, 0, (32,32))[overlaps<OVERLAP_THD])
     bar.update(i)
 
 bar.finish()
 
 
-# negative_samples = np.concatenate(negative_samples, axis=0)    
-# print negative_samples.shape
+negative_samples = np.concatenate(negative_samples, axis=0)    
+print negative_samples.shape
 # labels = np.zeros((len(negative_samples), 1))
 # 
 # file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
