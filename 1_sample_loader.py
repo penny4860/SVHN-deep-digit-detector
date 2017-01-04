@@ -16,9 +16,10 @@ import digit_detector.eval as eval
 import digit_detector.utils as utils
 
 
-N_IMAGES = 2
+N_IMAGES = 10
 DIR = '../datasets/svhn/train'
-OVERLAP_THD = 0.05
+NEG_OVERLAP_THD = 0.05
+POS_OVERLAP_THD = 0.6
 
 # 1. file 을 load
 files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=N_IMAGES, random_order=False)
@@ -49,16 +50,17 @@ for i, image_file in enumerate(files):
 #     show.plot_bounding_boxes(image, candidate_regions.get_boxes()[overlaps<OVERLAP_THD]) #negative sample plot
   
     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-    negative_samples.append(candidate_regions.get_patches(0, 0, (32,32))[ious_max<OVERLAP_THD])
+    negative_samples.append(candidate_regions.get_patches(0, 0, (32,32))[ious_max<NEG_OVERLAP_THD])
     
     for i, label in enumerate(labels):
-        samples = candidate_regions.get_patches(0, 0, (32,32))[ious[:,i]>0.5]
-        labels = np.zeros((len(samples), 1)) + label
+        samples = candidate_regions.get_patches(0, 0, (32,32))[ious[i,:]>POS_OVERLAP_THD]
+        labels_ = np.zeros((len(samples), )) + label
         positive_samples.append(samples)
-        positive_labels.append(labels)
-     
+        positive_labels.append(labels_)
+        
     positive_samples.append(truth_regions.get_patches(0, 0, (32,32)))
     positive_labels.append(labels)
+
     
     bar.update(i)
 
@@ -73,6 +75,10 @@ positive_labels = np.concatenate(positive_labels, axis=0)
 
 print negative_samples.shape, positive_samples.shape
 print negative_labels.shape, positive_labels.shape
+
+show.plot_images(positive_samples, positive_labels.tolist())
+show.plot_images(negative_samples)
+
  
 # file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
 # file_io.FileHDF5().write(labels, "negative_images.hdf5", "labels", "a", dtype="int")
