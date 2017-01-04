@@ -115,10 +115,11 @@ class IouCalculator:
             ious = intersections.astype(float) / (As + B -intersections)
             ious_for_each_gt.append(ious)
         
-        # (n_boxes, n_truth)
-        ious = np.array(ious_for_each_gt).reshape(-1, len(true_boxes))
-        ious_maximum = ious.max(axis=1)
-        return ious, ious_maximum
+        # (n_truth, n_boxes)
+        ious_for_each_gt = np.array(ious_for_each_gt)
+        ious_maximum = np.max(ious_for_each_gt, axis = 0)
+        
+        return ious_for_each_gt, ious_maximum
         
 
 
