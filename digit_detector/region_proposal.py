@@ -82,18 +82,11 @@ class IouCalculator:
     def __init__(self):
         pass
     
-    def calc(self, regions, true_regions):
+    def calc(self, boxes, true_boxes):
         """
-        Parameters
-            regions (Regions)
-            true_regions (Regions)
         Returns:
-            ious (ndarray of shape (n_boxes,))
+            ious (ndarray of shape (n_true_boxes))
         """
-        
-        boxes = regions.get_boxes()
-        true_boxes = true_regions.get_boxes()
-        
         ious_for_each_gt = []
         
         for truth_box in true_boxes:
@@ -122,11 +115,12 @@ class IouCalculator:
             ious = intersections.astype(float) / (As + B -intersections)
             ious_for_each_gt.append(ious)
         
-        # (n_truth, n_boxes)
-        ious = np.array(ious_for_each_gt)
-        ious = np.max(ious, axis = 0)
-        return ious
+        # (n_boxes, n_truth)
+        ious = np.array(ious_for_each_gt).reshape(-1, len(true_boxes))
+        ious_maximum = ious.max(axis=1)
+        return ious, ious_maximum
         
+
 
 
     
