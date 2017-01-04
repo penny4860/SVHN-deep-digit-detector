@@ -80,15 +80,13 @@ def plot_images(images, titles=None):
     n_rows = int(np.sqrt(n_images)) + 1
     n_cols = int(np.sqrt(n_images)) + 2
     
-    # plot original image 
     plt.subplot(n_rows, n_cols, n_rows * n_cols-1)
-      
     for i, img in enumerate(images):
         clone = img.copy()
         plt.subplot(n_rows, n_cols, i+1), plt.imshow(img)
         if titles:
-            plt.title("{0:.2f}".format(titles[i])), plt.xticks([]), plt.yticks([])
-     
+            plt.title("{0:.2f}".format(titles[i]))
+        plt.xticks([]), plt.yticks([])
     plt.show()
 
 
