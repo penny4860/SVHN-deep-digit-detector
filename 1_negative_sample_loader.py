@@ -16,7 +16,7 @@ import digit_detector.eval as eval
 import digit_detector.utils as utils
 
 
-N_IMAGES = 10
+N_IMAGES = 2
 DIR = '../datasets/svhn/train'
 OVERLAP_THD = 0.05
 
@@ -28,6 +28,8 @@ annotator = ann.SvhnAnnotation(annotation_file)  # todo : interface 에 의존�
 iou_calculator = rp.IouCalculator()
 
 negative_samples = []
+positive_samples = []
+positive_labels = []
 
 bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Bar(), ' (', progressbar.ETA(), ') ',], maxval=len(files)).start()
 
@@ -42,23 +44,36 @@ for i, image_file in enumerate(files):
     truth_regions = rp.Regions(image, true_boxes)
     truth_patches = truth_regions.get_patches(0, 0, dst_size=(32,32))
 
-#     show.plot_bounding_boxes(image, truth_regions.get_boxes())
-    overlaps = iou_calculator.calc(candidate_regions, truth_regions)
-    
+    ious, ious_max = iou_calculator.calc(candidate_regions.get_boxes(), truth_regions.get_boxes())
 #     show.plot_bounding_boxes(image, candidate_regions.get_boxes())
 #     show.plot_bounding_boxes(image, candidate_regions.get_boxes()[overlaps<OVERLAP_THD]) #negative sample plot
   
     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-    negative_samples.append(candidate_regions.get_patches(0, 0, (32,32))[overlaps<OVERLAP_THD])
+    negative_samples.append(candidate_regions.get_patches(0, 0, (32,32))[ious_max<OVERLAP_THD])
+    
+    for i, label in enumerate(labels):
+        samples = candidate_regions.get_patches(0, 0, (32,32))[ious[:,i]>0.5]
+        labels = np.zeros((len(samples), 1)) + label
+        positive_samples.append(samples)
+        positive_labels.append(labels)
+     
+    positive_samples.append(truth_regions.get_patches(0, 0, (32,32)))
+    positive_labels.append(labels)
+    
     bar.update(i)
 
 bar.finish()
 
 
 negative_samples = np.concatenate(negative_samples, axis=0)    
-print negative_samples.shape
-# labels = np.zeros((len(negative_samples), 1))
-# 
+negative_labels = np.zeros((len(negative_samples), 1))
+positive_samples = np.concatenate(positive_samples, axis=0)    
+positive_labels = np.concatenate(positive_labels, axis=0)
+
+
+print negative_samples.shape, positive_samples.shape
+print negative_labels.shape, positive_labels.shape
+ 
 # file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
 # file_io.FileHDF5().write(labels, "negative_images.hdf5", "labels", "a", dtype="int")
 
