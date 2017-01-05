@@ -43,7 +43,7 @@ class Extractor:
             image = cv2.imread(image_file)
          
             candidate_regions = detector.detect(image)
-            patches = candidate_regions.get_patches(dst_size=PATCH_SIZE)
+            candidate_patches = candidate_regions.get_patches(dst_size=PATCH_SIZE)
              
             true_boxes, labels = annotator.get_boxes_and_labels(image_file)
             truth_regions = rp.Regions(image, true_boxes)
@@ -52,10 +52,10 @@ class Extractor:
             ious, ious_max = rp.calc_overlap(candidate_regions.get_boxes(), truth_regions.get_boxes())
            
             # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-            negative_samples.append(candidate_regions.get_patches(patch_size)[ious_max<negative_overlap_thd])
+            negative_samples.append(candidate_patches[ious_max<negative_overlap_thd])
              
             for i, label in enumerate(labels):
-                samples = candidate_regions.get_patches(PATCH_SIZE)[ious[i,:]>positive_overlap_thd]
+                samples = candidate_patches[ious[i,:]>positive_overlap_thd]
                 labels_ = np.zeros((len(samples), )) + label
                 positive_samples.append(samples)
                 positive_labels.append(labels_)
