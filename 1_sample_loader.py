@@ -63,7 +63,7 @@ class Extractor:
          
         return self._merge_sample()
     
-     
+    # Todo : positive patch, negative patch 를 선택하는 부분을 따로 모듈화할 수 있을지 생각해보자. 
     def _append_positive_patch(self, true_patches, true_labels):
         self._positive_samples.append(true_patches)
         self._positive_labels.append(true_labels)
