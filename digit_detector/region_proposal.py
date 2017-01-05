@@ -3,25 +3,26 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 
+import crop
 import show
-import utils
 
 
 class Regions:
     
     """ Image 에서의 bounding box 를 관리하는 class """
     
-    def __init__(self, image, boxes):
+    def __init__(self, image, boxes, cropper=crop.CropperWithoutPad()):
         self._image = image
         self._boxes = boxes
+        self._cropper = cropper
     
     def get_boxes(self):
         return self._boxes
     
-    def get_patches(self, pad_y, pad_x, dst_size=None):
+    def get_patches(self, dst_size=None):
         patches = []
         for bb in self._boxes:
-            patch = self._crop(bb, pad_y ,pad_x)
+            patch = self._crop(bb)
             
             if dst_size:
                 desired_ysize = dst_size[0]
@@ -31,16 +32,9 @@ class Regions:
             patches.append(patch)
         return np.array(patches)
     
-    def _crop(self, box, pad_y, pad_x):
-        h = self._image.shape[0]
-        w = self._image.shape[1]
-        (y1, y2, x1, x2) = box
-        
-        (x1, y1) = (max(x1 - pad_x, 0), max(y1 - pad_y, 0))
-        (x2, y2) = (min(x2 + pad_x, w), min(y2 + pad_y, h))
-        patch = self._image[y1:y2, x1:x2]
+    def _crop(self, box):
+        patch = self._cropper.crop(self._image, box)
         return patch
-
 
 class _RegionProposer:
     

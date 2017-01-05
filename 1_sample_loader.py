@@ -37,52 +37,52 @@ bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progress
 for i, image_file in enumerate(files):
     print image_file,
     image = cv2.imread(image_file)
-
+ 
     candidate_regions = detector.detect(image)
-    patches = candidate_regions.get_patches(0, 0, dst_size=(32,32))
-    
+    patches = candidate_regions.get_patches(dst_size=(32,32))
+     
     true_boxes, labels = annotator.get_boxes_and_labels(image_file)
     truth_regions = rp.Regions(image, true_boxes)
-    truth_patches = truth_regions.get_patches(0, 0, dst_size=(32,32))
-
+    truth_patches = truth_regions.get_patches(dst_size=(32,32))
+ 
     ious, ious_max = iou_calculator.calc(candidate_regions.get_boxes(), truth_regions.get_boxes())
 #     show.plot_bounding_boxes(image, candidate_regions.get_boxes())
 #     show.plot_bounding_boxes(image, candidate_regions.get_boxes()[overlaps<OVERLAP_THD]) #negative sample plot
-  
+   
     # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-    negative_samples.append(candidate_regions.get_patches(0, 0, (32,32))[ious_max<NEG_OVERLAP_THD])
-    
+    negative_samples.append(candidate_regions.get_patches((32,32))[ious_max<NEG_OVERLAP_THD])
+     
     for i, label in enumerate(labels):
-        samples = candidate_regions.get_patches(0, 0, (32,32))[ious[i,:]>POS_OVERLAP_THD]
+        samples = candidate_regions.get_patches((32,32))[ious[i,:]>POS_OVERLAP_THD]
         labels_ = np.zeros((len(samples), )) + label
         positive_samples.append(samples)
         positive_labels.append(labels_)
-        
-    positive_samples.append(truth_regions.get_patches(0, 0, (32,32)))
+         
+    positive_samples.append(truth_regions.get_patches((32,32)))
     positive_labels.append(labels)
-
-    
+ 
+     
     bar.update(i)
-
+ 
 bar.finish()
-
-
+ 
+ 
 negative_samples = np.concatenate(negative_samples, axis=0)    
 negative_labels = np.zeros((len(negative_samples), 1))
 positive_samples = np.concatenate(positive_samples, axis=0)    
 positive_labels = np.concatenate(positive_labels, axis=0)
-
-
+ 
+ 
 print negative_samples.shape, positive_samples.shape
 print negative_labels.shape, positive_labels.shape
-
+ 
 show.plot_images(positive_samples, positive_labels.tolist())
 show.plot_images(negative_samples)
-
  
+  
 # file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
 # file_io.FileHDF5().write(labels, "negative_images.hdf5", "labels", "a", dtype="int")
-
+ 
 # show.plot_images(negative_samples)
     
     
