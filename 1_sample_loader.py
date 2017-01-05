@@ -26,15 +26,15 @@ PATCH_SIZE = (32,32)
 class Extractor:
     
     def __init__(self):
-        pass
+        self._positive_samples = []
+        self._negative_samples = []
+        self._positive_labels = []
+        self._negative_labels = []
+        
     
     def extract_patch(self, image_files, patch_size, positive_overlap_thd, negative_overlap_thd):
         detector = rp.MserRegionProposer()                      # todo : interface 에 의존하도록 수정하자.
         annotator = ann.SvhnAnnotation(annotation_file)  # todo : interface 에 의존하도록 수정하자.
-        
-        negative_samples = []
-        positive_samples = []
-        positive_labels = []
         
         bar = progressbar.ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Bar(), ' (', progressbar.ETA(), ') ',], maxval=len(image_files)).start()
     
@@ -45,38 +45,39 @@ class Extractor:
             candidate_regions = detector.detect(image)
             candidate_patches = candidate_regions.get_patches(dst_size=PATCH_SIZE)
              
-            true_boxes, labels = annotator.get_boxes_and_labels(image_file)
+            true_boxes, true_labels = annotator.get_boxes_and_labels(image_file)
             truth_regions = rp.Regions(image, true_boxes)
-            truth_patches = truth_regions.get_patches(dst_size=PATCH_SIZE)
+            true_patches = truth_regions.get_patches(dst_size=PATCH_SIZE)
          
-            ious, ious_max = rp.calc_overlap(candidate_regions.get_boxes(), truth_regions.get_boxes())
+            overlaps = rp.calc_overlap(candidate_regions.get_boxes(), truth_regions.get_boxes())
+
+            self._select_positive_patch(candidate_patches, true_patches, true_labels, overlaps, positive_overlap_thd)
+            self._select_negative_patch(candidate_patches, overlaps, negative_overlap_thd)
            
-            # Ground Truth 와의 overlap 이 5% 미만인 모든 sample 을 negative set 으로 저장
-            negative_samples.append(candidate_patches[ious_max<negative_overlap_thd])
-             
-            for i, label in enumerate(labels):
-                samples = candidate_patches[ious[i,:]>positive_overlap_thd]
-                labels_ = np.zeros((len(samples), )) + label
-                positive_samples.append(samples)
-                positive_labels.append(labels_)
-                 
-            positive_samples.append(truth_regions.get_patches(PATCH_SIZE))
-            positive_labels.append(labels)
             bar.update(i)
         bar.finish()
          
-        negative_samples = np.concatenate(negative_samples, axis=0)    
+        negative_samples = np.concatenate(self._negative_samples, axis=0)    
         negative_labels = np.zeros((len(negative_samples), 1))
-        positive_samples = np.concatenate(positive_samples, axis=0)    
-        positive_labels = np.concatenate(positive_labels, axis=0)
+        positive_samples = np.concatenate(self._positive_samples, axis=0)    
+        positive_labels = np.concatenate(self._positive_labels, axis=0)
         
         return positive_samples, positive_labels, negative_samples, negative_labels
     
-    def _select_positive_patch(self):
-        pass
+    def _select_positive_patch(self, candidate_patches, true_patches, true_labels, overlaps, overlap_thd):
+        for i, label in enumerate(true_labels):
+            samples = candidate_patches[overlaps[i,:]>overlap_thd]
+            labels_ = np.zeros((len(samples), )) + label
+            self._positive_samples.append(samples)
+            self._positive_labels.append(labels_)
+             
+        self._positive_samples.append(true_patches)
+        self._positive_labels.append(true_labels)
+
     
-    def _select_negative_patch(self):
-        pass
+    def _select_negative_patch(self, candidate_patches, overlaps, overlap_thd):
+        overlaps_max = np.max(overlaps, axis=0)
+        self._negative_samples.append(candidate_patches[overlaps_max<overlap_thd])
 
 
 
@@ -91,8 +92,8 @@ if __name__ == "__main__":
     print negative_samples.shape, positive_samples.shape
     print negative_labels.shape, positive_labels.shape
      
-#     show.plot_images(positive_samples, positive_labels.tolist())
-#     show.plot_images(negative_samples)
+    show.plot_images(positive_samples, positive_labels.tolist())
+    show.plot_images(negative_samples)
      
       
     # file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
