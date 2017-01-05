@@ -107,9 +107,7 @@ def calc_overlap(boxes, true_boxes):
     
     # (n_truth, n_boxes)
     ious_for_each_gt = np.array(ious_for_each_gt)
-    ious_maximum = np.max(ious_for_each_gt, axis = 0)
-    
-    return ious_for_each_gt, ious_maximum
+    return ious_for_each_gt
         
 
 
