@@ -91,8 +91,8 @@ if __name__ == "__main__":
     print negative_samples.shape, positive_samples.shape
     print negative_labels.shape, positive_labels.shape
      
-    show.plot_images(positive_samples, positive_labels.tolist())
-    show.plot_images(negative_samples)
+#     show.plot_images(positive_samples, positive_labels.tolist())
+#     show.plot_images(negative_samples)
      
       
     # file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
