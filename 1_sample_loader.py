@@ -16,7 +16,7 @@ import digit_detector.eval as eval
 import digit_detector.utils as utils
 
 
-N_IMAGES = 10
+N_IMAGES = 4
 DIR = '../datasets/svhn/train'
 NEG_OVERLAP_THD = 0.05
 POS_OVERLAP_THD = 0.6
@@ -61,12 +61,9 @@ class Extractor:
             bar.update(i)
         bar.finish()
          
-        negative_samples = np.concatenate(self._negative_samples, axis=0)    
-        negative_labels = np.zeros((len(negative_samples), 1))
-        positive_samples = np.concatenate(self._positive_samples, axis=0)    
-        positive_labels = np.concatenate(self._positive_labels, axis=0)
-        return positive_samples, positive_labels, negative_samples, negative_labels
+        return self._merge_sample()
     
+     
     def _append_positive_patch(self, true_patches, true_labels):
         self._positive_samples.append(true_patches)
         self._positive_labels.append(true_labels)
@@ -82,7 +79,15 @@ class Extractor:
         overlaps_max = np.max(overlaps, axis=0)
         self._negative_samples.append(candidate_patches[overlaps_max<overlap_thd])
 
+    def _merge_sample(self):
+        negative_samples = np.concatenate(self._negative_samples, axis=0)    
+        negative_labels = np.zeros((len(negative_samples), 1))
+        positive_samples = np.concatenate(self._positive_samples, axis=0)    
+        positive_labels = np.concatenate(self._positive_labels, axis=0).reshape(-1,1)
 
+        samples = np.concatenate([negative_samples, positive_samples], axis=0)
+        labels = np.concatenate([negative_labels, positive_labels], axis=0)
+        return samples, labels
 
 if __name__ == "__main__":
 
@@ -90,17 +95,12 @@ if __name__ == "__main__":
     files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=N_IMAGES, random_order=False)
     annotation_file = "../datasets/svhn/train/digitStruct.json"
     
-    positive_samples, positive_labels, negative_samples, negative_labels = Extractor().extract_patch(files, PATCH_SIZE, POS_OVERLAP_THD, NEG_OVERLAP_THD)
-         
-    print negative_samples.shape, positive_samples.shape
-    print negative_labels.shape, positive_labels.shape
+    samples, labels = Extractor().extract_patch(files, PATCH_SIZE, POS_OVERLAP_THD, NEG_OVERLAP_THD)
+    print samples.shape, labels.shape
      
-    show.plot_images(positive_samples, positive_labels.tolist())
-    show.plot_images(negative_samples)
+    show.plot_images(samples, labels.reshape(-1,).tolist())
      
       
-    # file_io.FileHDF5().write(negative_samples, "negative_images.hdf5", "images", "w", dtype="uint8")
-    # file_io.FileHDF5().write(labels, "negative_images.hdf5", "labels", "a", dtype="int")
      
 
 
