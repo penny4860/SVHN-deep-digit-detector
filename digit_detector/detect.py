@@ -13,7 +13,7 @@ def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold
     
     detector = rp.MserRegionProposer()
     candidate_regions = detector.detect(image)
-    patches = candidate_regions.get_patches(dst_size=input_shape[0], input_shape[1])
+    patches = candidate_regions.get_patches(dst_size=(input_shape[0], input_shape[1]))
     
     # 4. Convert to gray
     patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
@@ -31,6 +31,7 @@ def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold
 #     show.plot_bounding_boxes(image, bbs, probs.tolist())
 
     # Thresholding
+    bbs = candidate_regions.get_boxes()
     bbs = bbs[probs > threshold]
     probs = probs[probs > threshold]
 
