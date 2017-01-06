@@ -5,15 +5,12 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-import time
 import progressbar
 
 import digit_detector.region_proposal as rp
 import digit_detector.file_io as file_io
 import digit_detector.annotation as ann
 import digit_detector.show as show
-import digit_detector.eval as eval
-import digit_detector.utils as utils
 
 
 N_IMAGES = 4
@@ -63,7 +60,6 @@ class Extractor:
          
         return self._merge_sample()
     
-    # Todo : positive patch, negative patch 를 선택하는 부분을 따로 모듈화할 수 있을지 생각해보자. 
     def _append_positive_patch(self, true_patches, true_labels):
         self._positive_samples.append(true_patches)
         self._positive_labels.append(true_labels)
