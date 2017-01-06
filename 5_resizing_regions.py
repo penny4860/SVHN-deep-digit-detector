@@ -10,7 +10,7 @@ import digit_detector.file_io as file_io
 
 
 model_filename = "detector_model.hdf5"
-mean_value = 106.759
+mean_value = 107.524
 DIR = '../datasets/svhn/train'
 
 if __name__ == "__main__":
@@ -20,9 +20,8 @@ if __name__ == "__main__":
     for img_file in img_files[30:40]:
         # 2. image
         img = cv2.imread(img_file)
-        #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
-        detector.detect(img, model_filename, mean_value, threshold=0.2, do_nms=True)
+        detector.detect(img, model_filename, mean_value, threshold=0.5, do_nms=True)
 
 
 
