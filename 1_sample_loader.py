@@ -36,15 +36,15 @@ if __name__ == "__main__":
     print validation_samples.shape, validation_labels.shape
       
 #     show.plot_images(samples, labels.reshape(-1,).tolist())
-
-
      
-    file_io.FileHDF5().write(train_samples, "train_images.hdf5", "images", "w", dtype="uint8")
-    file_io.FileHDF5().write(train_labels, "train_labels.hdf5", "labels", "a", dtype="int")
+    file_io.FileHDF5().write(train_samples, "train.hdf5", "images", "w", dtype="uint8")
+    file_io.FileHDF5().write(train_labels, "train.hdf5", "labels", "a", dtype="int")
  
-    file_io.FileHDF5().write(train_samples, "validation_images.hdf5", "images", "w", dtype="uint8")
-    file_io.FileHDF5().write(train_labels, "validation_labels.hdf5", "labels", "a", dtype="int")
+    file_io.FileHDF5().write(validation_samples, "val.hdf5", "images", "w", dtype="uint8")
+    file_io.FileHDF5().write(validation_labels, "val.hdf5", "labels", "a", dtype="int")
      
+    # (457723, 32, 32, 3) (457723, 1)
+    # (113430, 32, 32, 3) (113430, 1)
 
 
 
