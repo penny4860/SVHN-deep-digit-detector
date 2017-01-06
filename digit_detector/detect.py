@@ -9,54 +9,65 @@ import digit_detector.show as show
 
 class Detector:
     
-    def __init__(self, model_file, image_mean):
+    def __init__(self, model_file, image_mean, model_input_shape, region_proposer):
+        """
+        Parameters:
+            model_file (str)
+            image_mean (float)
+            region_proposer (MserRegionProposer)
+        """
         self._image_mean = image_mean
         self._cls = keras.models.load_model(model_file)
-        
-        self._region_proposer = rp.MserRegionProposer()
+        self._model_input_shape = model_input_shape
+        self._region_proposer = region_proposer
+
     
-    def run(self, image, input_shape = (32,32,1), threshold=0.9, do_nms=True):
-        
-        candidate_regions = self._region_proposer.detect(image)
-        patches = candidate_regions.get_patches(dst_size=(input_shape[0], input_shape[1]))
-        
-        # 4. Convert to gray
+    def _preprocess(self, patches):
+        """
+        Parameters:
+            patches (ndarray of shape (N, n_rows, n_cols, ch))
+        """
         patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
         patches = np.array(patches)
         patches = patches.astype('float32')
         patches -= self._image_mean
-    
-        patches = patches.reshape(-1, input_shape[0], input_shape[1], input_shape[2])
-        
-        # 5. Run pre-trained classifier
-        probs = self._cls.predict_proba(patches)[:, 1]
-         
-    #     show.plot_images(temp, probs.tolist())
-    #     show.plot_bounding_boxes(image, bbs, probs.tolist())
-    
-        # Thresholding
-        bbs = candidate_regions.get_boxes()
+        patches = patches.reshape(-1, self._model_input_shape[0], self._model_input_shape[1], self._model_input_shape[2])
+        return patches
+
+    def _get_thresholded_boxes(self, bbs, probs, threshold):
+        """
+        Parameters:
+            regions (Regions)
+        """
         bbs = bbs[probs > threshold]
         probs = probs[probs > threshold]
-        
-        y1 = bbs[:, 0]
-        y2 = bbs[:, 1]
-        x1 = bbs[:, 2]
-        x2 = bbs[:, 3]
+        return bbs, probs
+
     
-        widths = x2-x1+1
-        heights = y2-y1+1
+    def run(self, image, threshold=0.9, do_nms=True, show_result=True):
         
-        probs = probs[heights > widths]
-        bbs = bbs[heights > widths]
+        # 1. Get candidate patches
+        candidate_regions = self._region_proposer.detect(image)
+        patches = candidate_regions.get_patches(dst_size=(self._model_input_shape[0], self._model_input_shape[1]))
+        
+        # 2. preprocessing
+        patches = self._preprocess(patches)
+        
+        # 3. Run pre-trained classifier
+        probs = self._cls.predict_proba(patches)[:, 1]
+         
+        # 4. Thresholding
+        bbs, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), probs, threshold)
     
+        # 5. non-maxima-suppression
         if do_nms and len(bbs) != 0:
             bbs, probs = self._do_non_max_sup(bbs, probs, 0.1)
     
-        for i, bb in enumerate(bbs):
-            image = show.draw_box(image, bb, 2)
-        cv2.imshow("MSER + CNN", image)
-        cv2.waitKey(0)
+        if show_result:
+            for i, bb in enumerate(bbs):
+                image = show.draw_box(image, bb, 2)
+            cv2.imshow("MSER + CNN", image)
+            cv2.waitKey(0)
 
 
     def _do_non_max_sup(self, boxes, probs, overlapThresh=0.3):
