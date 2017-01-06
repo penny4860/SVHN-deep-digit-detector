@@ -34,6 +34,17 @@ def detect(image, model_filename, mean_value, input_shape = (32,32,1), threshold
     bbs = candidate_regions.get_boxes()
     bbs = bbs[probs > threshold]
     probs = probs[probs > threshold]
+    
+    y1 = bbs[:, 0]
+    y2 = bbs[:, 1]
+    x1 = bbs[:, 2]
+    x2 = bbs[:, 3]
+
+    widths = x2-x1+1
+    heights = y2-y1+1
+    
+    probs = probs[heights > widths]
+    bbs = bbs[heights > widths]
 
     # Non Maximum Suppression
     if do_nms and len(bbs) != 0:
