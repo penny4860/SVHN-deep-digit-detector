@@ -20,29 +20,6 @@ class Detector:
         self._cls = keras.models.load_model(model_file)
         self._model_input_shape = model_input_shape
         self._region_proposer = region_proposer
-
-    
-    def _preprocess(self, patches):
-        """
-        Parameters:
-            patches (ndarray of shape (N, n_rows, n_cols, ch))
-        """
-        patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
-        patches = np.array(patches)
-        patches = patches.astype('float32')
-        patches -= self._image_mean
-        patches = patches.reshape(-1, self._model_input_shape[0], self._model_input_shape[1], self._model_input_shape[2])
-        return patches
-
-    def _get_thresholded_boxes(self, bbs, probs, threshold):
-        """
-        Parameters:
-            regions (Regions)
-        """
-        bbs = bbs[probs > threshold]
-        probs = probs[probs > threshold]
-        return bbs, probs
-
     
     def run(self, image, threshold=0.9, do_nms=True, show_result=True):
         
@@ -69,6 +46,26 @@ class Detector:
             cv2.imshow("MSER + CNN", image)
             cv2.waitKey(0)
 
+    def _preprocess(self, patches):
+        """
+        Parameters:
+            patches (ndarray of shape (N, n_rows, n_cols, ch))
+        """
+        patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
+        patches = np.array(patches)
+        patches = patches.astype('float32')
+        patches -= self._image_mean
+        patches = patches.reshape(-1, self._model_input_shape[0], self._model_input_shape[1], self._model_input_shape[2])
+        return patches
+
+    def _get_thresholded_boxes(self, bbs, probs, threshold):
+        """
+        Parameters:
+            regions (Regions)
+        """
+        bbs = bbs[probs > threshold]
+        probs = probs[probs > threshold]
+        return bbs, probs
 
     def _do_non_max_sup(self, boxes, probs, overlapThresh=0.3):
         """
