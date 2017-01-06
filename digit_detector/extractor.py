@@ -8,13 +8,13 @@ import digit_detector.region_proposal as rp
 
 class Extractor:
     
-    def __init__(self, detector, annotator):
+    def __init__(self, region_proposer, annotator):
         self._positive_samples = []
         self._negative_samples = []
         self._positive_labels = []
         self._negative_labels = []
         
-        self._detector = detector
+        self._region_proposer = region_proposer
         self._annotator = annotator
     
     def extract_patch(self, image_files, patch_size, positive_overlap_thd, negative_overlap_thd):
@@ -25,7 +25,7 @@ class Extractor:
             image = cv2.imread(image_file)
          
             # 1. detect regions
-            candidate_regions = self._detector.detect(image)
+            candidate_regions = self._region_proposer.detect(image)
             candidate_patches = candidate_regions.get_patches(dst_size=patch_size)
             candidate_boxes = candidate_regions.get_boxes()
              
