@@ -28,13 +28,16 @@ if __name__ == "__main__":
     
     extractor = extractor_.Extractor(rp.MserRegionProposer(), ann.SvhnAnnotation(ANNOTATION_FILE))
     train_samples, train_labels = extractor.extract_patch(files[:n_train_files], PATCH_SIZE, POS_OVERLAP_THD, NEG_OVERLAP_THD)
-    print train_samples.shape, train_labels.shape
 
     extractor = extractor_.Extractor(rp.MserRegionProposer(), ann.SvhnAnnotation(ANNOTATION_FILE))
     validation_samples, validation_labels = extractor.extract_patch(files[n_train_files:], PATCH_SIZE, POS_OVERLAP_THD, NEG_OVERLAP_THD)
+
+    print train_samples.shape, train_labels.shape
     print validation_samples.shape, validation_labels.shape
       
 #     show.plot_images(samples, labels.reshape(-1,).tolist())
+
+
      
     file_io.FileHDF5().write(train_samples, "train_images.hdf5", "images", "w", dtype="uint8")
     file_io.FileHDF5().write(train_labels, "train_labels.hdf5", "labels", "a", dtype="int")
