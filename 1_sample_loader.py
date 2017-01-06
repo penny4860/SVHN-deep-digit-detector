@@ -11,8 +11,9 @@ import digit_detector.annotation as ann
 import digit_detector.show as show
 import digit_detector.region_proposal as rp
 
-N_IMAGES = 4
+N_IMAGES = None
 DIR = '../datasets/svhn/train'
+ANNOTATION_FILE = "../datasets/svhn/train/digitStruct.json"
 NEG_OVERLAP_THD = 0.05
 POS_OVERLAP_THD = 0.6
 PATCH_SIZE = (32,32)
@@ -21,15 +22,25 @@ if __name__ == "__main__":
 
     # 1. file 을 load
     files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=N_IMAGES, random_order=False)
-    annotation_file = "../datasets/svhn/train/digitStruct.json"
+    n_files = len(files)
+    n_train_files = int(n_files * 0.8)
+    print n_train_files
+    
+    extractor = extractor_.Extractor(rp.MserRegionProposer(), ann.SvhnAnnotation(ANNOTATION_FILE))
+    train_samples, train_labels = extractor.extract_patch(files[:n_train_files], PATCH_SIZE, POS_OVERLAP_THD, NEG_OVERLAP_THD)
+    print train_samples.shape, train_labels.shape
 
-    extractor = extractor_.Extractor(rp.MserRegionProposer(), ann.SvhnAnnotation(annotation_file))
-    samples, labels = extractor.extract_patch(files, PATCH_SIZE, POS_OVERLAP_THD, NEG_OVERLAP_THD)
-    print samples.shape, labels.shape
-     
-    show.plot_images(samples, labels.reshape(-1,).tolist())
-     
+    extractor = extractor_.Extractor(rp.MserRegionProposer(), ann.SvhnAnnotation(ANNOTATION_FILE))
+    validation_samples, validation_labels = extractor.extract_patch(files[n_train_files:], PATCH_SIZE, POS_OVERLAP_THD, NEG_OVERLAP_THD)
+    print validation_samples.shape, validation_labels.shape
       
+#     show.plot_images(samples, labels.reshape(-1,).tolist())
+     
+    file_io.FileHDF5().write(train_samples, "train_images.hdf5", "images", "w", dtype="uint8")
+    file_io.FileHDF5().write(train_labels, "train_labels.hdf5", "labels", "a", dtype="int")
+ 
+    file_io.FileHDF5().write(train_samples, "validation_images.hdf5", "images", "w", dtype="uint8")
+    file_io.FileHDF5().write(train_labels, "validation_labels.hdf5", "labels", "a", dtype="int")
      
 
 
