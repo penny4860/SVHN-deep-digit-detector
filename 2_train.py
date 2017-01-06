@@ -2,7 +2,7 @@ import digit_detector.file_io as file_io
 import numpy as np
 import os
 import cv2
-DIR = "../datasets/svhn"
+DIR = ""
 
 def to_gray(images):
     grays = []
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     
 
     X_train, X_val, Y_train, Y_val, mean_value = preprocess(images_train, labels_train, images_val, labels_val)
-    print mean_value
+    print mean_value    # 107.524
     
     print X_train.shape, X_val.shape
      
