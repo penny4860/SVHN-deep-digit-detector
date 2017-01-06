@@ -9,25 +9,27 @@ import digit_detector.show as show
 
 class Detector:
     
-    def __init__(self):
-        pass
+    def __init__(self, model_file, image_mean):
+        self._image_mean = image_mean
+        self._cls = keras.models.load_model(model_file)
+        
+        self._region_proposer = rp.MserRegionProposer()
     
-    def run(self, image, model_filename, mean_value, input_shape = (32,32,1), threshold=0.9, do_nms=True):
-        detector = rp.MserRegionProposer()
-        candidate_regions = detector.detect(image)
+    def run(self, image, input_shape = (32,32,1), threshold=0.9, do_nms=True):
+        
+        candidate_regions = self._region_proposer.detect(image)
         patches = candidate_regions.get_patches(dst_size=(input_shape[0], input_shape[1]))
         
         # 4. Convert to gray
         patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
         patches = np.array(patches)
         patches = patches.astype('float32')
-        patches -= mean_value
+        patches -= self._image_mean
     
         patches = patches.reshape(-1, input_shape[0], input_shape[1], input_shape[2])
         
         # 5. Run pre-trained classifier
-        model = keras.models.load_model(model_filename)
-        probs = model.predict_proba(patches)[:, 1]
+        probs = self._cls.predict_proba(patches)[:, 1]
          
     #     show.plot_images(temp, probs.tolist())
     #     show.plot_bounding_boxes(image, bbs, probs.tolist())
