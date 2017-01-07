@@ -4,35 +4,6 @@ import os
 import cv2
 DIR = ""
 
-def to_gray(images):
-    grays = []
-    for image in images:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        grays.append(gray)
-    return np.array(grays)
-
-def preprocess(images_train, labels_train, images_val, labels_val, nb_classes=2):
-    from keras.utils import np_utils
-    
-    # 1. convert to gray
-    X_train = to_gray(images_train).reshape(-1,32,32,1).astype('float32')
-    X_val = to_gray(images_val).reshape(-1,32,32,1).astype('float32')
-
-    y_train = labels_train.astype('int')
-    y_val = labels_val.astype('int')
-    y_train[y_train > 0] = 1
-    y_val[y_val > 0] = 1
-
-    mean_value = X_train.mean()
-    
-    X_train -= mean_value
-    X_val -= mean_value
-
-    # convert class vectors to binary class matrices
-    Y_train = np_utils.to_categorical(y_train, nb_classes)
-    Y_val = np_utils.to_categorical(y_val, nb_classes)
- 
-    return X_train, X_val, Y_train, Y_val, mean_value
 
 def train_detector(X_train, X_test, Y_train, Y_test, save_file='models/detector_model.hdf5'):
     import numpy as np
@@ -104,13 +75,13 @@ if __name__ == "__main__":
     print images_train.shape, labels_train.shape
     print images_val.shape, labels_val.shape
     
-
-    X_train, X_val, Y_train, Y_val, mean_value = preprocess(images_train, labels_train, images_val, labels_val)
+    import digit_detector.preprocess as preproc
+    X_train, X_val, Y_train, Y_val, mean_value = preproc.GrayImgTrainPreprocessor().run(images_train, labels_train, images_val, labels_val)
     print mean_value    # 107.524
     
     print X_train.shape, X_val.shape
      
-    train_detector(X_train, X_val, Y_train, Y_val, 'detector_model.hdf5')
+#     train_detector(X_train, X_val, Y_train, Y_val, 'detector_model.hdf5')
 
 
 
