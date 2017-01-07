@@ -3,8 +3,32 @@ import cv2
 import numpy as np
 import keras.models
 
-import digit_detector.region_proposal as rp
 import digit_detector.show as show
+
+
+class Preprocessor:
+    
+    def __init__(self):
+        pass
+    
+    def run(self):
+        pass
+    
+    def _to_gray(self):
+        pass
+    
+    def _substract_mean(self):
+        pass
+    
+class GrayImgPreprocessor(Preprocessor):
+    def run(self):
+        pass
+
+
+
+class NonMaxSuppressor:
+    def __init__(self):
+        pass
 
 
 class Detector:
