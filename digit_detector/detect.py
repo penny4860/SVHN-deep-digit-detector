@@ -5,7 +5,6 @@ import keras.models
 
 import digit_detector.show as show
 
-
 class Preprocessor:
     
     def __init__(self):
@@ -14,16 +13,41 @@ class Preprocessor:
     def run(self):
         pass
     
-    def _to_gray(self):
-        pass
-    
-    def _substract_mean(self):
-        pass
-    
 class GrayImgPreprocessor(Preprocessor):
-    def run(self):
-        pass
-
+    def run(self, patches):
+        """
+        Parameters:
+            patches (ndarray of shape (N, n_rows, n_cols, ch))
+        Returns:
+            patches (ndarray of shape (N, n_rows, n_cols, 1))
+        """
+        n_images, n_rows, n_cols, _ = patches.shape
+        
+        patches = np.array([self._to_gray(patch) for patch in patches], dtype='float')
+        patches = patches.reshape(n_images, n_rows, n_cols, 1)
+        return patches
+    
+    def _to_gray(self, image):
+        """
+        Parameters:
+            image (ndarray of shape (n_rows, n_cols, ch) or (n_rows, n_cols))
+        """
+        if len(image.shape) == 3:
+            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        elif len(image.shape) == 2:
+            gray_image = image
+        else:
+            raise ValueError("image dimension is strange")
+        return gray_image
+    
+    def _substract_mean(self, images, mean_value):
+        """
+        Parameters:
+            images (ndarray of shape (N, n_rows, n_cols, ch))
+            mean_vlaue (float)
+        """
+        images_zero_mean = images - mean_value
+        return images_zero_mean
 
 
 class NonMaxSuppressor:
@@ -33,17 +57,19 @@ class NonMaxSuppressor:
 
 class Detector:
     
-    def __init__(self, model_file, image_mean, model_input_shape, region_proposer):
+    def __init__(self, model_file, image_mean, model_input_shape, region_proposer, preprocessor):
         """
         Parameters:
             model_file (str)
             image_mean (float)
             region_proposer (MserRegionProposer)
+            preprocessor (Preprocessor)
         """
         self._image_mean = image_mean
         self._cls = keras.models.load_model(model_file)
         self._model_input_shape = model_input_shape
         self._region_proposer = region_proposer
+        self._preprocessor = preprocessor
     
     def run(self, image, threshold=0.9, do_nms=True, show_result=True):
         
@@ -52,7 +78,7 @@ class Detector:
         patches = candidate_regions.get_patches(dst_size=(self._model_input_shape[0], self._model_input_shape[1]))
         
         # 2. preprocessing
-        patches = self._preprocess(patches)
+        patches = self._preprocessor.run(patches)
         
         # 3. Run pre-trained classifier
         probs = self._cls.predict_proba(patches)[:, 1]
@@ -69,18 +95,6 @@ class Detector:
                 image = show.draw_box(image, bb, 2)
             cv2.imshow("MSER + CNN", image)
             cv2.waitKey(0)
-
-    def _preprocess(self, patches):
-        """
-        Parameters:
-            patches (ndarray of shape (N, n_rows, n_cols, ch))
-        """
-        patches = [cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY) for patch in patches]
-        patches = np.array(patches)
-        patches = patches.astype('float32')
-        patches -= self._image_mean
-        patches = patches.reshape(-1, self._model_input_shape[0], self._model_input_shape[1], self._model_input_shape[2])
-        return patches
 
     def _get_thresholded_boxes(self, bbs, probs, threshold):
         """
