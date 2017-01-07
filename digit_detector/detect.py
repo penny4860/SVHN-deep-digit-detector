@@ -53,60 +53,14 @@ class GrayImgPreprocessor(Preprocessor):
 class NonMaxSuppressor:
     def __init__(self):
         pass
-
-
-class Detector:
     
-    def __init__(self, model_file, image_mean, model_input_shape, region_proposer, preprocessor):
+    def run(self, boxes, probs, overlap_threshold=0.3):
         """
         Parameters:
-            model_file (str)
-            image_mean (float)
-            region_proposer (MserRegionProposer)
-            preprocessor (Preprocessor)
-        """
-        self._image_mean = image_mean
-        self._cls = keras.models.load_model(model_file)
-        self._model_input_shape = model_input_shape
-        self._region_proposer = region_proposer
-        self._preprocessor = preprocessor
-    
-    def run(self, image, threshold=0.9, do_nms=True, show_result=True):
+            boxes (ndarray of shape (N, 4))
+            probs (ndarray of shape (N,))
+            overlap_threshold (float)
         
-        # 1. Get candidate patches
-        candidate_regions = self._region_proposer.detect(image)
-        patches = candidate_regions.get_patches(dst_size=(self._model_input_shape[0], self._model_input_shape[1]))
-        
-        # 2. preprocessing
-        patches = self._preprocessor.run(patches)
-        
-        # 3. Run pre-trained classifier
-        probs = self._cls.predict_proba(patches)[:, 1]
-         
-        # 4. Thresholding
-        bbs, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), probs, threshold)
-    
-        # 5. non-maxima-suppression
-        if do_nms and len(bbs) != 0:
-            bbs, probs = self._do_non_max_sup(bbs, probs, 0.1)
-    
-        if show_result:
-            for i, bb in enumerate(bbs):
-                image = show.draw_box(image, bb, 2)
-            cv2.imshow("MSER + CNN", image)
-            cv2.waitKey(0)
-
-    def _get_thresholded_boxes(self, bbs, probs, threshold):
-        """
-        Parameters:
-            regions (Regions)
-        """
-        bbs = bbs[probs > threshold]
-        probs = probs[probs > threshold]
-        return bbs, probs
-
-    def _do_non_max_sup(self, boxes, probs, overlapThresh=0.3):
-        """
         Reference: http://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/
         """
         if len(boxes) == 0:
@@ -147,10 +101,61 @@ class Detector:
     
             # delete all indexes from the index list that have overlap greater than the
             # provided overlap threshold
-            idxs = np.delete(idxs, np.concatenate(([last], np.where(overlap > overlapThresh)[0])))
+            idxs = np.delete(idxs, np.concatenate(([last], np.where(overlap > overlap_threshold)[0])))
             
         # return only the bounding boxes that were picked
         return boxes[pick].astype("int"), probs[pick]
+
+
+class Detector:
+    
+    def __init__(self, model_file, image_mean, model_input_shape, region_proposer, preprocessor):
+        """
+        Parameters:
+            model_file (str)
+            image_mean (float)
+            region_proposer (MserRegionProposer)
+            preprocessor (Preprocessor)
+        """
+        self._image_mean = image_mean
+        self._cls = keras.models.load_model(model_file)
+        self._model_input_shape = model_input_shape
+        self._region_proposer = region_proposer
+        self._preprocessor = preprocessor
+    
+    def run(self, image, threshold=0.7, do_nms=True, show_result=True, nms_threshold=0.3):
+        
+        # 1. Get candidate patches
+        candidate_regions = self._region_proposer.detect(image)
+        patches = candidate_regions.get_patches(dst_size=(self._model_input_shape[0], self._model_input_shape[1]))
+        
+        # 2. preprocessing
+        patches = self._preprocessor.run(patches)
+        
+        # 3. Run pre-trained classifier
+        probs = self._cls.predict_proba(patches)[:, 1]
+         
+        # 4. Thresholding
+        bbs, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), probs, threshold)
+    
+        # 5. non-maxima-suppression
+        if do_nms and len(bbs) != 0:
+            bbs, probs = NonMaxSuppressor().run(bbs, probs, nms_threshold)
+    
+        if show_result:
+            for i, bb in enumerate(bbs):
+                image = show.draw_box(image, bb, 2)
+            cv2.imshow("MSER + CNN", image)
+            cv2.waitKey(0)
+
+    def _get_thresholded_boxes(self, bbs, probs, threshold):
+        """
+        Parameters:
+            regions (Regions)
+        """
+        bbs = bbs[probs > threshold]
+        probs = probs[probs > threshold]
+        return bbs, probs
 
 
 if __name__ == "__main__":

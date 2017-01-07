@@ -25,7 +25,7 @@ if __name__ == "__main__":
         # 2. image
         img = cv2.imread(img_file)
         
-        det.run(img, threshold=0.5, do_nms=True)
+        det.run(img, threshold=0.5, do_nms=True, nms_threshold=0.1)
 
 
 
