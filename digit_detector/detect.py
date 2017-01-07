@@ -5,51 +5,6 @@ import keras.models
 
 import digit_detector.show as show
 
-class Preprocessor:
-    
-    def __init__(self):
-        pass
-    
-    def run(self):
-        pass
-    
-class GrayImgPreprocessor(Preprocessor):
-    def run(self, patches):
-        """
-        Parameters:
-            patches (ndarray of shape (N, n_rows, n_cols, ch))
-        Returns:
-            patches (ndarray of shape (N, n_rows, n_cols, 1))
-        """
-        n_images, n_rows, n_cols, _ = patches.shape
-        
-        patches = np.array([self._to_gray(patch) for patch in patches], dtype='float')
-        patches = patches.reshape(n_images, n_rows, n_cols, 1)
-        return patches
-    
-    def _to_gray(self, image):
-        """
-        Parameters:
-            image (ndarray of shape (n_rows, n_cols, ch) or (n_rows, n_cols))
-        """
-        if len(image.shape) == 3:
-            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        elif len(image.shape) == 2:
-            gray_image = image
-        else:
-            raise ValueError("image dimension is strange")
-        return gray_image
-    
-    def _substract_mean(self, images, mean_value):
-        """
-        Parameters:
-            images (ndarray of shape (N, n_rows, n_cols, ch))
-            mean_vlaue (float)
-        """
-        images_zero_mean = images - mean_value
-        return images_zero_mean
-
-
 class NonMaxSuppressor:
     def __init__(self):
         pass

@@ -7,6 +7,8 @@ import digit_detector.region_proposal as rp
 import digit_detector.show as show
 import digit_detector.detect as detector
 import digit_detector.file_io as file_io
+import digit_detector.preprocess as preproc
+
 
 
 model_filename = "detector_model.hdf5"
@@ -19,7 +21,7 @@ if __name__ == "__main__":
     # 1. image files
     img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=None, random_order=False)
 
-    det = detector.Detector(model_filename, mean_value, model_input_shape, rp.MserRegionProposer(), detector.GrayImgPreprocessor())
+    det = detector.Detector(model_filename, mean_value, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor())
     
     for img_file in img_files[100:]:
         # 2. image
