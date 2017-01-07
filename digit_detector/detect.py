@@ -79,6 +79,25 @@ class Detector:
         self._preprocessor = preprocessor
     
     def run(self, image, threshold=0.7, do_nms=True, show_result=True, nms_threshold=0.3):
+        """Public function to run the detector.
+
+        Parameters
+        ----------
+        image : str
+            filename of the test image
+            
+        Returns
+        ----------
+        bbs : ndarray, shape of (N, 4)
+            detected bounding box. (y1, y2, x1, x2) ordered.
+        
+        probs : ndarray, shape of (N, 1)
+            evaluated score for the detector and test images on average precision. 
+    
+        Examples
+        --------
+        """
+
         
         # 1. Get candidate patches
         candidate_regions = self._region_proposer.detect(image)
@@ -102,6 +121,9 @@ class Detector:
                 image = show.draw_box(image, bb, 2)
             cv2.imshow("MSER + CNN", image)
             cv2.waitKey(0)
+        
+        return bbs, probs
+
 
     def _get_thresholded_boxes(self, bbs, probs, threshold):
         """
