@@ -91,7 +91,7 @@ class Detector:
         bbs : ndarray, shape of (N, 4)
             detected bounding box. (y1, y2, x1, x2) ordered.
         
-        probs : ndarray, shape of (N, 1)
+        probs : ndarray, shape of (N,)
             evaluated score for the detector and test images on average precision. 
     
         Examples
