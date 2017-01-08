@@ -60,7 +60,7 @@ class Evaluator(object):
             # Todo : thrshold, nms_threshold 를 constructor 에서 세팅
             
             # 1. Get the detected boxes
-            boxes, probs_ = det.run(test_image, threshold=0.5, do_nms=True, nms_threshold=0.1, show_result=False)
+            boxes, probs_ = det.run(test_image, threshold=0.0, do_nms=True, nms_threshold=0.1, show_result=False)
 
             # 2. Get the true boxes
             truth_bbs, true_labels = annotator.get_boxes_and_labels(image_file)
@@ -72,7 +72,12 @@ class Evaluator(object):
             overlaps = rp.calc_overlap(boxes, truth_bbs)
             overlaps = np.max(overlaps, axis=0)
             
+            print overlaps.shape
+            
             is_positive = overlaps > 0.5
+            
+            print is_positive.shape
+            
             idxes = np.where(is_positive == 1)
             is_positive = np.zeros_like(is_positive)
             is_positive[idxes[0][0:len(truth_bbs)]] = 1
@@ -84,6 +89,9 @@ class Evaluator(object):
         pbar.finish()
         probs = np.array(probs)
         gts = np.array(gts)
+        
+        # probs : 
+        # 
  
         self._calc_precision_recall(probs, gts)
         average_precision = self._calc_average_precision()
@@ -174,7 +182,7 @@ ANNOTATION_FILE = "../datasets/svhn/train/digitStruct.json"
 
 if __name__ == "__main__":
     # 1. load test image files, annotation file
-    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=5, random_order=False)
+    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=1, random_order=False)
     annotator = ann.SvhnAnnotation(ANNOTATION_FILE)
     
     # 2. create detector
