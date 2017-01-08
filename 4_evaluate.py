@@ -91,6 +91,8 @@ class Evaluator(object):
         return average_precision
     
     def plot_recall_precision(self):
+        import matplotlib.pyplot as plt
+        
         """Function to plot recall-precision graph.
         
         It should be performed eval_average_precision() before this function is called.
@@ -228,7 +230,7 @@ ANNOTATION_FILE = "../datasets/svhn/train/digitStruct.json"
 
 if __name__ == "__main__":
     # 1. load test image files, annotation file
-    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=None, random_order=False)
+    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=5, random_order=False)
     annotator = ann.SvhnAnnotation(ANNOTATION_FILE)
     
     # 2. create detector
@@ -239,8 +241,8 @@ if __name__ == "__main__":
     ap = evaluator.eval_average_precision(img_files,
                                           annotator, 
                                           det)
-#     print "Average Precision : {}".format(ap)
-#     evaluator.plot_recall_precision()
+    print "Average Precision : {}".format(ap)
+    evaluator.plot_recall_precision()
 #     print evaluator.dataset
 
 
