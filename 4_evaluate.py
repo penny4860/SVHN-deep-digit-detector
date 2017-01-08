@@ -201,27 +201,6 @@ class Evaluator(object):
         return ious
 
 
-    # Todo : extractor module과 중복되는 내용 제거
-    def _get_truth_bb(self, image_file, annotation_file):
-        
-        image_id = int(utils.get_file_id(image_file))
-        annotations = file_io.FileJson().read(annotation_file)
-        annotations.insert(0, None)
-        annotation = annotations[image_id]
-        
-        boxes = []
-        for box in annotation["boxes"]:
-            x1 = int(box["left"])
-            y1 = int(box["top"])
-            w = int(box["width"])
-            h = int(box["height"])
-            
-            bb = (y1, y1+h, x1, x1+w)
-            boxes.append(bb)
-        
-        return boxes
-        
-
 model_filename = "detector_model.hdf5"
 mean_value = 107.524
 model_input_shape = (32,32,1)
