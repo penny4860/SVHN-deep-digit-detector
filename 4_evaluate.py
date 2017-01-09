@@ -21,14 +21,12 @@ class Evaluator(object):
         self._detector = detector
         self._annotator = annotator
 
-    def calc_precision_and_recall(self, test_image_files):
+    def run(self, test_image_files):
         
         # setup the progress bar
         widgets = ["Running for each Test image as gathering patches and its probabilities: ", 
                    progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
         pbar = progressbar.ProgressBar(maxval=len(test_image_files), widgets=widgets).start()
-        
-        gts = []
         
         n_detected = 0
         n_truth = 0
@@ -57,10 +55,14 @@ class Evaluator(object):
 
         recall = float(n_true_positive) / n_truth
         precision = float(n_true_positive) / n_detected
-        
         f1_score = 2* (precision*recall) / (precision + recall)
+        self._print_msg(recall, precision, f1_score)
         
         return recall, precision, f1_score
+    
+    def _print_msg(self, recall, precision, f1_score):
+        print "recall value : {}, precision value : {}, f1_score : {}".format(recall, precision, f1_score)
+        
     
 model_filename = "detector_model.hdf5"
 mean_value = 107.524
@@ -78,9 +80,8 @@ if __name__ == "__main__":
 
     # 3. Evaluate average precision     
     evaluator = Evaluator(det, annotator)
-    recall, precision, f1_score = evaluator.calc_precision_and_recall(img_files)
+    recall, precision, f1_score = evaluator.run(img_files)
     
-    print "recall value : {}, precision value : {}, f1_score : {}".format(recall, precision, f1_score)
 
 
 
