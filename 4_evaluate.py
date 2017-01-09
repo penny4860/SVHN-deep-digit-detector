@@ -38,7 +38,7 @@ class Evaluator(object):
             test_image = cv2.imread(image_file)
             
             # 1. Get the detected boxes
-            detected_bbs, detected_probs_ = self._detector.run(test_image, threshold=0.5, do_nms=True, nms_threshold=0.1, show_result=True)
+            detected_bbs, detected_probs_ = self._detector.run(test_image, threshold=0.5, do_nms=True, nms_threshold=0.1, show_result=False)
 
             # 2. Get the true boxes
             true_bbs, true_labels = annotator.get_boxes_and_labels(image_file)
@@ -58,7 +58,9 @@ class Evaluator(object):
         recall = float(n_true_positive) / n_truth
         precision = float(n_true_positive) / n_detected
         
-        return recall, precision
+        f1_score = 2* (precision*recall) / (precision + recall)
+        
+        return recall, precision, f1_score
     
 model_filename = "detector_model.hdf5"
 mean_value = 107.524
@@ -68,7 +70,7 @@ ANNOTATION_FILE = "../datasets/svhn/train/digitStruct.json"
 
 if __name__ == "__main__":
     # 1. load test image files, annotation file
-    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=3, random_order=False)
+    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=1000, random_order=False)
     annotator = ann.SvhnAnnotation(ANNOTATION_FILE)
     
     # 2. create detector
@@ -76,8 +78,9 @@ if __name__ == "__main__":
 
     # 3. Evaluate average precision     
     evaluator = Evaluator(det, annotator)
-    print evaluator.calc_recall(img_files)
+    recall, precision, f1_score = evaluator.calc_precision_and_recall(img_files)
     
+    print "recall value : {}, precision value : {}, f1_score : {}".format(recall, precision, f1_score)
 
 
 
