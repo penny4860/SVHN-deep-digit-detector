@@ -35,7 +35,7 @@ class Evaluator(object):
             test_image = cv2.imread(image_file)
             
             # 1. Get the detected boxes
-            detected_bbs, detected_probs_ = self._detector.run(test_image, threshold=0.5, do_nms=True, nms_threshold=0.1, show_result=True)
+            detected_bbs, detected_probs_ = self._detector.run(test_image, threshold=0.5, do_nms=True, nms_threshold=0.1, show_result=False)
 
             # 2. Get the true boxes
             true_bbs, true_labels = self._annotator.get_boxes_and_labels(image_file)
