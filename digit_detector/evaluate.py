@@ -42,12 +42,14 @@ class Evaluator(object):
 
             # 3. Calc IOU between detected and true boxes
             # Todo : class 로 모듈화하자.
-            overlaps = rp.calc_overlap(detected_bbs, true_bbs)
-            overlaps = np.max(overlaps, axis=0)
+            # (2, N)
+            overlaps_per_truth = rp.calc_overlap(detected_bbs, true_bbs)
+            for overlaps in overlaps_per_truth:
+                if overlaps.max() > 0.5:
+                    n_true_positive += 1
             
             n_detected += len(detected_bbs)
             n_truth += len(true_bbs)
-            n_true_positive += len(overlaps[overlaps > 0.5])
              
             pbar.update(i)
         pbar.finish()
