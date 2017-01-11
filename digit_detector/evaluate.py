@@ -1,10 +1,5 @@
 #-*- coding: utf-8 -*-
-"""Todo
- 
-    1) Evaluator class 를 별도의 file 로 모듈화
-    2) Region Proposer 의 candidate 만의 recall value 연산이 가능하도록 구조 정리
-        - detector 와 proposer 를 composite pattern 을 이용해서 동일 interface 로 묶어보자.
-"""
+
 import progressbar
 import cv2
 import numpy as np
