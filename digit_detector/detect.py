@@ -120,14 +120,15 @@ class Detector:
             if do_nms and len(bbs) != 0:
                 bbs, probs = NonMaxSuppressor().run(bbs, probs, nms_threshold)
         
-            if show_result:
-                for i, bb in enumerate(bbs):
-                    image = show.draw_box(image, bb, 2)
-                cv2.imshow("MSER + CNN", image)
-                cv2.waitKey(0)
         else:
             bbs = candidate_regions.get_boxes()
             probs = np.ones((len(bbs),))
+
+        if show_result:
+            for i, bb in enumerate(bbs):
+                image = show.draw_box(image, bb, 2)
+            cv2.imshow("MSER + CNN", image)
+            cv2.waitKey(0)
         
         return bbs, probs
 
