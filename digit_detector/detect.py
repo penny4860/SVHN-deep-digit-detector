@@ -73,7 +73,10 @@ class Detector:
             preprocessor (Preprocessor)
         """
         self._image_mean = image_mean
-        self._cls = keras.models.load_model(model_file)
+        if model_file:
+            self._cls = keras.models.load_model(model_file)
+        else:
+            self._cls = None
         self._model_input_shape = model_input_shape
         self._region_proposer = region_proposer
         self._preprocessor = preprocessor
@@ -107,20 +110,24 @@ class Detector:
         patches = self._preprocessor.run(patches)
         
         # 3. Run pre-trained classifier
-        probs = self._cls.predict_proba(patches)[:, 1]
-         
-        # 4. Thresholding
-        bbs, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), probs, threshold)
-    
-        # 5. non-maxima-suppression
-        if do_nms and len(bbs) != 0:
-            bbs, probs = NonMaxSuppressor().run(bbs, probs, nms_threshold)
-    
-        if show_result:
-            for i, bb in enumerate(bbs):
-                image = show.draw_box(image, bb, 2)
-            cv2.imshow("MSER + CNN", image)
-            cv2.waitKey(0)
+        if self._cls:
+            probs = self._cls.predict_proba(patches)[:, 1]
+        
+            # 4. Thresholding
+            bbs, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), probs, threshold)
+        
+            # 5. non-maxima-suppression
+            if do_nms and len(bbs) != 0:
+                bbs, probs = NonMaxSuppressor().run(bbs, probs, nms_threshold)
+        
+            if show_result:
+                for i, bb in enumerate(bbs):
+                    image = show.draw_box(image, bb, 2)
+                cv2.imshow("MSER + CNN", image)
+                cv2.waitKey(0)
+        else:
+            bbs = candidate_regions.get_boxes()
+            probs = np.ones((len(bbs),))
         
         return bbs, probs
 
