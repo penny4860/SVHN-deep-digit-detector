@@ -32,7 +32,7 @@ if __name__ == "__main__":
 #     # ecall value : 0.45329038196, precision value : 0.63141025641, f1_score : 0.527725689794
     
     det = detector.Detector(None, mean_value, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor())
-    evaluator = eval.Evaluator(det, annotator)
+    evaluator = eval.Evaluator(det, annotator, rp.OverlapCalculator())
     recall, precision, f1_score = evaluator.run(img_files)
 
 

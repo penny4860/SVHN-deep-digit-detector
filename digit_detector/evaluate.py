@@ -8,13 +8,18 @@ import region_proposal as rp
 
 class Evaluator(object):
     
-    def __init__(self, detector, annotator):
+    def __init__(self, detector, annotator, overlap_calculator):
         """
         detector : Detector
             instance of Detector class
+        
+        overlap_calculator : OverlapCalculator
+            instance of OverlapCalculator class
+        
         """
         self._detector = detector
         self._annotator = annotator
+        self._overlap_calculator = overlap_calculator
 
 
     def run(self, test_image_files):
@@ -38,8 +43,7 @@ class Evaluator(object):
             true_bbs, true_labels = self._annotator.get_boxes_and_labels(image_file)
 
             # 3. Calc IOU between detected and true boxes
-            # Todo : class 로 모듈화하자.
-            overlaps_per_truth = rp.calc_overlap(detected_bbs, true_bbs)
+            overlaps_per_truth = self._overlap_calculator.calc_ious_per_truth(detected_bbs, true_bbs)
 
             n_true_positive += self._calc_true_positive(overlaps_per_truth)
             n_detected += len(detected_bbs)

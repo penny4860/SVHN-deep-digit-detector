@@ -8,7 +8,11 @@ import digit_detector.region_proposal as rp
 
 class Extractor:
     
-    def __init__(self, region_proposer, annotator):
+    def __init__(self, region_proposer, annotator, overlap_calculator):
+        """
+        overlap_calculator : OverlapCalculator
+            instance of OverlapCalculator class
+        """
         self._positive_samples = []
         self._negative_samples = []
         self._positive_labels = []
@@ -16,6 +20,8 @@ class Extractor:
         
         self._region_proposer = region_proposer
         self._annotator = annotator
+        self._overlap_calculator = overlap_calculator
+
     
     def extract_patch(self, image_files, patch_size, positive_overlap_thd, negative_overlap_thd):
         
@@ -34,7 +40,7 @@ class Extractor:
             true_patches = rp.Regions(image, true_boxes).get_patches(dst_size=patch_size)
             
             # 3. calc overlap
-            overlaps = rp.calc_overlap(candidate_boxes, true_boxes)
+            overlaps = self._overlap_calculator.calc_ious_per_truth(candidate_boxes, true_boxes)
 
             # 4. add patch to the samples
             self._select_positive_patch(candidate_patches, true_labels, overlaps, positive_overlap_thd)
