@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # 1. image files
     img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=None, random_order=False)
 
-    det = detector.Detector(model_filename, mean_value, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor())
+    det = detector.Detector(model_filename, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor(mean_value))
     
     for img_file in img_files[100:]:
         # 2. image

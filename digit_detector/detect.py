@@ -64,15 +64,13 @@ class NonMaxSuppressor:
 
 class Detector:
     
-    def __init__(self, model_file, image_mean, model_input_shape, region_proposer, preprocessor):
+    def __init__(self, model_file, model_input_shape, region_proposer, preprocessor):
         """
         Parameters:
             model_file (str)
-            image_mean (float)
             region_proposer (MserRegionProposer)
             preprocessor (Preprocessor)
         """
-        self._image_mean = image_mean
         if model_file:
             self._cls = keras.models.load_model(model_file)
         else:
