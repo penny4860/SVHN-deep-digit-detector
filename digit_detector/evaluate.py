@@ -69,7 +69,7 @@ class Evaluator(object):
         """
         n_true_positive = 0
         for overlaps in overlaps_per_truth:
-            if overlaps.max() > 0.5:
+            if len(overlaps) > 0 and overlaps.max() > 0.5:
                 n_true_positive += 1
         return n_true_positive
 
