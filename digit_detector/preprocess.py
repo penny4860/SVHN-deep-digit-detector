@@ -70,7 +70,7 @@ class GrayImgTrainPreprocessor(_TrainTimePreprocessor):
 class _RunTimePreprocessor(_Preprocessor):
     __metaclass__ = ABCMeta
     
-    def __init__(self, mean_value):
+    def __init__(self, mean_value=None):
         self._mean_value = mean_value
     
     @abstractmethod
@@ -100,4 +100,10 @@ class GrayImgPreprocessor(_RunTimePreprocessor):
         patches = self._substract_mean(patches)
         patches = patches.reshape(n_images, n_rows, n_cols, 1)
         return patches
+    
+class NonePreprocessor(_RunTimePreprocessor):
+    def run(self, patches):
+        return patches
+    
+    
     
