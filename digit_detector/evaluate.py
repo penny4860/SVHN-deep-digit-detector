@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import region_proposal as rp
 
+
 class Evaluator(object):
     
     def __init__(self, detector, annotator):
@@ -14,6 +15,7 @@ class Evaluator(object):
         """
         self._detector = detector
         self._annotator = annotator
+
 
     def run(self, test_image_files):
         
@@ -37,12 +39,9 @@ class Evaluator(object):
 
             # 3. Calc IOU between detected and true boxes
             # Todo : class 로 모듈화하자.
-            # (2, N)
             overlaps_per_truth = rp.calc_overlap(detected_bbs, true_bbs)
-            for overlaps in overlaps_per_truth:
-                if overlaps.max() > 0.5:
-                    n_true_positive += 1
-            
+
+            n_true_positive += self._calc_true_positive(overlaps_per_truth)
             n_detected += len(detected_bbs)
             n_truth += len(true_bbs)
              
@@ -55,6 +54,21 @@ class Evaluator(object):
         self._print_msg(recall, precision, f1_score)
         
         return recall, precision, f1_score
+    
+
+    def _calc_true_positive(self, overlaps_per_truth):
+        """
+        Parameters:
+            overlaps_per_truth (N, M)
+                N : number of Truth
+                M : number of Detected
+        """
+        n_true_positive = 0
+        for overlaps in overlaps_per_truth:
+            if overlaps.max() > 0.5:
+                n_true_positive += 1
+        return n_true_positive
+
     
     def _print_msg(self, recall, precision, f1_score):
         print "recall value : {}, precision value : {}, f1_score : {}".format(recall, precision, f1_score)
