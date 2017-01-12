@@ -70,18 +70,20 @@ class GrayImgTrainPreprocessor(_TrainTimePreprocessor):
 class _RunTimePreprocessor(_Preprocessor):
     __metaclass__ = ABCMeta
     
-    def __init__(self):
-        pass
+    def __init__(self, mean_value):
+        self._mean_value = mean_value
+    
     @abstractmethod
     def run(self, patches):
         pass
-    def _substract_mean(self, images, mean_value):
+    
+    def _substract_mean(self, images):
         """
         Parameters:
             images (ndarray of shape (N, n_rows, n_cols, ch))
             mean_vlaue (float)
         """
-        images_zero_mean = images - mean_value
+        images_zero_mean = images - self._mean_value
         return images_zero_mean
     
 class GrayImgPreprocessor(_RunTimePreprocessor):
@@ -95,6 +97,7 @@ class GrayImgPreprocessor(_RunTimePreprocessor):
         n_images, n_rows, n_cols, _ = patches.shape
         
         patches = np.array([self._to_gray(patch) for patch in patches], dtype='float')
+        patches = self._substract_mean(patches)
         patches = patches.reshape(n_images, n_rows, n_cols, 1)
         return patches
     
