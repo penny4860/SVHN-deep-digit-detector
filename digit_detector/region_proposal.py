@@ -30,7 +30,11 @@ class Regions:
                 patch = cv2.resize(patch, (desired_xsize, desired_ysize), interpolation=cv2.INTER_AREA)
                 
             patches.append(patch)
-        return np.array(patches)
+            
+        if dst_size:
+            return np.array(patches)
+        else:
+            return patches
     
     def _crop(self, box):
         patch = self._cropper.crop(self._image, box)
