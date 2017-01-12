@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 
 # Todo : keras model 에서 predict_probs() 할 때 message off 하는 방법
+# evaluator.run(img_files, do_nms=False) 에서 do_nms option 을 사용하지 않도록 detector 자체의 class 에서 nms 객체를 갖고 있도록 하자.
 
 import cv2
 import numpy as np
