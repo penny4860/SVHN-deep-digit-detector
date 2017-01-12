@@ -20,20 +20,22 @@ ANNOTATION_FILE = "../datasets/svhn/train/digitStruct.json"
 
 if __name__ == "__main__":
     # 1. load test image files, annotation file
-    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=2, random_order=False)
+    img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=1000, random_order=False)
     annotator = ann.SvhnAnnotation(ANNOTATION_FILE)
     
-#     # 2. create detector
-#     det = detector.Detector(model_filename, mean_value, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor())
-# 
-#     # 3. Evaluate average precision     
-#     evaluator = eval.Evaluator(det, annotator)
-#     recall, precision, f1_score = evaluator.run(img_files)
-#     # ecall value : 0.45329038196, precision value : 0.63141025641, f1_score : 0.527725689794
-    
-    det = detector.Detector(None, mean_value, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor())
+    # 2. create detector
+    det = detector.Detector(model_filename, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor(mean_value))
+ 
+    # 3. Evaluate average precision     
     evaluator = eval.Evaluator(det, annotator, rp.OverlapCalculator())
     recall, precision, f1_score = evaluator.run(img_files)
+    recall value : 0.487344684768, precision value : 0.656133828996, f1_score : 0.559281753367
+    
+
+    
+#     det = detector.Detector(None, mean_value, model_input_shape, rp.MserRegionProposer(), preproc.GrayImgPreprocessor())
+#     evaluator = eval.Evaluator(det, annotator, rp.OverlapCalculator())
+#     recall, precision, f1_score = evaluator.run(img_files)
 
 
 
