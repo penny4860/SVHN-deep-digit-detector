@@ -22,7 +22,8 @@ class Evaluator(object):
         self._overlap_calculator = overlap_calculator
 
 
-    def run(self, test_image_files):
+    def run(self, test_image_files, do_nms=True):
+        # Todo : nms 를 삭제
         
         # setup the progress bar
         widgets = ["Running for each Test image as gathering patches and its probabilities: ", 
@@ -37,7 +38,7 @@ class Evaluator(object):
             test_image = cv2.imread(image_file)
             
             # 1. Get the detected boxes
-            detected_bbs, detected_probs_ = self._detector.run(test_image, threshold=0.5, do_nms=True, nms_threshold=0.1, show_result=False)
+            detected_bbs, detected_probs_ = self._detector.run(test_image, threshold=0.5, do_nms=do_nms, nms_threshold=0.1, show_result=False)
 
             # 2. Get the true boxes
             true_bbs, true_labels = self._annotator.get_boxes_and_labels(image_file)
