@@ -62,46 +62,101 @@ class NonMaxSuppressor:
         return boxes[pick].astype("int"), probs[pick]
 
 
+
+class Classifier:
+    
+    def __init__(self):
+        pass
+    
+class CnnClassifier(Classifier):
+    
+    def __init__(self, model_file, input_shape=(32,32,1)):
+        self._model = keras.models.load_model(model_file)
+        self.input_shape = input_shape
+
+    def predict_proba(self, patches):
+        """
+        patches (N, 32, 32, 1)
+        
+        probs (N, n_classes)
+        """
+        probs = self._model.predict_proba(patches)
+        return probs
+    
+class TrueBinaryClassifier():
+    def __init__(self, model_file=None, input_shape=None):
+        self._model = None
+        self.input_shape = None
+
+    def predict_proba(self, patches):
+        """
+        patches (N, 32, 32, 1)
+        
+        probs (N, n_classes)
+        """
+        probs = np.ones((len(patches), 2))
+        return probs
+    
+
 class Detector:
     
-    def __init__(self, model_file, image_mean, model_input_shape, region_proposer, preprocessor):
+    def __init__(self, classifier, region_proposer, preprocessor):
         """
         Parameters:
             model_file (str)
-            image_mean (float)
             region_proposer (MserRegionProposer)
             preprocessor (Preprocessor)
         """
-        self._image_mean = image_mean
-        self._cls = keras.models.load_model(model_file)
-        self._model_input_shape = model_input_shape
+        self._cls = classifier
         self._region_proposer = region_proposer
         self._preprocessor = preprocessor
+        
     
     def run(self, image, threshold=0.7, do_nms=True, show_result=True, nms_threshold=0.3):
+        """Public function to run the detector.
+
+        Parameters
+        ----------
+        image : str
+            filename of the test image
+            
+        Returns
+        ----------
+        bbs : ndarray, shape of (N, 4)
+            detected bounding box. (y1, y2, x1, x2) ordered.
+        
+        probs : ndarray, shape of (N,)
+            evaluated score for the detector and test images on average precision. 
+    
+        Examples
+        --------
+        """
         
         # 1. Get candidate patches
         candidate_regions = self._region_proposer.detect(image)
-        patches = candidate_regions.get_patches(dst_size=(self._model_input_shape[0], self._model_input_shape[1]))
+        patches = candidate_regions.get_patches(dst_size=self._cls.input_shape)
         
         # 2. preprocessing
         patches = self._preprocessor.run(patches)
         
         # 3. Run pre-trained classifier
         probs = self._cls.predict_proba(patches)[:, 1]
-         
+    
         # 4. Thresholding
         bbs, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), probs, threshold)
     
         # 5. non-maxima-suppression
         if do_nms and len(bbs) != 0:
             bbs, probs = NonMaxSuppressor().run(bbs, probs, nms_threshold)
-    
+        
         if show_result:
             for i, bb in enumerate(bbs):
                 image = show.draw_box(image, bb, 2)
             cv2.imshow("MSER + CNN", image)
             cv2.waitKey(0)
+        
+        return bbs, probs
+
 
     def _get_thresholded_boxes(self, bbs, probs, threshold):
         """
