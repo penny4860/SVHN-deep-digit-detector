@@ -13,9 +13,11 @@ However, it is not suitable for detecting bounding box because it introduces som
 * Validation samples : (113430, 32, 32, 3)
 
 
-### 2. train detector (2_train.py)
+### 2. train classifier (2_train.py)
 
-I designed a classifier for architecture similar to VGG-Net. 
+#### 2.1. classifier used for detection
+
+I designed a Convolutional Neural Network architecture for detecting character. This network classify text and non-text.
 
 The architecture is as follows:
 
@@ -26,13 +28,38 @@ The architecture is as follows:
 * CONV3-64: [16x16x64]
 * CONV3-64: [16x16x64]
 * POOL2: [8x8x64]
-* FC: [1x1x1024] I used drop out in this layer.
+* FC: [1x1x1024] 
+  * I used drop out in this layer.
 * FC: [1x1x2]
-
+  
 The accuracy of the classifier is as follows
 
 * Training Accuracy : 97.91%
 * Test Accuracy : 96.98%
+
+#### 2.2. classifier used for recognition
+
+This Convolutional Neural Network recognize numbers. The architecture is same except for the number of class.
+
+The architecture is as follows:
+
+* INPUT: [32x32x1]
+* CONV3-32: [32x32x32]
+* CONV3-32: [32x32x32]
+* POOL2: [16x16x32]
+* CONV3-64: [16x16x64]
+* CONV3-64: [16x16x64]
+* POOL2: [8x8x64]
+* FC: [1x1x1024] 
+  * I used drop out in this layer.
+* FC: [1x1x10]
+  * number of class is 10.
+
+The accuracy of the classifier is as follows
+
+* Training Accuracy : 95.41%
+* Test Accuracy : 94.52%
+
 
 ### 3. Run the detector (3_detect.py)
 
