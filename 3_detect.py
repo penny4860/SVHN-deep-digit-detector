@@ -11,20 +11,24 @@ import digit_detector.preprocess as preproc
 
 
 
-model_filename = "detector_model.hdf5"
+detect_model = "detector_model.hdf5"
+recognize_model = "recognize_model.hdf5"
+
 mean_value = 107.524
 model_input_shape = (32,32,1)
-DIR = '../datasets/svhn/extra'
+DIR = '../datasets/svhn/train'
 
 
 if __name__ == "__main__":
     # 1. image files
     img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=None, random_order=False)
 
-    classifier = detector.CnnClassifier(model_filename, model_input_shape)
-    det = detector.Detector(classifier, rp.MserRegionProposer(), preproc.GrayImgPreprocessor(mean_value))
+    char_detector = detector.CnnClassifier(detect_model, model_input_shape)
+    char_recognizer = detector.CnnClassifier(recognize_model, model_input_shape)
     
-    for img_file in img_files[100:]:
+    det = detector.Detector(char_detector, char_recognizer, rp.MserRegionProposer(), preproc.GrayImgPreprocessor(mean_value))
+    
+    for img_file in img_files[0:]:
         # 2. image
         img = cv2.imread(img_file)
         

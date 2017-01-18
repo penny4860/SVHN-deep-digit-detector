@@ -9,10 +9,11 @@ class NonMaxSuppressor:
     def __init__(self):
         pass
     
-    def run(self, boxes, probs, overlap_threshold=0.3):
+    def run(self, boxes, patches, probs, overlap_threshold=0.3):
         """
         Parameters:
             boxes (ndarray of shape (N, 4))
+            patches (ndarray of shape (N, 32, 32, 1))
             probs (ndarray of shape (N,))
             overlap_threshold (float)
         
@@ -59,7 +60,7 @@ class NonMaxSuppressor:
             idxs = np.delete(idxs, np.concatenate(([last], np.where(overlap > overlap_threshold)[0])))
             
         # return only the bounding boxes that were picked
-        return boxes[pick].astype("int"), probs[pick]
+        return boxes[pick].astype("int"), patches[pick], probs[pick]
 
 
 
@@ -100,7 +101,7 @@ class TrueBinaryClassifier():
 
 class Detector:
     
-    def __init__(self, classifier, region_proposer, preprocessor):
+    def __init__(self, classifier, recognizer, region_proposer, preprocessor):
         """
         Parameters:
             model_file (str)
@@ -108,6 +109,7 @@ class Detector:
             preprocessor (Preprocessor)
         """
         self._cls = classifier
+        self._recognizer = recognizer
         self._region_proposer = region_proposer
         self._preprocessor = preprocessor
         
@@ -143,11 +145,16 @@ class Detector:
         probs = self._cls.predict_proba(patches)[:, 1]
     
         # 4. Thresholding
-        bbs, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), probs, threshold)
+        bbs, patches, probs = self._get_thresholded_boxes(candidate_regions.get_boxes(), patches, probs, threshold)
     
         # 5. non-maxima-suppression
         if do_nms and len(bbs) != 0:
-            bbs, probs = NonMaxSuppressor().run(bbs, probs, nms_threshold)
+            bbs, patches, probs = NonMaxSuppressor().run(bbs, patches, probs, nms_threshold)
+        
+        if len(patches) > 0:
+            probs_ = self._recognizer.predict_proba(patches)
+            y_pred = probs_.argmax(axis=1)
+            print y_pred
         
         if show_result:
             for i, bb in enumerate(bbs):
@@ -158,14 +165,15 @@ class Detector:
         return bbs, probs
 
 
-    def _get_thresholded_boxes(self, bbs, probs, threshold):
+    def _get_thresholded_boxes(self, bbs, patches, probs, threshold):
         """
         Parameters:
             regions (Regions)
         """
         bbs = bbs[probs > threshold]
+        patches = patches[probs > threshold]
         probs = probs[probs > threshold]
-        return bbs, probs
+        return bbs, patches, probs
 
 
 if __name__ == "__main__":
