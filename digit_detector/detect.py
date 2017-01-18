@@ -154,11 +154,15 @@ class Detector:
         if len(patches) > 0:
             probs_ = self._recognizer.predict_proba(patches)
             y_pred = probs_.argmax(axis=1)
-            print y_pred
         
         if show_result:
             for i, bb in enumerate(bbs):
                 image = show.draw_box(image, bb, 2)
+                
+                y1, y2, x1, x2 = bb
+                msg = "{0}".format(y_pred[i])
+                cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), thickness=2)
+                
             cv2.imshow("MSER + CNN", image)
             cv2.waitKey(0)
         
