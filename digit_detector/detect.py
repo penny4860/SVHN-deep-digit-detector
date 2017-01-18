@@ -164,7 +164,7 @@ class Detector:
                 
                 y1, y2, x1, x2 = bb
                 msg = "{0}".format(y_pred[i])
-                cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), thickness=2)
+                cv2.putText(image, msg, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), thickness=2)
                 
             cv2.imshow("MSER + CNN", image)
             cv2.waitKey(0)
