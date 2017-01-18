@@ -101,6 +101,7 @@ class TrueBinaryClassifier():
 
 class Detector:
     
+    # Todo classifier, recognizer 정리
     def __init__(self, classifier, recognizer, region_proposer, preprocessor):
         """
         Parameters:
@@ -157,6 +158,8 @@ class Detector:
         
         if show_result:
             for i, bb in enumerate(bbs):
+                
+                # todo : show module 정리
                 image = show.draw_box(image, bb, 2)
                 
                 y1, y2, x1, x2 = bb
