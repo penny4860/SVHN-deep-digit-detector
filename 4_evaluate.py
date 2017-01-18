@@ -35,7 +35,7 @@ if __name__ == "__main__":
     # 3. Evaluate average precision     
     evaluator = eval.Evaluator(det, annotator, rp.OverlapCalculator())
     recall, precision, f1_score = evaluator.run(img_files)
-    # recall value : 0.487344684768, precision value : 0.656133828996, f1_score : 0.559281753367
+    # recall value : 0.513115508514, precision value : 0.714285714286, f1_score : 0.597214783074
     
     # 4. Evaluate MSER
     classifier = detector.TrueBinaryClassifier(input_shape=(32,32))
