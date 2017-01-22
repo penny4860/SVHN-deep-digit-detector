@@ -34,12 +34,14 @@ class TrueBinaryClassifier(Classifier):
     def __init__(self, model_file=None, input_shape=None):
         self._model = None
         self.input_shape = None
-
+    
     def predict_proba(self, patches):
         """
         patches (N, 32, 32, 1)
         
         probs (N, n_classes)
         """
-        probs = np.ones((len(patches), 2))
+        probs = np.zeros((len(patches), 2))
+        probs[probs[:, 1]] = 1
+        
         return probs
