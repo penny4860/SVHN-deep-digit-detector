@@ -61,62 +61,24 @@ class NonMaxSuppressor:
             
         # return only the bounding boxes that were picked
         return boxes[pick].astype("int"), patches[pick], probs[pick]
-
-
-
-class Classifier:
-    
-    def __init__(self):
-        pass
-    
-class CnnClassifier(Classifier):
-    
-    def __init__(self, model_file, input_shape=(32,32,1)):
-        self._model = keras.models.load_model(model_file)
-        self.input_shape = input_shape
-
-    def predict_proba(self, patches):
-        """
-        patches (N, 32, 32, 1)
-        
-        probs (N, n_classes)
-        """
-        probs = self._model.predict_proba(patches)
-        return probs
-    
-class TrueBinaryClassifier():
-    def __init__(self, model_file=None, input_shape=None):
-        self._model = None
-        self.input_shape = None
-
-    def predict_proba(self, patches):
-        """
-        patches (N, 32, 32, 1)
-        
-        probs (N, n_classes)
-        """
-        probs = np.ones((len(patches), 2))
-        return probs
     
 
-class Detector:
+class DigitSpotter:
     
     # Todo classifier, recognizer 정리
-    def __init__(self, classifier, recognizer, region_proposer, preprocessor):
+    def __init__(self, classifier, recognizer, region_proposer):
         """
         Parameters:
             model_file (str)
             region_proposer (MserRegionProposer)
-            preprocessor (Preprocessor)
         """
         self._cls = classifier
         self._recognizer = recognizer
         self._region_proposer = region_proposer
-        self._preprocessor = preprocessor
         
     
     def run(self, image, threshold=0.7, do_nms=True, show_result=True, nms_threshold=0.3):
-        """Public function to run the detector.
+        """Public function to run the DigitSpotter.
 
         Parameters
         ----------
@@ -129,7 +91,7 @@ class Detector:
             detected bounding box. (y1, y2, x1, x2) ordered.
         
         probs : ndarray, shape of (N,)
-            evaluated score for the detector and test images on average precision. 
+            evaluated score for the DigitSpotter and test images on average precision. 
     
         Examples
         --------
@@ -138,9 +100,6 @@ class Detector:
         # 1. Get candidate patches
         candidate_regions = self._region_proposer.detect(image)
         patches = candidate_regions.get_patches(dst_size=self._cls.input_shape)
-        
-        # 2. preprocessing
-        patches = self._preprocessor.run(patches)
         
         # 3. Run pre-trained classifier
         probs = self._cls.predict_proba(patches)[:, 1]
