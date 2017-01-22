@@ -99,7 +99,7 @@ class TrueBinaryClassifier():
         return probs
     
 
-class Detector:
+class DigitSpotter:
     
     # Todo classifier, recognizer 정리
     def __init__(self, classifier, recognizer, region_proposer, preprocessor):
@@ -116,7 +116,7 @@ class Detector:
         
     
     def run(self, image, threshold=0.7, do_nms=True, show_result=True, nms_threshold=0.3):
-        """Public function to run the detector.
+        """Public function to run the DigitSpotter.
 
         Parameters
         ----------
@@ -129,7 +129,7 @@ class Detector:
             detected bounding box. (y1, y2, x1, x2) ordered.
         
         probs : ndarray, shape of (N,)
-            evaluated score for the detector and test images on average precision. 
+            evaluated score for the DigitSpotter and test images on average precision. 
     
         Examples
         --------
