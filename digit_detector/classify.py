@@ -16,8 +16,9 @@ class Classifier:
     
 class CnnClassifier(Classifier):
     
-    def __init__(self, model_file, input_shape=(32,32,1)):
+    def __init__(self, model_file, preprocessor, input_shape=(32,32,1)):
         self._model = keras.models.load_model(model_file)
+        self._preprocessor = preprocessor
         self.input_shape = input_shape
 
     def predict_proba(self, patches):
@@ -26,13 +27,15 @@ class CnnClassifier(Classifier):
         
         probs (N, n_classes)
         """
-        probs = self._model.predict_proba(patches)
+        patches_preprocessed = self._preprocessor.run(patches)
+        probs = self._model.predict_proba(patches_preprocessed)
         return probs
     
 class TrueBinaryClassifier(Classifier):
     """Classifier always predict true """
-    def __init__(self, model_file=None, input_shape=None):
+    def __init__(self, model_file=None, preprocessor=None, input_shape=None):
         self._model = None
+        self._preprocessor = None
         self.input_shape = None
     
     def predict_proba(self, patches):

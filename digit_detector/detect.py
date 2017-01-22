@@ -66,17 +66,15 @@ class NonMaxSuppressor:
 class DigitSpotter:
     
     # Todo classifier, recognizer 정리
-    def __init__(self, classifier, recognizer, region_proposer, preprocessor):
+    def __init__(self, classifier, recognizer, region_proposer):
         """
         Parameters:
             model_file (str)
             region_proposer (MserRegionProposer)
-            preprocessor (Preprocessor)
         """
         self._cls = classifier
         self._recognizer = recognizer
         self._region_proposer = region_proposer
-        self._preprocessor = preprocessor
         
     
     def run(self, image, threshold=0.7, do_nms=True, show_result=True, nms_threshold=0.3):
@@ -102,9 +100,6 @@ class DigitSpotter:
         # 1. Get candidate patches
         candidate_regions = self._region_proposer.detect(image)
         patches = candidate_regions.get_patches(dst_size=self._cls.input_shape)
-        
-        # 2. preprocessing
-        patches = self._preprocessor.run(patches)
         
         # 3. Run pre-trained classifier
         probs = self._cls.predict_proba(patches)[:, 1]
