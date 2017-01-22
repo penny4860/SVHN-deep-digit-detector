@@ -29,7 +29,7 @@ class CnnClassifier(Classifier):
         probs (N, n_classes)
         """
         patches_preprocessed = self._preprocessor.run(patches)
-        probs = self._model.predict_proba(patches_preprocessed)
+        probs = self._model.predict_proba(patches_preprocessed, verbose=0)
         return probs
     
 class TrueBinaryClassifier(Classifier):
