@@ -14,7 +14,9 @@ import digit_detector.preprocess as preproc
 detect_model = "detector_model.hdf5"
 recognize_model = "recognize_model.hdf5"
 
-mean_value = 107.524
+mean_value_for_detector = 107.524
+mean_value_for_recognizer = 112.833
+
 model_input_shape = (32,32,1)
 DIR = '../datasets/svhn/train'
 
@@ -24,10 +26,13 @@ if __name__ == "__main__":
     # 1. image files
     img_files = file_io.list_files(directory=DIR, pattern="*.png", recursive_option=False, n_files_to_sample=None, random_order=False)
 
-    char_detector = detector.CnnClassifier(detect_model, model_input_shape)
-    char_recognizer = detector.CnnClassifier(recognize_model, model_input_shape)
+    preproc_for_detector = preproc.GrayImgPreprocessor(mean_value_for_detector)
+    preproc_for_recognizer = preproc.GrayImgPreprocessor(mean_value_for_recognizer)
+
+    char_detector = detector.CnnClassifier(detect_model, model_input_shape, preproc_for_detector)
+    char_recognizer = detector.CnnClassifier(recognize_model, model_input_shape, preproc_for_recognizer)
     
-    digit_spotter = detector.DigitSpotter(char_detector, char_recognizer, rp.MserRegionProposer(), preproc.GrayImgPreprocessor(mean_value))
+    digit_spotter = detector.DigitSpotter(char_detector, char_recognizer, rp.MserRegionProposer())
     
     for img_file in img_files[0:]:
         # 2. image
