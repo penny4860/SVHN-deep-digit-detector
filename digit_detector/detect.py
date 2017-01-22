@@ -61,43 +61,6 @@ class NonMaxSuppressor:
             
         # return only the bounding boxes that were picked
         return boxes[pick].astype("int"), patches[pick], probs[pick]
-
-
-
-class Classifier:
-    
-    def __init__(self):
-        pass
-    
-class CnnClassifier(Classifier):
-    
-    def __init__(self, model_file, input_shape=(32,32,1)):
-        self._model = keras.models.load_model(model_file)
-        self.input_shape = input_shape
-
-    def predict_proba(self, patches):
-        """
-        patches (N, 32, 32, 1)
-        
-        probs (N, n_classes)
-        """
-        probs = self._model.predict_proba(patches)
-        return probs
-    
-class TrueBinaryClassifier():
-    """Classifier always predict true """
-    def __init__(self, model_file=None, input_shape=None):
-        self._model = None
-        self.input_shape = None
-
-    def predict_proba(self, patches):
-        """
-        patches (N, 32, 32, 1)
-        
-        probs (N, n_classes)
-        """
-        probs = np.ones((len(patches), 2))
-        return probs
     
 
 class DigitSpotter:
