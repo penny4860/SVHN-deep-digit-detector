@@ -46,6 +46,6 @@ class TrueBinaryClassifier(Classifier):
         probs (N, n_classes)
         """
         probs = np.zeros((len(patches), 2))
-        probs[probs[:, 1]] = 1
+        probs[:, 1] = 1
         
         return probs
