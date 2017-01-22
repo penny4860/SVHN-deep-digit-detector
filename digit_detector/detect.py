@@ -85,6 +85,7 @@ class CnnClassifier(Classifier):
         return probs
     
 class TrueBinaryClassifier():
+    """Classifier always predict true """
     def __init__(self, model_file=None, input_shape=None):
         self._model = None
         self.input_shape = None
