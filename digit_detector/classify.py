@@ -2,6 +2,7 @@
 
 from abc import ABCMeta, abstractmethod
 import keras
+import numpy as np
 
 class Classifier:
     
@@ -36,7 +37,7 @@ class TrueBinaryClassifier(Classifier):
     def __init__(self, model_file=None, preprocessor=None, input_shape=None):
         self._model = None
         self._preprocessor = None
-        self.input_shape = None
+        self.input_shape = input_shape
     
     def predict_proba(self, patches):
         """
