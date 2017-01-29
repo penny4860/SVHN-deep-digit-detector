@@ -7,7 +7,7 @@ This detector determine digit or not with CNN classifier for the region proposed
 
 * python 2.7
 * numpy 1.12.0
-* cv2 2.4.10
+* opencv 2.4.10
 * keras 1.2.0
 * tensorflow 1.0.0-alpha
 
