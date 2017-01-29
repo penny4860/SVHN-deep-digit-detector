@@ -84,3 +84,19 @@ In the running time, the detector operates in the 2-steps.
 
 <img src="examples/classifier.png">
 
+
+### 4. Evaluate the detector (4_evaluate.py)
+
+#### 4.1. Performance of the MSER proposer
+
+* recall value : 0.630
+* precision value : 0.045
+* f1_score : 0.084
+
+#### 4.1. Performance of the MSER+CNN detector
+
+* recall value : 0.513
+* precision value : 0.714
+* f1_score : 0.597
+    
+
