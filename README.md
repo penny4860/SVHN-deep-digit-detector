@@ -15,6 +15,11 @@ This detector determine digit or not with CNN classifier for the region proposed
 
 The procedure to build digit detector is as follows:
 
+### 0. Download Dataset
+
+Download train.tar.gz in http://ufldl.stanford.edu/housenumbers/ and unzip the file.
+ 
+
 ### 1. load training samples (1_sample_loader.py)
 
 Svhn provides cropped training samples in matlab format. 
