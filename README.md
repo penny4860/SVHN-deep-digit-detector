@@ -15,7 +15,7 @@ A list of all the packages needed to run this project can be found in [digit_det
 
 #### Anaconda Env
 
-I recommend that you create and use an anaconda env that is independent of your project. ou can create anaconda env for this project by following these simple steps.
+I recommend that you create and use an anaconda env that is independent of your project. You can create anaconda env for this project by following these simple steps.
 
 * Create anaconda env with the following command line:
   * ```$ conda env create -f digit_detector.yml ```
