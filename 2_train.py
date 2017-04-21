@@ -6,7 +6,7 @@ import cv2
 import digit_detector.preprocess as preproc
 import digit_detector.train as train_
 
-DIR = ""
+DIR = '../datasets/svhn'
 NB_FILTERS = 32
 NB_EPOCH = 5
 
