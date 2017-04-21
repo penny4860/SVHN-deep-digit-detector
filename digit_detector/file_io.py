@@ -3,7 +3,7 @@
 import abc
 import glob
 import os
-import commentjson as json
+import json
 from scipy import io
 import numpy as np
 import h5py
