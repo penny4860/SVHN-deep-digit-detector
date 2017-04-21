@@ -6,10 +6,19 @@ This detector determine digit or not with CNN classifier for the region proposed
 ## Prerequisites
 
 * python 2.7
-* numpy 1.12.0
-* opencv 2.4.10
-* keras 1.2.0
-* tensorflow 1.0.0-alpha
+* keras 1.2.2
+* opencv 2.4.11
+* tensorflow-gpu==1.0.1
+* Etc.
+
+A list of all the packages needed to run this project can be found in digit_detector.yml. I recommend that you create and use an anaconda env that is independent of your project. ou can create anaconda env for this project by following these simple steps.
+
+* Create anaconda env with the following command line:
+  * ```$ conda env create -f digit_detector.yml ```
+* Activate the env
+  * ```$ source activate digit_detector ```
+* Run the project in this env
+
 
 ## Usage
 
