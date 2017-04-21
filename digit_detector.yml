@@ -58,5 +58,4 @@ dependencies:
   - pyyaml==3.12
   - tensorflow-gpu==1.0.1
   - theano==0.9.0
-prefix: /home/jjs/anaconda3/envs/digit_detector
 
