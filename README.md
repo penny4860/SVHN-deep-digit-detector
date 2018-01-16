@@ -117,4 +117,8 @@ In the running time, the detector operates in the 2-steps.
 * precision value : 0.714
 * f1_score : 0.597
     
+## Related Projects
+
+* [Yolo-digit-detector](https://github.com/penny4860/Yolo-digit-detector)
+
 
