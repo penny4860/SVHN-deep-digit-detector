@@ -120,5 +120,5 @@ In the running time, the detector operates in the 2-steps.
 ## Related Projects
 
 * [Yolo-digit-detector](https://github.com/penny4860/Yolo-digit-detector)
-
+* [Weakly-Supervised-Text-Detection](https://github.com/penny4860/Weakly-Supervised-Text-Detection)
 
