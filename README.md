@@ -13,6 +13,8 @@ This detector determine digit or not with CNN classifier for the region proposed
 
 A list of all the packages needed to run this project can be found in [digit_detector.yml](https://github.com/penny4860/SVHN-deep-digit-detector/blob/master/digit_detector.yml). 
 
+An adaption to python 3.x and opencv 4.x is [here](https://github.com/mengqlTHU/SVHN-deep-digit-detector) (only for detection).
+
 #### Anaconda Env
 
 I recommend that you create and use an anaconda env that is independent of your project. You can create anaconda env for this project by following these simple steps.
