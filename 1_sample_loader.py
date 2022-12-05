@@ -12,8 +12,8 @@ import digit_detector.show as show
 import digit_detector.region_proposal as rp
 
 N_IMAGES = None
-DIR = '../datasets/svhn/train'
-ANNOTATION_FILE = "../datasets/svhn/train/digitStruct.json"
+DIR = '/datasets/svhn/train'
+ANNOTATION_FILE = "C:/Users/zhan14417/OneDrive/GitHub/SVHN-deep-digit-detector/annotation/train/digitStruct.json"
 NEG_OVERLAP_THD = 0.05
 POS_OVERLAP_THD = 0.6
 PATCH_SIZE = (32,32)
