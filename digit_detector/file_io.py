@@ -178,6 +178,7 @@ def list_files(directory, pattern="*.*", n_files_to_sample=None, recursive_optio
             files = random.sample(files, n_files_to_sample)
         else:
             files = files[:n_files_to_sample]
+    
     return files
 
 
