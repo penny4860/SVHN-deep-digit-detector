@@ -6,7 +6,7 @@ import cv2
 import digit_detector.preprocess as preproc
 import digit_detector.train as train_
 
-DIR = '/datasets/svhn'
+# DIR = '/datasets/svhn'
 NB_FILTERS = 32
 NB_EPOCH = 5
 
@@ -15,11 +15,11 @@ RECOGNIZER_FILE = 'recognize_model.hdf5'
 
 if __name__ == "__main__":
 
-    images_train = file_io.FileHDF5().read(os.path.join(DIR, "train.hdf5"), "images")
-    labels_train = file_io.FileHDF5().read(os.path.join(DIR, "train.hdf5"), "labels")
+    images_train = file_io.FileHDF5().read("train.hdf5", "images")
+    labels_train = file_io.FileHDF5().read("train.hdf5", "labels")
 
-    images_val = file_io.FileHDF5().read(os.path.join(DIR, "val.hdf5"), "images")
-    labels_val = file_io.FileHDF5().read(os.path.join(DIR, "val.hdf5"), "labels")
+    images_val = file_io.FileHDF5().read("val.hdf5", "images")
+    labels_val = file_io.FileHDF5().read("val.hdf5", "labels")
 
     # Train detector
     X_train, X_val, Y_train, Y_val, mean_value = preproc.GrayImgTrainPreprocessor().run(images_train, labels_train, images_val, labels_val, 2)

@@ -1,6 +1,6 @@
 funcsigs==1.0.2
 h5py>=2.9.0
-keras==2.10.0
+keras>=2.11.0
 mock==2.0.0
 pbr==3.0.0
 protobuf>=3.9.2
