@@ -24,15 +24,13 @@ def train_detector(X_train, X_test, Y_train, Y_test, nb_filters = 32, batch_size
     model.add(Convolution2D(filters=nb_filters, kernel_size=3, 
                             input_shape=input_shape[1:], activation='relu'))
     model.add(MaxPooling2D(pool_size=pool_size))
-    # (16, 8, 32)
      
     model.add(Convolution2D(filters=nb_filters*2, kernel_size=3,
                             activation='relu'))
     model.add(Convolution2D(filters=nb_filters*2, kernel_size=3, 
                             activation='relu'))
     model.add(MaxPooling2D(pool_size=pool_size))
-    # (8, 4, 64) = (2048)
-        
+    
     model.add(Flatten())
     model.add(Dense(1024))
     model.add(Activation(activations.relu))

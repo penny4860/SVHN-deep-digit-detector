@@ -23,8 +23,8 @@ if __name__ == "__main__":
 
     # Train detector
     X_train, X_val, Y_train, Y_val, mean_value = preproc.GrayImgTrainPreprocessor().run(images_train, labels_train, images_val, labels_val, 2)
-    print("mean value of the train images : {}".format(mean_value))    # 107.524 -> 108.784
-    print("Train image shape is {}, and Validation image shape is {}".format(X_train.shape, X_val.shape))    # (457723, 32, 32, 1), (113430, 32, 32, 1) -> (1279733, 32, 32, 1), (317081, 32, 32, 1)
+    print("mean value of the train images : {}".format(mean_value))    # 108.784
+    print("Train image shape is {}, and Validation image shape is {}".format(X_train.shape, X_val.shape))    # (1279733, 32, 32, 1), (317081, 32, 32, 1)
     train_.train_detector(X_train, X_val, Y_train, Y_val, nb_filters = NB_FILTERS, nb_epoch=NB_EPOCH, nb_classes=2, save_file=DETECTOR_FILE)
 
     # Train recognizer
