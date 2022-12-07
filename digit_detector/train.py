@@ -25,7 +25,7 @@ def train_detector(X_train, X_test, Y_train, Y_test, nb_filters = 32, batch_size
 
     model = Sequential()
     model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
-                            border_mode='valid',
+                            padding='valid',
                             input_shape=input_shape))
     model.add(Activation('relu'))
     model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1]))
