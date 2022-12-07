@@ -26,12 +26,16 @@ if __name__ == "__main__":
     print("mean value of the train images : {}".format(mean_value))    # 108.784
     print("Train image shape is {}, and Validation image shape is {}".format(X_train.shape, X_val.shape))    # (1279733, 32, 32, 1), (317081, 32, 32, 1)
     train_.train_detector(X_train, X_val, Y_train, Y_val, nb_filters = NB_FILTERS, nb_epoch=NB_EPOCH, nb_classes=2, save_file=DETECTOR_FILE)
-
+    # loss: 0.1910 - accuracy: 0.9306 - val_loss: 0.1736 - val_accuracy: 0.9365
+    # Test score: 0.17363692820072174
+    # Test accuracy: 0.9365462064743042
+    
     # Train recognizer
     X_train, X_val, Y_train, Y_val, mean_value = preproc.GrayImgTrainPreprocessor().run(images_train, labels_train, images_val, labels_val, 10)
-    print("mean value of the train images : {}".format(mean_value))    # 112.833
-    print("Train image shape is {}, and Validation image shape is {}".format(X_train.shape, X_val.shape))    # (116913, 32, 32, 1), (29456, 32, 32, 1)
+    print("mean value of the train images : {}".format(mean_value))    # 115.503
+    print("Train image shape is {}, and Validation image shape is {}".format(X_train.shape, X_val.shape))    # (267234, 32, 32, 1), (67359, 32, 32, 1)
     train_.train_detector(X_train, X_val, Y_train, Y_val, nb_filters = NB_FILTERS, nb_epoch=NB_EPOCH, nb_classes=10, save_file=RECOGNIZER_FILE)
-    # acc: 0.9541 - val_loss: 0.2125 - val_acc: 0.9452
-
+    # loss: 0.9931 - accuracy: 0.7020 - val_loss: 0.7550 - val_accuracy: 0.8072
+    # Test score: 0.7550018429756165
+    # Test accuracy: 0.8071527481079102
 
