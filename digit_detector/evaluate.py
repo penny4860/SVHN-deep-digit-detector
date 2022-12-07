@@ -1,10 +1,8 @@
 #-*- coding: utf-8 -*-
-
 import progressbar
 import cv2
 import numpy as np
-import region_proposal as rp
-
+#import region_proposal as rp
 
 class Evaluator(object):
     
@@ -76,4 +74,4 @@ class Evaluator(object):
 
     
     def _print_msg(self, recall, precision, f1_score):
-        print "recall value : {}, precision value : {}, f1_score : {}".format(recall, precision, f1_score)
+        print("recall value : {}, precision value : {}, f1_score : {}".format(recall, precision, f1_score))

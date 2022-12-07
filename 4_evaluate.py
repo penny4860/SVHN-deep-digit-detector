@@ -11,19 +11,18 @@ import digit_detector.detect as detect
 import digit_detector.file_io as file_io
 import digit_detector.preprocess as preproc
 import digit_detector.annotation as ann
-import digit_detector.evaluate as eval
+import digit_detector.evaluate as eva
 import digit_detector.classify as cls
-
 
 model_filename = "detector_model.hdf5"
 model_input_shape = (32,32,1)
-DIR = '../datasets/svhn/train'
-ANNOTATION_FILE = "../datasets/svhn/train/digitStruct.json"
+DIR = 'C:/Users/zhan14417/OneDrive/GitHub/SVHN-deep-digit-detector/datasets/svhn/train'
+ANNOTATION_FILE = "C:/Users/zhan14417/OneDrive/GitHub/SVHN-deep-digit-detector/annotation/test/digitStruct.json"
 
 detect_model = "detector_model.hdf5"
 recognize_model = "recognize_model.hdf5"
-mean_value_for_detector = 107.524
-mean_value_for_recognizer = 112.833
+mean_value_for_detector = 108.784
+mean_value_for_recognizer = 115.503
 
 
 if __name__ == "__main__":
@@ -43,9 +42,9 @@ if __name__ == "__main__":
     det = detect.DigitSpotter(detector, recognizer, proposer)
      
     # 3. Evaluate average precision     
-    evaluator = eval.Evaluator(det, annotator, rp.OverlapCalculator())
+    evaluator = eva.Evaluator(det, annotator, rp.OverlapCalculator())
     recall, precision, f1_score = evaluator.run(img_files)
-    # recall value : 0.513115508514, precision value : 0.714285714286, f1_score : 0.597214783074
+    # recall value : 0.025614754098360656, precision value : 0.0328515111695138, f1_score : 0.02878526194588371
     
     # 4. Evaluate MSER
     detector = cls.TrueBinaryClassifier(input_shape=model_input_shape)
@@ -53,12 +52,6 @@ if __name__ == "__main__":
      
     # Todo : detector, recognizer 를 none type 으로
     det = detect.DigitSpotter(detector, recognizer, proposer)
-    evaluator = eval.Evaluator(det, annotator, rp.OverlapCalculator())
+    evaluator = eva.Evaluator(det, annotator, rp.OverlapCalculator())
     recall, precision, f1_score = evaluator.run(img_files, do_nms=False)
-    #recall value : 0.630004601933, precision value : 0.0452547023239, f1_score : 0.0844436220084
-
-
-
-
-
-
+    # recall value : 0.08504098360655737, precision value : 0.001661811374398094, f1_score : 0.0032599196802922145
