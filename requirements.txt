@@ -1,9 +1,11 @@
 funcsigs==1.0.2
 h5py>=2.9.0
-keras>=2.11.0
+keras==2.10.0
 mock==2.0.0
 pbr==3.0.0
 protobuf>=3.9.2
 pyyaml==3.12
-tensorflow-gpu
+tensorflow-gpu==2.10.1
 theano==0.9.0
+tensorflow==2.10.1
+tensorflow-intel==2.10.0
