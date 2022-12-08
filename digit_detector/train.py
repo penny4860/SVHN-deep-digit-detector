@@ -39,7 +39,7 @@ def train_detector(X_train, X_test, Y_train, Y_test, nb_filters = 32, batch_size
     model.add(Activation(activations.softmax))
         
     model.compile(loss='categorical_crossentropy',
-                  optimizer='adadelta',
+                  optimizer='adam',
                   metrics=['accuracy'])
     
     if do_augment:
