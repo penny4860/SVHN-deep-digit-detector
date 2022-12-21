@@ -1,22 +1,22 @@
 {
 	"dataset":
 	{
-		"pos_data_dir": "../datasets/svhn/train",
+		"pos_data_dir": "/datasets/svhn/train",
 		"pos_format": "*.png",
-		"test_data_dir": "../datasets/svhn/test",
-		"extra_data_dir": "../datasets/svhn/extra",
-		"easy_data_dir": "../datasets/svhn/easy_test",
-		"annotation_file": "../datasets/svhn/train/digitStruct.json",
-		"annotation_file_test": "../datasets/svhn/test/digitStruct.json",
-		"neg_data_dir": "../datasets/houses",
+		"test_data_dir": "/datasets/svhn/test",
+		"extra_data_dir": "/datasets/svhn/extra",
+		"easy_data_dir": "/datasets/svhn/easy_test",
+		"annotation_file": "/datasets/svhn/train/digitStruct.json",
+		"annotation_file_test": "/datasets/svhn/test/digitStruct.json",
+		"neg_data_dir": "/datasets/houses",
 		"neg_format": "*.jpg",
-		"neg_data_from_train": "../datasets/svhn/train/negative_images",
+		"neg_data_from_train": "/datasets/svhn/train/negative_images",
 		"neg_data_from_train_format": "*.png"
 	},
 
 	"extractor":
 	{
-		"output_file": "../datasets/output/svhn_features.hdf5",
+		"output_file": "/datasets/output/svhn_features.hdf5",
 		"padding": 0,
 		"sampling_ratio_for_positive_images": 1.0,
 		"sampling_ratio_for_negative_images": 1.0,
@@ -37,10 +37,10 @@
 		"algorithm": "ConvNet",
 		"parameters":
 		{
-			"model_file": "models/detector_model.hdf5",
+			"model_file": "/models/detector_model.hdf5",
 			"mean_value": 84.9649
 		},
-		"output_file": "models/detector_model.hdf5"
+		"output_file": "/models/detector_model.hdf5"
 	},
 	
 	"detector":
@@ -50,7 +50,7 @@
 		"pyramid_scale": 0.9,
 		"window_dim": [32, 16],
 		"min_probability": 0.7,
-		"output_file": "../datasets/output/svhn_detector.pkl"
+		"output_file": "/datasets/output/svhn_detector.pkl"
 	},
 
 	"hard_negative_mine":

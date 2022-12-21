@@ -1,5 +1,4 @@
 #-*- coding: utf-8 -*-
-
 from abc import ABCMeta, abstractmethod
 import keras
 import numpy as np
@@ -29,8 +28,9 @@ class CnnClassifier(Classifier):
         probs (N, n_classes)
         """
         patches_preprocessed = self._preprocessor.run(patches)
-        probs = self._model.predict_proba(patches_preprocessed, verbose=0)
-        return probs
+        predict_x = self._model.predict(patches_preprocessed) 
+        
+        return predict_x
     
 class TrueBinaryClassifier(Classifier):
     """Classifier always predict true """
